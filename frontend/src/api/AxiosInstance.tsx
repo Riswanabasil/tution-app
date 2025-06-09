@@ -16,7 +16,7 @@ instance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const refreshResponse = await axios.post(
+        const refreshResponse = await instance.post(
           "/student/refresh-token",
           {},
           {

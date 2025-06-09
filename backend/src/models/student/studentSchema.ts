@@ -15,8 +15,8 @@ const studentSchema= new Schema<Istudent>(
     {
         name:{type:String,required:true},
         email:{type:String,required:true,unique:true},
-        phone:{type:String,required:true},
-        password:{type:String,required:true},
+        phone:{type:String,required:false},
+        password:{type:String,required:false},
         isGoogleSignup:{type:Boolean,default:false},
         isVerified:{type:Boolean,default:false},
         role:{type:String,default:'student'}

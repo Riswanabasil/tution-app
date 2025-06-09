@@ -38,6 +38,7 @@ const Login = () => {
    const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
       const idToken = credentialResponse.credential;
+
       if (!idToken) {
         setErrorMsg("Google login failed");
         return;
@@ -93,8 +94,11 @@ const Login = () => {
  <div className="mt-6 text-center">
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
-            onError={() => setErrorMsg("Google Login failed")}
-            useOneTap
+            onError={() => {
+               console.log("error here")
+              setErrorMsg("Google Login failed")
+            }}
+          
           />
         </div>
 

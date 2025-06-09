@@ -1,4 +1,4 @@
-import { IStudentController } from "../IstudentController";
+import { IStudentController } from "../IStudentController";
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { StudentService } from "../../../services/student/implementation/registerStudent.service";

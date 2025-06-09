@@ -7,12 +7,15 @@ const client=new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 const studentRepo= new StudentRepository()
 
 export const googleLoginStudentService= async (idToken:string)=>{
+  
     const ticket= await client.verifyIdToken({
         idToken,
     audience: process.env.GOOGLE_CLIENT_ID
     })
 
     const payload=ticket.getPayload()
+   
+    
 
      if (!payload || !payload.email || !payload.name) {
     throw new Error('Invalid Google token');
@@ -21,6 +24,7 @@ export const googleLoginStudentService= async (idToken:string)=>{
   const { email, name } = payload;
 
    let student = await studentRepo.findByEmail(email);
+   
 
    if (!student) {
     student = await studentRepo.create({
@@ -36,7 +40,7 @@ export const googleLoginStudentService= async (idToken:string)=>{
 
    const accessToken = generateAccessToken(student._id.toString(), student.email, student.role);
   const refreshToken = generateRefreshToken(student._id.toString(), student.email, student.role);
-
+  
   return {
     accessToken,
     refreshToken,

@@ -15,6 +15,9 @@ export const studentLogin = async (data: { email: string; password: string }) =>
   return response.data;
 };
 
-export const studentGoogleLogin = (idToken: string) => {
-  return axios.post("/student/google-login", { idToken }).then(res => res.data);
+export const studentGoogleLogin = async (idToken: string) => {
+ 
+  const response = await axios.post("/student/google-login", { idToken })
+
+   return  response.data
 };
