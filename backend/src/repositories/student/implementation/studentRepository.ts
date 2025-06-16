@@ -15,4 +15,23 @@ export class StudentRepository extends BaseRepository<Istudent> implements Istud
   await Student.updateOne({ email }, { isVerified: true });
 }
 
+async countDocuments(filter: any): Promise<number> {
+  return Student.countDocuments(filter);
+}
+
+async findMany(
+  filter: any,
+  options: { skip?: number; limit?: number; sort?: any }
+): Promise<Istudent[]> {
+  return Student.find(filter)
+    .skip(options.skip || 0)
+    .limit(options.limit || 0)
+    .sort(options.sort || {});
+}
+
+async updateBlockStatus(id: string, isBlocked: boolean): Promise<void> {
+  await Student.findByIdAndUpdate(id, { isBlocked });
+}
+
+
 }

@@ -1,7 +1,5 @@
 import { Request,Response } from "express";
 import { generateAccessToken, generateRefreshToken } from "../../utils/GenerateToken";
-import { StudentRepository } from "../../repositories/student/implementation/studentRepository";
-const studentRepository= new StudentRepository()
 export const loginAdmin=async (req:Request,res:Response):Promise<void>=>{
    try{
      const {email,password}=req.body
@@ -30,12 +28,24 @@ export const loginAdmin=async (req:Request,res:Response):Promise<void>=>{
   }
 }
 
-export const getAllStudents = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const students = await studentRepository.findAll();
-    res.status(200).json(students);
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch students' });
-  }
+
+export const logoutAdmin = (req: Request, res: Response): void => {
+  res.clearCookie("adminRefreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  res.status(200).json({ message: "Admin logged out successfully" });
 };
+
+
+// export const getAllStudents = async (req: Request, res: Response): Promise<void> => {
+//   try {
+//     const students = await studentRepository.findAll();
+//     res.status(200).json(students);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to fetch students' });
+//   }
+// };
 

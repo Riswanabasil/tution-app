@@ -9,5 +9,5 @@ export const generateAccessToken=(id:string,email:string,role:string):string=>{
 
 
 export const generateRefreshToken=(id:string,email:string,role:string):string=>{
-    return jwt.sign({id,email,role},REFRESH_TOKEN,{ expiresIn: '15m' })
+    return jwt.sign({id,email,role},REFRESH_TOKEN,{ expiresIn: '7d' })
 }

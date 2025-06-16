@@ -1,7 +1,8 @@
 import axios  from "axios";
+import { BASE_API_URL } from "../constants/api";
 
 const instance = axios.create({
-  baseURL: "http://localhost:5000/api", 
+  baseURL: BASE_API_URL, 
   withCredentials: true, 
 });
 
@@ -20,7 +21,7 @@ instance.interceptors.response.use(
           "/student/refresh-token",
           {},
           {
-            baseURL: "http://localhost:5000/api",
+            baseURL: BASE_API_URL,
             withCredentials: true,
           }
         );

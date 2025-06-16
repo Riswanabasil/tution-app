@@ -1,7 +1,8 @@
 import axios from "axios";
+import { BASE_API_URL } from "../constants/api"
 
 const adminAxios = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: BASE_API_URL,
   withCredentials: true,
 });
 
@@ -25,7 +26,7 @@ adminAxios.interceptors.response.use(
         const res = await axios.post(
           "/admin/refresh-token",
           {},
-          { baseURL: "http://localhost:5000/api", withCredentials: true }
+          { baseURL: BASE_API_URL, withCredentials: true }
         );
 
         const newToken = res.data.accessToken;

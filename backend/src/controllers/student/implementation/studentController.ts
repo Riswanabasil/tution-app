@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { StudentService } from "../../../services/student/implementation/registerStudent.service";
 import { generateAndSaveOtp } from "../../../services/student/implementation/GenerateOtp.service";
 import { verifyStudentOtpService } from "../../../services/student/implementation/VerifyOtp";
-import { AuthenticatedRequest } from "../../../types/express";
+import { AuthenticatedRequest } from "../../../types/Index";
 import { resendOtpService } from "../../../services/student/implementation/ResendOtp.service";
 import { loginStudentService } from "../../../services/student/implementation/LoginStudent.service";
 import { refreshTokenService } from "../../../services/student/implementation/RefreshToken.service";

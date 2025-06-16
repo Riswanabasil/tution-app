@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../../api/AxiosAdmin';
+import type { AxiosError } from 'axios';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -17,9 +18,9 @@ const AdminLogin = () => {
 
       localStorage.setItem('adminAccessToken', response.data.accessToken);
       navigate('/admin/dashboard');
-    } catch (error: any) {
-      console.error('Login error:', error);
-      setErrorMsg(error.response?.data?.message || 'Login failed');
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{ message: string }>;
+      setErrorMsg(axiosError.response?.data?.message || 'Login failed');
     }
   };
 

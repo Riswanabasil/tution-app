@@ -7,8 +7,9 @@ export interface Istudent extends Document {
     password:string,
     phone:string,
     isGoogleSignup:boolean,
-    isVerified:boolean,
-    role:'student'
+    isBlocked:boolean,
+    role:'student',
+    isVerified:boolean
 }
 
 const studentSchema= new Schema<Istudent>(
@@ -18,8 +19,9 @@ const studentSchema= new Schema<Istudent>(
         phone:{type:String,required:false},
         password:{type:String,required:false},
         isGoogleSignup:{type:Boolean,default:false},
-        isVerified:{type:Boolean,default:false},
-        role:{type:String,default:'student'}
+        isBlocked:{type:Boolean,default:false},
+        role:{type:String,default:'student'},
+        isVerified:{type:Boolean,default:false}
     },{
         timestamps:true
     }
