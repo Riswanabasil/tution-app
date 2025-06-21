@@ -4,7 +4,8 @@ import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { studentLogin,studentGoogleLogin } from "../services/StudentApi"
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
+import type { AxiosError } from "axios";
 
 const schema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
@@ -30,12 +31,13 @@ const Login = () => {
       const response = await studentLogin(data);
       localStorage.setItem("accessToken", response.accessToken);
       navigate("/student/dashboard");
-    } catch (error: any) {
-      setErrorMsg(error?.response?.data?.message || "Login failed");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      setErrorMsg(axiosError.response?.data?.message || "Login failed");
     }
   };
 
-   const handleGoogleSuccess = async (credentialResponse: any) => {
+   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
       const idToken = credentialResponse.credential;
 
@@ -47,8 +49,9 @@ const Login = () => {
       const response = await studentGoogleLogin(idToken);
       localStorage.setItem("accessToken", response.accessToken);
       navigate("/student/dashboard");
-    } catch (error: any) {
-      setErrorMsg(error?.response?.data?.message || "Google Login failed");
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      setErrorMsg(axiosError.response?.data?.message || "Google Login failed");
     }
   };
 
@@ -59,9 +62,23 @@ const Login = () => {
           Tech Tute Login
         </h2>
 
-        {errorMsg && (
+        {/* {errorMsg && (
           <p className="text-red-500 text-center text-sm mb-4">{errorMsg}</p>
-        )}
+        )} */}
+
+        {errorMsg && (
+  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+    <strong className="font-bold">Error: </strong>
+    <span className="block sm:inline">{errorMsg}</span>
+    <span
+      onClick={() => setErrorMsg("")}
+      className="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer"
+    >
+      ×
+    </span>
+  </div>
+)}
+
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>

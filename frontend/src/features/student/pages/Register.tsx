@@ -4,10 +4,11 @@ import * as yup from "yup";
 import { registerStudent } from "../services/StudentApi";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import type { AxiosError } from "axios";
 
 const schema = yup.object().shape({
   name: yup.string().required("Name is required"),
-  phone: yup.string().required("Phone is required"),
+  phone: yup.string().required("Phone is required").matches(/^[6-9]\d{9}$/, "Phone number is not valid"),
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup
     .string()
@@ -35,9 +36,10 @@ const Register = () => {
       console.log("Registered:", response);
       localStorage.setItem("accessToken", response.token);
       navigate("/student/verify-otp");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
       console.error("Registration error:", error);
-      setErrorMsg(error?.response?.data?.message || "Registration failed");
+      setErrorMsg(axiosError.response?.data?.message || "Registration failed");
     }
   };
 

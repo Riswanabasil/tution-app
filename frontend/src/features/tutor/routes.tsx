@@ -5,7 +5,6 @@ import TutorLogin from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import TutorVerification from "./pages/Verification";
 
-
 const TutorRoutes=()=>{
     return(
         <Routes>

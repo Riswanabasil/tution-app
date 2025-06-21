@@ -54,7 +54,11 @@ const handleStatusUpdate = async (tutorId: string, status: "approved" | "rejecte
   try {
     
     await updateTutorStatus(tutorId, status);
-    loadTutors(); // refresh the table
+    setTutors((prev) =>
+      prev.map((tutor) =>
+        tutor._id === tutorId ? { ...tutor, status: status } : tutor
+      )
+    );
   } catch (error) {
     console.error("Failed to update tutor status", error);
   }

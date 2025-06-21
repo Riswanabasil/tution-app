@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../api/AxiosInstance";
+import type { AxiosError } from "axios";
 
 const schema = yup.object().shape({
   otp: yup.string().length(4, "OTP must be 4 digits").required("OTP is required"),
@@ -60,9 +61,10 @@ const VerifyOtp = () => {
 
       console.log("OTP verified:", response.data);
       navigate("/student/login");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
       console.error("OTP error:", error);
-      setErrorMsg(error?.response?.data?.message || "Verification failed");
+      setErrorMsg(axiosError.response?.data?.message || "Verification failed");
     }
   };
 
@@ -82,8 +84,9 @@ const VerifyOtp = () => {
 
       setTimeLeft(5 * 60);
       setResendEnabled(false);
-    } catch (error) {
-      setErrorMsg("Failed to resend OTP");
+    } catch (error:unknown) { 
+      const axiosError = error as AxiosError<{ message: string }>;
+      setErrorMsg(axiosError.message||"Failed to resend OTP");
     }
 }
 

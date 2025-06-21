@@ -14,6 +14,9 @@ export const loginStudentService=async (email:string,password:string)=>{
     if (!student.isVerified) {
     throw new Error('Please verify your email before logging in');
   }
+  if(student.isBlocked){
+    throw new Error('Your account blocked');
+  }
   const isMatch = await bcrypt.compare(password, student.password);
 
    if (!isMatch) {

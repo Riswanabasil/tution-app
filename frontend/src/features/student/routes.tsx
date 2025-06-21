@@ -11,7 +11,6 @@ const StudentRoutes = () => {
       <Route path="register" element={<Register />} />
       <Route path="verify-otp" element={<VerifyOtp />} />
       <Route path="login" element={<Login />} />
-
       <Route element={<ProtectedRoute />}>
         <Route path="dashboard" element={<Dashboard />} />
       </Route>

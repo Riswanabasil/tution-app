@@ -1,9 +1,9 @@
-import axios  from "axios";
+import axios from "axios";
 import { BASE_API_URL } from "../constants/api";
 
 const instance = axios.create({
-  baseURL: BASE_API_URL, 
-  withCredentials: true, 
+  baseURL: BASE_API_URL,
+  withCredentials: true,
 });
 
 instance.interceptors.response.use(
@@ -13,7 +13,9 @@ instance.interceptors.response.use(
 
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/student/login") &&
+      !originalRequest.url.includes("/student/google-login")
     ) {
       originalRequest._retry = true;
       try {

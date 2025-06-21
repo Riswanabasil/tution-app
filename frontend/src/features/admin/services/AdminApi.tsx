@@ -1,33 +1,42 @@
 import adminAxios from "../../../api/AxiosAdmin";
 import type { ITutor } from "../../../types/types";
 
-export const fetchTutors=async (
-    page:number,
-    limit:number,
-    status?:string,
-    search?:string
-)=>{
-    const query = new URLSearchParams()
-     query.append("page", page.toString());
+export const loginAdmin=async (email:string,password:string)=>{
+  const response= await adminAxios.post('/admin/login', { email, password })
+  return response.data
+}
+
+export const fetchTutors = async (
+  page: number,
+  limit: number,
+  status?: string,
+  search?: string
+) => {
+  const query = new URLSearchParams();
+  query.append("page", page.toString());
   query.append("limit", limit.toString());
   if (status) query.append("status", status);
   if (search) query.append("search", search);
   const response = await adminAxios.get(`/admin/tutors?${query.toString()}`);
   return response.data;
-}
+};
 
 export const getTutorById = async (id: string): Promise<ITutor> => {
   const res = await adminAxios.get(`/admin/tutor/${id}`);
   console.log(res);
-  
+
   return res.data;
 };
 
-export const updateTutorStatus = async (tutorId: string, status: "approved" | "rejected") => {
-  
-  const response = await adminAxios.patch(`/admin/tutor/${tutorId}/status`, { status });
+export const updateTutorStatus = async (
+  tutorId: string,
+  status: "approved" | "rejected"
+) => {
+  const response = await adminAxios.patch(`/admin/tutor/${tutorId}/status`, {
+    status,
+  });
   console.log(response);
-  
+
   return response.data;
 };
 
@@ -61,4 +70,4 @@ export const updateStudentBlockStatus = async (
 
 export const logoutAdmin = async () => {
   await adminAxios.post("/admin/logout");
-}
+};

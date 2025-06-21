@@ -28,7 +28,11 @@ const AdminStudentPage = () => {
   const handleBlockToggle = async (id: string, block: boolean) => {
     try {
       await updateStudentBlockStatus(id, block);
-      loadStudents();
+      setStudents((prev) =>
+      prev.map((student) =>
+        student._id === id ? { ...student, isBlocked: block } : student
+      )
+    );
     } catch (err) {
       console.error("Failed to update block status", err);
     }

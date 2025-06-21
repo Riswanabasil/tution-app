@@ -1,17 +1,30 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import { logoutAdmin } from "../services/AdminApi";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../../redux/store";
+import { logoutAdminThunk } from "../../../redux/slices/adminSlice";
 
 const AdminLayout = () => {
 
    const navigate = useNavigate();
+   const dispatch = useDispatch<AppDispatch>();
 
-  const handleLogout = async () => {
+  // const handleLogout = async () => {
+  //   try {
+  //     await logoutAdmin();
+  //     localStorage.removeItem("adminAccessToken"); 
+  //     navigate("/admin"); 
+  //   } catch (error) {
+  //     console.error("Logout failed", error);
+  //   }
+  // };
+
+  
+const handleLogout = async () => {
     try {
-      await logoutAdmin();
-      localStorage.removeItem("adminAccessToken"); 
-      navigate("/admin"); 
-    } catch (error) {
-      console.error("Logout failed", error);
+      await dispatch(logoutAdminThunk()).unwrap();
+      navigate("/admin");
+    } catch (err) {
+      console.error("Logout failed", err);
     }
   };
 
