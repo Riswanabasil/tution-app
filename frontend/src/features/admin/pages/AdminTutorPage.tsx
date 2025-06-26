@@ -1,16 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
-import { fetchTutors, getTutorById, updateTutorStatus } from "../services/AdminApi";
+import {
+  assignCoursesToTutor,
+  fetchTutors,
+  getTutorById,
+  updateTutorStatus,
+} from "../services/AdminApi";
 import type { AxiosError } from "axios";
 import Modal from "../components/Modal";
 import type { ITutor } from "../../../types/types";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCoursesThunk } from "../../../redux/slices/courseSlice";
+import type { RootState, AppDispatch } from "../../../redux/store";
 
 interface Tutor {
   _id: string;
   name: string;
   email: string;
   status: string;
-  assignedCourse?: string | null;
+  assignedCourses?: { _id: string; title: string }[];
 }
+// interface Course {
+//   _id: string;
+//   title: string;
+// }
 
 const AdminTutorPage = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
@@ -22,10 +34,20 @@ const AdminTutorPage = () => {
   const [status, setStatus] = useState("");
   const [selectedTutor, setSelectedTutor] = useState<ITutor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [assigningTutorId, setAssigningTutorId] = useState<string | null>(null);
+  const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
+  // const [allCourses, setAllCourses] = useState<Course[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const { courses: allCourses } = useSelector(
+    (state: RootState) => state.courses
+  );
   const loadTutors = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetchTutors(page, 5, status, search);
+      console.log(res.tutors);
+
       setTutors(res.tutors);
       setTotalPages(res.totalPages);
     } catch (err: unknown) {
@@ -39,33 +61,62 @@ const AdminTutorPage = () => {
   useEffect(() => {
     loadTutors();
   }, [loadTutors]);
- const handleViewTutor = async (tutor: Tutor) => {
-  
-  try {
-    const fullTutor = await getTutorById(tutor._id);
-    setSelectedTutor(fullTutor);
-    setIsModalOpen(true);
-  } catch (error) {
-    console.error("Failed to load tutor details", error);
-    setError("Unable to load tutor details");
-  }
-};
-const handleStatusUpdate = async (tutorId: string, status: "approved" | "rejected") => {
-  try {
-    
-    await updateTutorStatus(tutorId, status);
-    setTutors((prev) =>
-      prev.map((tutor) =>
-        tutor._id === tutorId ? { ...tutor, status: status } : tutor
-      )
-    );
-  } catch (error) {
-    console.error("Failed to update tutor status", error);
-  }
-};
+  const handleViewTutor = async (tutor: Tutor) => {
+    try {
+      const fullTutor = await getTutorById(tutor._id);
+      setSelectedTutor(fullTutor);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Failed to load tutor details", error);
+      setError("Unable to load tutor details");
+    }
+  };
+  const handleStatusUpdate = async (
+    tutorId: string,
+    status: "approved" | "rejected"
+  ) => {
+    try {
+      await updateTutorStatus(tutorId, status);
+      setTutors((prev) =>
+        prev.map((tutor) =>
+          tutor._id === tutorId ? { ...tutor, status: status } : tutor
+        )
+      );
+    } catch (error) {
+      console.error("Failed to update tutor status", error);
+    }
+  };
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedTutor(null);
+  };
+
+  const handleOpenAssignModal = async (tutorId: string) => {
+    try {
+      const tutor = await getTutorById(tutorId);
+      setAssigningTutorId(tutorId);
+      setSelectedCourseIds(
+        Array.isArray(tutor.assignedCourses)
+          ? tutor.assignedCourses.map((course) => course._id)
+          : []
+      );
+      dispatch(fetchCoursesThunk());
+      setIsAssignModalOpen(true);
+    } catch (error) {
+      console.error("Failed to load tutor or courses", error);
+    }
+  };
+
+  const handleAssignCourses = async () => {
+    if (!assigningTutorId) return;
+
+    try {
+      await assignCoursesToTutor(assigningTutorId, selectedCourseIds);
+      setIsAssignModalOpen(false);
+      loadTutors();
+    } catch (error) {
+      console.error("Failed to assign courses", error);
+    }
   };
 
   return (
@@ -119,32 +170,52 @@ const handleStatusUpdate = async (tutorId: string, status: "approved" | "rejecte
                 <td className="p-2">{tutor.name}</td>
                 <td className="p-2">{tutor.email}</td>
                 <td className="p-2 capitalize">{tutor.status}</td>
-                <td className="p-2">{tutor.assignedCourse || "------"}</td>
-                <td className="p-2 space-x-2">
-  <button
-    onClick={() => handleViewTutor(tutor)}
-    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-  >
-    View
-  </button>
-  {tutor.status !== "approved" && (
-    <button
-      onClick={() => handleStatusUpdate(tutor._id, "approved")}
-      className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-    >
-      Approve
-    </button>
-  )}
-  {tutor.status !== "rejected" && (
-    <button
-      onClick={() => handleStatusUpdate(tutor._id, "rejected")}
-      className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-    >
-      Reject
-    </button>
-  )}
-</td>
+                {/* <td className="p-2">{tutor.assignedCourses|| "------"}</td> */}
+                <td>
+                  {Array.isArray(tutor.assignedCourses) &&
+                  tutor.assignedCourses.length > 0
+                    ? tutor.assignedCourses
+                        .map((course) => course.title)
+                        .join(", ")
+                    : "No Courses Assigned"}
+                </td>
 
+                <td className="p-2 space-x-2">
+                  <button
+                    onClick={() => handleViewTutor(tutor)}
+                    // className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="text-blue-600 hover:underline"
+                  >
+                    View
+                  </button>
+                  {tutor.status !== "approved" && (
+                    <button
+                      onClick={() => handleStatusUpdate(tutor._id, "approved")}
+                      // className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                      className="text-green-600 hover:underline"
+                    >
+                      Approve
+                    </button>
+                  )}
+                  {tutor.status !== "rejected" && (
+                    <button
+                      onClick={() => handleStatusUpdate(tutor._id, "rejected")}
+                      // className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                      className="text-red-600 hover:underline"
+                    >
+                      Reject
+                    </button>
+                  )}
+
+                  {tutor.status === "approved" && (
+                    <button
+                      onClick={() => handleOpenAssignModal(tutor._id)}
+                      className="text-green-600 hover:underline"
+                    >
+                      Assign Courses
+                    </button>
+                  )}
+                </td>
               </tr>
             ))
           )}
@@ -228,6 +299,39 @@ const handleStatusUpdate = async (tutorId: string, status: "approved" | "rejecte
             )}
           </div>
         )}
+      </Modal>
+
+      <Modal
+        isOpen={isAssignModalOpen}
+        onClose={() => setIsAssignModalOpen(false)}
+        title="Assign Courses"
+      >
+        <div className="space-y-2">
+          <p>Select courses to assign:</p>
+          {allCourses.map((course) => (
+            <label key={course._id} className="block">
+              <input
+                type="checkbox"
+                checked={selectedCourseIds.includes(course._id)}
+                onChange={() => {
+                  setSelectedCourseIds((prev) =>
+                    prev.includes(course._id)
+                      ? prev.filter((id) => id !== course._id)
+                      : [...prev, course._id]
+                  );
+                }}
+              />
+              <span className="ml-2">{course.title}</span>
+            </label>
+          ))}
+
+          <button
+            onClick={handleAssignCourses}
+            className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
+          >
+            Save
+          </button>
+        </div>
       </Modal>
     </div>
   );

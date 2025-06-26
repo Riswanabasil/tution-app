@@ -21,11 +21,12 @@ export class BaseRepository<T> implements IBaseRepository<T> {
   }
 
   async update(id: string, data: Partial<T>): Promise<T | null> {
-    return this.model.findById(id, data, { new: true });
+    return this.model.findByIdAndUpdate(id, data, { new: true });
   }
 
   async delete(id: string): Promise<boolean> {
-    const result = this.model.findByIdAndDelete(id);
+    const result = await this.model.findByIdAndDelete(id);
+    
     return !!result;
   }
 }

@@ -4,6 +4,7 @@ import {
   PaginatedTutors,
   TutorDetails,
 } from "../../../../types/TutorAdminTypes";
+import { ITutor } from "../../../../models/tutor/TutorSchema";
 
 const tutorRepo = new TutorRepository();
 
@@ -39,7 +40,7 @@ export class AdminTutorService implements ITutorAdminService {
         name: t.name,
         email: t.email,
         status: t.status,
-        // assignedCourse: null
+        assignedCourses: t.assignedCourses
       })),
       total,
       currentPage: page,
@@ -73,4 +74,9 @@ export class AdminTutorService implements ITutorAdminService {
     if (!result) throw new Error("Tutor not found");
     return true;
   }
+
+  async assignCourses (tutorId: string, courseIds: string[]): Promise<ITutor | null> {
+  return await tutorRepo.assignCoursesToTutor(tutorId, courseIds);
+};
+
 }

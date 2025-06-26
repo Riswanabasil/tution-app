@@ -4,6 +4,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminTutorPage from "./pages/AdminTutorPage";
 import AdminLayout from "./components/AdminLayout";
 import AdminStudentPage from "./pages/AdminStudentPage";
+import AdminCourseList from "./pages/AdminCourseList";
+import CourseForm from "./pages/CourseForm";
 
 const AdminRoutes = () => {
   return (
@@ -13,6 +15,9 @@ const AdminRoutes = () => {
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="tutors" element={<AdminTutorPage />} />
         <Route path="students" element={<AdminStudentPage />} />
+         <Route path="courses" element={<AdminCourseList />} />
+         <Route path="course/new" element={<CourseForm />} />
+         <Route path="course/edit/:id" element={<CourseForm />} />
       </Route>
     </Routes>
   );

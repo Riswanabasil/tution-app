@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { registerTutor } from "../services/TutorApi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { AxiosError } from "axios";
 
@@ -82,6 +82,15 @@ const TutorRegister = () => {
               Register
             </button>
           </form>
+          <div className="mt-4 text-center">
+  <p className="text-sm">
+    Already have an account?{" "}
+    <Link to="/tutor/login" className="text-indigo-600 hover:underline font-medium">
+      Login here
+    </Link>
+  </p>
+</div>
+
         </div>
       </div>
     </div>

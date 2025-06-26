@@ -14,6 +14,7 @@ export interface ITutor {
   role?: string;
   status: "pending" | "approved" | "rejected";
   verificationDetails?: TutorVerificationDetails;
+  assignedCourses?: { _id: string; title: string }[]
 }
 
 export interface IStudent {

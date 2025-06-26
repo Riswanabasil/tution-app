@@ -1,4 +1,5 @@
 import axios from "../../../api/TutorAxios";
+import type { ICourse } from "../../../types/course";
 interface LoginPayload {
   email: string;
   password: string;
@@ -42,4 +43,9 @@ export const loginTutor = async (data: LoginPayload) => {
   const res = await axios.post("/tutor/login", data);
   
   return res.data;
+};
+
+export const getAssignedCourses = async (): Promise<ICourse[]> => {
+  const response = await axios.get("/tutor/dashboard/courses");
+  return response.data.courses;
 };

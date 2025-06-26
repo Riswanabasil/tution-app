@@ -5,6 +5,10 @@ export const loginAdmin=async (email:string,password:string)=>{
   const response= await adminAxios.post('/admin/login', { email, password })
   return response.data
 }
+export const logoutAdmin = async () => {
+  await adminAxios.post("/admin/logout");
+};
+//Tutor APIs..
 
 export const fetchTutors = async (
   page: number,
@@ -40,6 +44,13 @@ export const updateTutorStatus = async (
   return response.data;
 };
 
+export const assignCoursesToTutor = async (tutorId: string, courseIds: string[]) => {
+  const response = await adminAxios.post(`/admin/${tutorId}/assign-courses`, { courseIds });
+  return response.data;
+};
+
+
+//Student APIs..
 export const fetchStudents = async (
   page: number,
   limit: number,
@@ -68,6 +79,3 @@ export const updateStudentBlockStatus = async (
   return response.data;
 };
 
-export const logoutAdmin = async () => {
-  await adminAxios.post("/admin/logout");
-};

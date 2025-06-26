@@ -19,15 +19,6 @@ app.use(
   })
 );
 
-
-// app.use(
-//     cors({
-//         origin: ["http://localhost:5173"],
-//         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//         credentials: true,
-//     })
-// );
-
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 app.use(cookieParser());
 app.use(express.json());

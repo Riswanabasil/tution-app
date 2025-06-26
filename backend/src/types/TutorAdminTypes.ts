@@ -1,10 +1,12 @@
+import { ObjectId } from "mongoose";
+
 export interface PaginatedTutors {
   tutors: {
     _id: string;
     name: string;
     email: string;
     status: string;
-    assignedCourse?: string | null;
+    assignedCourse?: ObjectId[] | null;
   }[];
   total: number;
   currentPage: number;

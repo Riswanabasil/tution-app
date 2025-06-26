@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { studentLogin,studentGoogleLogin } from "../services/StudentApi"
 import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
@@ -118,7 +118,14 @@ const Login = () => {
           
           />
         </div>
-
+<div className="mt-4 text-center">
+  <p className="text-sm">
+    Don't have an account?{" "}
+    <Link to="/student/register" className="text-indigo-600 hover:underline font-medium">
+      Sign up
+    </Link>
+  </p>
+</div>
       </div>
     </div>
   );
