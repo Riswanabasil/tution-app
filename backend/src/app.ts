@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import morgan from 'morgan';
-import tutorRoutes from './routes/tutor.routes'
+import tutorRoutes from './routes/TutorRoute'
 import studentRoutes from "./routes/StudentRoute";
 import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/admin.routes";
