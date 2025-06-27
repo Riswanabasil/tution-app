@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface Istudent extends Document {
+export interface IStudent extends Document {
     _id: string;
     name:string,
     email:string,
@@ -12,7 +12,7 @@ export interface Istudent extends Document {
     isVerified:boolean
 }
 
-const studentSchema= new Schema<Istudent>(
+const studentSchema= new Schema<IStudent>(
     {
         name:{type:String,required:true},
         email:{type:String,required:true,unique:true},
@@ -26,5 +26,5 @@ const studentSchema= new Schema<Istudent>(
         timestamps:true
     }
 )
-const Student= mongoose.model<Istudent>("Student",studentSchema)
+const Student= mongoose.model<IStudent>("Student",studentSchema)
 export default Student

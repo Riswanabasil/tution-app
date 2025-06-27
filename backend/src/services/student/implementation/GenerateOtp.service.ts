@@ -1,15 +1,15 @@
-import StudentOtpSchema from "../../../models/student/StudentOtpSchema";
-import { generateOtp } from "../../../utils/GenerateOtp";
-import { sendOtpEmail } from "../../../utils/SendEmail";
-export const generateAndSaveOtp = async (email: string): Promise<string> => {
-  const otp = generateOtp();
-  const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+// import StudentOtpSchema from "../../../models/student/StudentOtpSchema";
+// import { generateOtp } from "../../../utils/GenerateOtp";
+// import { sendOtpEmail } from "../../../utils/SendEmail";
+// export const generateAndSaveOtp = async (email: string): Promise<string> => {
+//   const otp = generateOtp();
+//   const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
-  await StudentOtpSchema.create({
-    email,
-    otp,
-    expiresAt,
-  });
-  await sendOtpEmail(email, otp);
-  return otp;
-};
+//   await StudentOtpSchema.create({
+//     email,
+//     otp,
+//     expiresAt,
+//   });
+//   await sendOtpEmail(email, otp);
+//   return otp;
+// };

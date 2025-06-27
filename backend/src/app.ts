@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import morgan from 'morgan';
 import tutorRoutes from './routes/tutor.routes'
-import studentRoutes from "./routes/student.routes";
+import studentRoutes from "./routes/StudentRoute";
 import cookieParser from "cookie-parser";
 import adminRoutes from "./routes/admin.routes";
 import path from "path";

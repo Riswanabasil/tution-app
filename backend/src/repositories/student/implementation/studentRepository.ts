@@ -1,13 +1,13 @@
-import Student, { Istudent } from "../../../models/student/studentSchema";
+import Student, { IStudent } from "../../../models/student/studentSchema";
 import { BaseRepository } from "../../base/BaseRepository";
-import { IstudentRepository } from "../IStudentRepository";
+import { IStudentRepository } from "../IStudentRepository";
 
-export class StudentRepository extends BaseRepository<Istudent> implements IstudentRepository {
+export class StudentRepository extends BaseRepository<IStudent> implements IStudentRepository {
   constructor() {
     super(Student);
   }
 
-  async findByEmail(email: string): Promise<Istudent | null> {
+  async findByEmail(email: string): Promise<IStudent | null> {
     return Student.findOne({ email });
   }
 
@@ -22,7 +22,7 @@ async countDocuments(filter: any): Promise<number> {
 async findMany(
   filter: any,
   options: { skip?: number; limit?: number; sort?: any }
-): Promise<Istudent[]> {
+): Promise<IStudent[]> {
   return Student.find(filter)
     .skip(options.skip || 0)
     .limit(options.limit || 0)

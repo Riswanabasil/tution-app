@@ -1,12 +1,13 @@
-import { Istudent } from "../../models/student/studentSchema";
+import { IStudent } from "../../models/student/studentSchema";
 
-export interface IstudentRepository{
-    create(student: Istudent): Promise<Istudent>;
-  findById(id: string): Promise<Istudent | null>;
-  findAll(): Promise<Istudent[]>;
-  update(id: string, data: Partial<Istudent>): Promise<Istudent | null>;
+export interface IStudentRepository{
+    create(student: Partial<IStudent>): Promise<IStudent>;
+  findById(id: string): Promise<IStudent | null>;
+  findAll(): Promise<IStudent[]>;
+  update(id: string, data: Partial<IStudent>): Promise<IStudent | null>;
   delete(id: string): Promise<boolean>;
 
  
-  findByEmail(email: string): Promise<Istudent | null>;
+  findByEmail(email: string): Promise<IStudent | null>;
+  updateIsVerified(email: string): Promise<void>
 }
