@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import tutorRoutes from './routes/TutorRoute'
 import studentRoutes from "./routes/StudentRoute";
 import cookieParser from "cookie-parser";
-import adminRoutes from "./routes/admin.routes";
+import adminRoutes from "./routes/AdminRoute";
 import path from "path";
 const app = express();
 app.use(morgan('dev'))

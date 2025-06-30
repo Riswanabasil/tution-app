@@ -20,7 +20,7 @@ tutorAxios.interceptors.response.use(
 
     const message = error?.response?.data?.message;
     if (message === "VERIFICATION_PENDING") {
-      return Promise.reject(error); // don't refresh token
+      return Promise.reject(error);
     }
     const originalRequest = error.config;
 

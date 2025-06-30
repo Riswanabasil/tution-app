@@ -13,4 +13,15 @@ export interface ITutorRepository{
         resume: string;
       },
     ): Promise<ITutor | null>
+    getAllWithFilters(
+        query: any,
+        skip: number,
+        limit: number
+      ): Promise<ITutor[]>
+      countAllWithFilters(query: any): Promise<number>
+      getTutorById(id: string): Promise<ITutor | null>
+      updateTutorStatus(
+    id: string,
+    status: "approved" | "rejected"
+  ): Promise<Boolean>
 }

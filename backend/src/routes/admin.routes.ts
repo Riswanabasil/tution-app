@@ -8,8 +8,8 @@ import { uploadCourseThumbnail } from "../middlewares/uploadCourseThumbnail";
 
 const router = express.Router();
 
-router.post("/login", loginAdmin);
-router.get('/students',adminAuthMiddleware, getAllStudentsController);
+// router.post("/login", loginAdmin);
+// router.get('/students',adminAuthMiddleware, getAllStudentsController);
 router.get("/tutors",adminAuthMiddleware, getAllTutorsController);
 router.get("/tutor/:id",adminAuthMiddleware, getTutorByIdController)
 router.patch('/tutor/:id/status',adminAuthMiddleware,updateTutorStatusController)

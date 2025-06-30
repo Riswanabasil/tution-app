@@ -3,6 +3,7 @@ import { IHasher } from "../../../interfaces/common/IHasher";
 import { ITutor } from "../../../models/tutor/TutorSchema";
 import { ITutorService } from "../ITutorService";
 import { generateAccessToken, generateRefreshToken } from "../../../utils/GenerateToken";
+import { TokenService } from "../../common/TokenService";
 
 export interface RegisterTutorResponse {
   id: string;
@@ -36,7 +37,8 @@ export interface LoginTutorResponse {
 export class TutorService implements ITutorService {
   constructor(
     private tutorRepo: ITutorRepository,
-    private hasher: IHasher
+    private hasher: IHasher,
+    private tokenService: TokenService
   ) {}
 
   async registerTutor(
@@ -117,4 +119,8 @@ export class TutorService implements ITutorService {
       }
     };
   }
+
+  async refreshAccessToken(refreshToken: string): Promise<string> {
+  return this.tokenService.verifyRefreshTokenAndGenerateAccess(refreshToken);
+}
 }

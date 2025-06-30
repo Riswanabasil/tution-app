@@ -36,6 +36,8 @@ export const updateTutorStatus = async (
   tutorId: string,
   status: "approved" | "rejected"
 ) => {
+  console.log(tutorId);
+  
   const response = await adminAxios.patch(`/admin/tutor/${tutorId}/status`, {
     status,
   });

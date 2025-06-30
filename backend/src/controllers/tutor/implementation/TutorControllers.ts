@@ -56,8 +56,6 @@ export class TutorController implements ITutorController {
         email,
         password
       );
-
-      // Set refresh token cookie
       res.cookie("refreshToken", result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -74,4 +72,21 @@ export class TutorController implements ITutorController {
       res.status(401).json({ message: error.message || "Login failed" });
     }
   }
+
+  async refreshAccessToken(req: Request, res: Response): Promise<void> {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      res.status(401).json({ message: 'No refresh token provided' });
+      return;
+    }
+
+    const newAccessToken = await this.tutorService.refreshAccessToken(refreshToken);
+
+    res.status(200).json({ accessToken: newAccessToken });
+  } catch (error: any) {
+    res.status(403).json({ message: error.message || 'Invalid refresh token' });
+  }
+}
 }
