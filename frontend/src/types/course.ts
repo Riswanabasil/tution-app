@@ -10,6 +10,7 @@ export interface ICourse {
   offer?: number;
   actualPrice?: number;
   details?: string;
+  status:string,
   createdAt?: string;
   updatedAt?: string;
 }

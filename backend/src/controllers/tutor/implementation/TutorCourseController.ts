@@ -1,0 +1,84 @@
+import { Request, Response } from "express";
+import { ITutorCourseService } from "../../../services/tutor/ITutorCourseService";
+import { AuthenticatedRequest } from "../../../types/Index";
+
+export class TutorCourseController {
+  constructor(private courseService: ITutorCourseService) {}
+
+  async createCourse(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const tutorId = req.user!.id;
+
+      const imageKey = req.body.imageKey as string | undefined;
+
+      const thumbnailUrl = imageKey
+        ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
+          encodeURIComponent(imageKey)
+        : undefined;
+      const data = {
+        ...req.body,
+        tutor: tutorId,
+        thumbnail: thumbnailUrl,
+      };
+
+      const course = await this.courseService.createCourse(data);
+      res.status(201).json(course);
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  }
+
+  async getAllCourses(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const tutorId = req.user!.id;
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const search = (req.query.search as string) || "";
+      const result = await this.courseService.getAllCourses(
+        tutorId,
+        page,
+        limit,
+        search
+      );
+      res.status(200).json(result);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  async getCourseById(req: Request, res: Response): Promise<void> {
+    try {
+      const course = await this.courseService.getCourseById(req.params.id);
+      if (!course) {
+        res.status(404).json({ message: "Course not found" });
+        return;
+      }
+      res.status(200).json(course);
+    } catch (err: any) {
+      res.status(500).json({ message: err.message });
+    }
+  }
+
+  async updateCourse(req: Request, res: Response): Promise<void> {
+    try {
+      const thumbnail = (req.file as Express.Multer.File)?.filename;
+      const data = { ...req.body, ...(thumbnail && { thumbnail }) };
+      const updated = await this.courseService.updateCourse(
+        req.params.id,
+        data
+      );
+      if (!updated) {
+        res.status(404).json({ message: "Course not found" });
+        return;
+      }
+      res.status(200).json(updated);
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  }
+  async softDeleteCourse(req: AuthenticatedRequest, res: Response) {
+    const { id } = req.params;
+    await this.courseService.softDeleteCourse(id);
+    res.status(204).end();
+  }
+}

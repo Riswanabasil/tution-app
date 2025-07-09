@@ -8,17 +8,6 @@ const AdminLayout = () => {
    const navigate = useNavigate();
    const dispatch = useDispatch<AppDispatch>();
 
-  // const handleLogout = async () => {
-  //   try {
-  //     await logoutAdmin();
-  //     localStorage.removeItem("adminAccessToken"); 
-  //     navigate("/admin"); 
-  //   } catch (error) {
-  //     console.error("Logout failed", error);
-  //   }
-  // };
-
-  
 const handleLogout = async () => {
     try {
       await dispatch(logoutAdminThunk()).unwrap();

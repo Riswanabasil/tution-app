@@ -28,10 +28,10 @@ const TutorLogin = () => {
     try {
       const res = await loginTutor(data); 
 
-      localStorage.setItem("tutorAccessToken", res.accesToken);
-      localStorage.setItem("tutorRefreshToken", res.refreshToken);
+      localStorage.setItem("tutorAccessToken", res.accessToken);
+     
 
-      navigate("/tutor/dashboard");
+      navigate("/tutor/courses");
     } catch (err: unknown) {
   const axiosError = err as AxiosError<{ message: string }>;
   const message = axiosError.response?.data?.message || "Login failed";

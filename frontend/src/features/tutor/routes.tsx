@@ -1,12 +1,16 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes} from "react-router-dom";
 import TutorRegister from "./pages/Register";
 import TutorVerificationStatus from "./pages/Verification-Status";
 import TutorLogin from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
 import TutorVerification from "./pages/Verification";
+// import CourseForm from "./pages/CourseForm";
+// import TutorCoursesPage from "./pages/TutorCoursesPage";
 import TutorLayout from "./components/TutorLayout";
+import CourseListPage from "./pages/TutorCoursesPage";
+import AddEditCoursePage from "./pages/CourseForm";
 
 const TutorRoutes = () => {
+ 
   return (
     <Routes>
       <Route path="register" element={<TutorRegister />} />
@@ -14,7 +18,9 @@ const TutorRoutes = () => {
       <Route path="verification-status" element={<TutorVerificationStatus />} />
       <Route path="login" element={<TutorLogin />} />
       <Route element={<TutorLayout />}>
-        <Route path="dashboard" element={<Dashboard />} />
+      <Route path="courses" element={<CourseListPage/>} />
+      <Route path="courses/add" element={<AddEditCoursePage />} />
+      <Route path="courses/:id/edit" element={<AddEditCoursePage />} />
       </Route>
     </Routes>
   );

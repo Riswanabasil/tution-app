@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  assignCoursesToTutor,
   fetchTutors,
   getTutorById,
   updateTutorStatus,
@@ -8,9 +7,9 @@ import {
 import type { AxiosError } from "axios";
 import Modal from "../components/Modal";
 import type { ITutor } from "../../../types/types";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchCoursesThunk } from "../../../redux/slices/courseSlice";
-import type { RootState, AppDispatch } from "../../../redux/store";
+// import { useDispatch, useSelector } from "react-redux";
+// import { fetchCoursesThunk } from "../../../redux/slices/courseSlice";
+// import type { RootState, AppDispatch } from "../../../redux/store";
 
 interface Tutor {
   _id: string;
@@ -34,14 +33,14 @@ const AdminTutorPage = () => {
   const [status, setStatus] = useState("");
   const [selectedTutor, setSelectedTutor] = useState<ITutor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
-  const [assigningTutorId, setAssigningTutorId] = useState<string | null>(null);
-  const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
+  // const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  // const [assigningTutorId, setAssigningTutorId] = useState<string | null>(null);
+  // const [selectedCourseIds, setSelectedCourseIds] = useState<string[]>([]);
   // const [allCourses, setAllCourses] = useState<Course[]>([]);
-  const dispatch = useDispatch<AppDispatch>();
-  const { courses: allCourses } = useSelector(
-    (state: RootState) => state.courses
-  );
+  // const dispatch = useDispatch<AppDispatch>();
+  // const { courses: allCourses } = useSelector(
+  //   (state: RootState) => state.courses
+  // );
   const loadTutors = useCallback(async () => {
     setLoading(true);
     try {
@@ -91,33 +90,33 @@ const AdminTutorPage = () => {
     setSelectedTutor(null);
   };
 
-  const handleOpenAssignModal = async (tutorId: string) => {
-    try {
-      const tutor = await getTutorById(tutorId);
-      setAssigningTutorId(tutorId);
-      setSelectedCourseIds(
-        Array.isArray(tutor.assignedCourses)
-          ? tutor.assignedCourses.map((course) => course._id)
-          : []
-      );
-      dispatch(fetchCoursesThunk());
-      setIsAssignModalOpen(true);
-    } catch (error) {
-      console.error("Failed to load tutor or courses", error);
-    }
-  };
+  // const handleOpenAssignModal = async (tutorId: string) => {
+  //   try {
+  //     const tutor = await getTutorById(tutorId);
+  //     setAssigningTutorId(tutorId);
+  //     setSelectedCourseIds(
+  //       Array.isArray(tutor.assignedCourses)
+  //         ? tutor.assignedCourses.map((course) => course._id)
+  //         : []
+  //     );
+  //     dispatch(fetchCoursesThunk());
+  //     setIsAssignModalOpen(true);
+  //   } catch (error) {
+  //     console.error("Failed to load tutor or courses", error);
+  //   }
+  // };
 
-  const handleAssignCourses = async () => {
-    if (!assigningTutorId) return;
+  // const handleAssignCourses = async () => {
+  //   if (!assigningTutorId) return;
 
-    try {
-      await assignCoursesToTutor(assigningTutorId, selectedCourseIds);
-      setIsAssignModalOpen(false);
-      loadTutors();
-    } catch (error) {
-      console.error("Failed to assign courses", error);
-    }
-  };
+  //   try {
+  //     await assignCoursesToTutor(assigningTutorId, selectedCourseIds);
+  //     setIsAssignModalOpen(false);
+  //     loadTutors();
+  //   } catch (error) {
+  //     console.error("Failed to assign courses", error);
+  //   }
+  // };
 
   return (
     <div className="p-6">
@@ -207,14 +206,14 @@ const AdminTutorPage = () => {
                     </button>
                   )}
 
-                  {tutor.status === "approved" && (
+                  {/* {tutor.status === "approved" && (
                     <button
                       onClick={() => handleOpenAssignModal(tutor._id)}
                       className="text-green-600 hover:underline"
                     >
                       Assign Courses
                     </button>
-                  )}
+                  )} */}
                 </td>
               </tr>
             ))
@@ -301,7 +300,7 @@ const AdminTutorPage = () => {
         )}
       </Modal>
 
-      <Modal
+      {/* <Modal
         isOpen={isAssignModalOpen}
         onClose={() => setIsAssignModalOpen(false)}
         title="Assign Courses"
@@ -332,7 +331,7 @@ const AdminTutorPage = () => {
             Save
           </button>
         </div>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

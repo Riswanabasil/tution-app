@@ -1,8 +1,7 @@
 import Tutor, { ITutor } from "../../../models/tutor/TutorSchema";
-import { ICourse } from "../../../models/CourseSchema";
+import { ICourse } from "../../../models/course/CourseSchema";
 import { ITutorRepository } from "../ITutorRepository";
 import { BaseRepository } from "../../base/BaseRepository";
-import { Types } from "mongoose";
 
 export class TutorRepository
   extends BaseRepository<ITutor>

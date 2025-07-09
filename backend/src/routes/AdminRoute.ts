@@ -9,6 +9,9 @@ import { TutorRepository } from "../repositories/tutor/implementation/TutorRepos
 import { TutorAdminService } from "../services/admin/implementation/TutorAdminService";
 import { TutorAdminController } from "../controllers/admin/TutorAdminController";
 import { TokenService } from "../services/common/TokenService";
+import { CourseRepository } from "../repositories/course/implementation/CourseRepository";
+import { AdminCourseService } from "../services/admin/implementation/CourseService";
+import { AdminCourseController } from "../controllers/admin/CourseAdminController";
 
 
 const router = express.Router();
@@ -23,7 +26,9 @@ const studentController = new StudentAdminController(studentService);
 const tutorRepo = new TutorRepository();
 const tutorService = new TutorAdminService(tutorRepo);
 const tutorController = new TutorAdminController(tutorService);
-
+const repo = new CourseRepository();
+const service = new AdminCourseService(repo);
+const controller = new AdminCourseController(service);
 
 // route
 router.post("/login",adminController.loginAdmin.bind(adminController));
@@ -38,6 +43,10 @@ router.patch("/student/:id/block",adminAuthMiddleware,studentController.blockStu
 router.get("/tutors",adminAuthMiddleware,tutorController.getAllTutors.bind(tutorController));
 router.get("/tutor/:id",adminAuthMiddleware,tutorController.getTutorById.bind(tutorController));
 router.patch("/tutor/:id/status",adminAuthMiddleware,tutorController.updateTutorStatus.bind(tutorController));
+
+//course
+router.get("/courses", controller.listAll);
+router.patch("/courses/:id/status", controller.updateStatus);
 
 
 export default router;
