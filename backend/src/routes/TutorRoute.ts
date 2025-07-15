@@ -9,7 +9,10 @@ import { CourseRepository } from "../repositories/course/implementation/CourseRe
 import { TutorCourseService } from "../services/tutor/implementation/TutorCourseService";
 import { TutorCourseController } from "../controllers/tutor/implementation/TutorCourseController";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { getUploadUrl } from "../controllers/tutor/implementation/upload.controller";
+import { getDemoUploadUrl, getUploadUrl } from "../controllers/tutor/implementation/upload.controller";
+import { ModuleRepository } from '../repositories/module/implementation/ModuleRepository';
+import { TutorModuleService } from '../services/tutor/implementation/ModuleService';
+import { ModuleController } from '../controllers/tutor/implementation/ModuleController';
 
 const router = express.Router();
 
@@ -22,6 +25,10 @@ const tutorController = new TutorController(tutorService);
 const courseRepo = new CourseRepository();
 const courseService = new TutorCourseService(courseRepo);
 const courseController = new TutorCourseController(courseService);
+const moduleRepo       = new ModuleRepository();
+const moduleService    = new TutorModuleService(moduleRepo);
+const moduleController = new ModuleController(moduleService);
+
 
 
 router.post("/register", tutorController.registerTutor.bind(tutorController));
@@ -37,5 +44,15 @@ router.get('/course/:id',courseController.getCourseById.bind(courseController));
 router.put('/course/:id',courseController.updateCourse.bind(courseController));
 router.delete('/course/:id',courseController.softDeleteCourse.bind(courseController));
 router.get("/courses/upload-url", getUploadUrl)
+router.get("/courses/demo-upload-url", getDemoUploadUrl)
+
+//Module
+
+router.get('/courses/:courseId/modules',authMiddleware, moduleController.list.bind(moduleController));
+router.post('/courses/:courseId/modules', authMiddleware, moduleController.create.bind(moduleController));
+router.put('/courses/:courseId/modules/:id', authMiddleware, moduleController.update.bind(moduleController))
+router.delete('/courses/:courseId/modules/:id', authMiddleware, moduleController.delete.bind(moduleController));
+router.get('/courses/:courseId/modules/:id', authMiddleware, moduleController.getById.bind(moduleController));
+
 
 export default router;

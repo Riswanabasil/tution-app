@@ -8,6 +8,7 @@ export interface ICourse extends Document {
   semester: number;
   tutor: mongoose.Types.ObjectId;
   thumbnail?: string;
+  demoVideoUrl?: string;
   price: number;
   offer?: number;
   actualPrice?: number;
@@ -24,6 +25,7 @@ const courseSchema = new mongoose.Schema<ICourse>({
   semester: { type: Number, required: true },
   tutor:       { type: Schema.Types.ObjectId, ref: "Tutor", required: true },
   thumbnail: { type: String },
+  demoVideoUrl: { type: String },
   price: { type: Number, required: true },
   offer: { type: Number },
   actualPrice: { type: Number },

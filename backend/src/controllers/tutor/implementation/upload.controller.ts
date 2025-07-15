@@ -28,3 +28,30 @@ export async function getUploadUrl(
     next(err);
   }
 }
+
+export async function getDemoUploadUrl(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { filename, contentType } = req.query as {
+      filename: string;
+      contentType: string;
+    };
+    const key = `videos/${Date.now()}-${filename}`;
+
+    const cmd = new PutObjectCommand({
+      Bucket: process.env.S3_BUCKET_NAME!,
+      Key: key,
+      ContentType: contentType,
+      ACL: "private",
+    });
+    const uploadUrl = await getSignedUrl(s3, cmd, { expiresIn: 900 });
+
+    res.json({ uploadUrl, key });
+  } catch (err) {
+    next(err);
+  }
+}
+

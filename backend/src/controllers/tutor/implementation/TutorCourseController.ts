@@ -10,18 +10,29 @@ export class TutorCourseController {
       const tutorId = req.user!.id;
 
       const imageKey = req.body.imageKey as string | undefined;
+      const demoKey = req.body.demoKey as string | undefined;
 
       const thumbnailUrl = imageKey
         ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
           encodeURIComponent(imageKey)
         : undefined;
+        const demoVideoUrl = demoKey
+        ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
+          encodeURIComponent(demoKey)
+        : undefined;
       const data = {
         ...req.body,
         tutor: tutorId,
         thumbnail: thumbnailUrl,
+        demoVideoUrl:demoVideoUrl
       };
 
+    
+      
+
       const course = await this.courseService.createCourse(data);
+      console.log(course);
+      
       res.status(201).json(course);
     } catch (err: any) {
       res.status(400).json({ message: err.message });

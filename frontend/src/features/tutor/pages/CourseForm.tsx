@@ -214,6 +214,7 @@ import {
   getUploadUrl,
   createCourse,
   updateCourse,
+  getDemoUploadUrl,
 } from "../services/TutorApi";
 import type { ICourse } from "../../../types/course";
 import type { CoursePayload } from "../services/TutorApi";
@@ -231,7 +232,11 @@ export default function AddEditCoursePage() {
     details: "",
   });
   const [file, setFile] = useState<File | null>(null);
+  const [demoFile, setDemoFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
+  const [previewDemoUrl, setPreviewDemoUrl] = useState<string | undefined>(
+    undefined
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -250,6 +255,9 @@ export default function AddEditCoursePage() {
         });
         if (c.thumbnail) {
           setPreviewUrl(c.thumbnail);
+        }
+        if (c.demoVideoUrl) {
+          setPreviewDemoUrl(c.demoVideoUrl);
         }
       })
       .catch((err) => setError(err.message))
@@ -278,6 +286,14 @@ export default function AddEditCoursePage() {
     setPreviewUrl(url);
   };
 
+  const handleDemoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    const f = e.target.files[0];
+    setDemoFile(f);
+    const url = URL.createObjectURL(f);
+    setPreviewDemoUrl(url);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -285,6 +301,7 @@ export default function AddEditCoursePage() {
 
     try {
       let imageKey: string | undefined;
+      let demoKey: string | undefined;
 
       if (file) {
         const { uploadUrl, key } = await getUploadUrl(file.name, file.type);
@@ -295,6 +312,19 @@ export default function AddEditCoursePage() {
         });
         imageKey = key;
       }
+
+      if (demoFile) {
+        const { uploadUrl, key } = await getDemoUploadUrl(
+          demoFile.name,
+          demoFile.type
+        );
+        await fetch(uploadUrl, {
+          method: "PUT",
+          headers: { "Content-Type": demoFile.type },
+          body: demoFile,
+        });
+        demoKey = key;
+      }
       const payload: CoursePayload = {
         title: form.title,
         code: form.code,
@@ -304,6 +334,7 @@ export default function AddEditCoursePage() {
         actualPrice: form.actualPrice ? Number(form.actualPrice) : undefined,
         details: form.details || undefined,
         imageKey,
+        demoKey,
       };
 
       if (id) {
@@ -402,6 +433,17 @@ export default function AddEditCoursePage() {
               />
             )}
           </div>
+          <div>
+            <label className="block mb-1">Demo:</label>
+            <input type="file" accept="video/*" onChange={handleDemoFile} />
+            {previewDemoUrl && (
+              <video
+                src={previewDemoUrl}
+                controls
+                className="mt-2 max-w-xs border"
+              />
+            )}
+          </div>
 
           <button
             type="submit"
@@ -417,12 +459,12 @@ export default function AddEditCoursePage() {
               : "Create Course"}
           </button>
           <button
-          type="button"
-            onClick={() => navigate('/tutor/courses')}
-             className="bg-gray-300 px-4 py-2 rounded"
-           >
-             Cancel
-           </button>
+            type="button"
+            onClick={() => navigate("/tutor/courses")}
+            className="bg-gray-300 px-4 py-2 rounded"
+          >
+            Cancel
+          </button>
         </form>
       )}
     </div>

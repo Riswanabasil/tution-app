@@ -3,7 +3,11 @@ import { ICourseRepository, IPaginateOptions } from "../ICourseRepository";
 
 export class CourseRepository implements ICourseRepository {
   async create(data: Partial<ICourse>): Promise<ICourse> {
+    console.log(data);
+    
     const created = await Course.create(data);
+    console.log(created);
+    
     return created;
   }
 

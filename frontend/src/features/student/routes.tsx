@@ -1,9 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import VerifyOtp from "./pages/VerifyOtp";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CourseGridPage from "./pages/Dashboard";
+import CourseDetailPage from "./pages/CourseDetailPage";
+import StudentLayout from "./components/StudentLayout";
+import MyCoursesPage from "./pages/MyCourses";
+import MyCourseDetail from "./pages/MyCourseDetail";
+
 
 const StudentRoutes = () => {
   return (
@@ -12,7 +17,12 @@ const StudentRoutes = () => {
       <Route path="verify-otp" element={<VerifyOtp />} />
       <Route path="login" element={<Login />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route element={<StudentLayout />}>
+      <Route path="dashboard"    element={<CourseGridPage />} />
+      <Route path="courses/:id"  element={<CourseDetailPage />} />
+      <Route path="mycourse"  element={<MyCoursesPage />} />
+      <Route path='purchased-course/:id' element={<MyCourseDetail/>}/>
+    </Route>
       </Route>
     </Routes>
   );

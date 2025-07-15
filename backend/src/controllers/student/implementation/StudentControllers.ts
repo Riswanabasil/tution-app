@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { StudentService } from "../../../services/student/implementation/StudentService";
 import { IStudentController } from "../IStudentController";
 import { AuthenticatedRequest } from "../../../types/Index";
-import { IStudentOtpRepository } from "../../../repositories/student/IStudentOtpRepository";
 import { IOtpService } from "../../../services/student/IOtpService";
 
 export class StudentController implements IStudentController {
