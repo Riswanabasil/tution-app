@@ -25,4 +25,12 @@ export class EnrollmentRepository implements IEnrollmentRepository {
       .populate<{ course: any }>("courseId","title thumbnail price")  
       .exec();
   }
+
+   async countPaidByUser(userId: string): Promise<number> {
+    return EnrollmentModel
+      .countDocuments({ userId, status: "paid" })
+      .exec();
+  }
+
+  
 }

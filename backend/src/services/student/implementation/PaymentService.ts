@@ -77,4 +77,23 @@ export class PaymentService {
       enrolledAt: e.createdAt,
     }));
   }
+
+   async getStats(userId: string) {
+    const totalEnrolled = await this.repo.countPaidByUser(userId);
+    return { totalEnrolled };
+  }
+
+  async getPaymentHistory(userId: string) {
+    // 1) fetch all paid enrollments (with course populated)
+    const enrollments = await this.repo.findPaidByUser(userId);
+
+    // 2) map to the fields your UI needs
+    return enrollments.map(e => ({
+      courseId:   (e.courseId as any)._id.toString(),
+      title:      (e.courseId as any).title,
+      thumbnail:  (e.courseId as any).thumbnail,
+      amount:     e.amount,
+      paidAt:     ( e.createdAt).toISOString(),
+    }));
+  }
 }

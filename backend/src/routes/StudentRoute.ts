@@ -16,6 +16,8 @@ import { TutorRepository } from "../repositories/tutor/implementation/TutorRepos
 import { EnrollmentRepository } from "../repositories/payment/implementation/EnrollmentRepository";
 import { PaymentService } from "../services/student/implementation/PaymentService";
 import { PaymentController } from "../controllers/student/implementation/PaymentController";
+import { getUploadUrl } from "../controllers/student/implementation/Upload.controller";
+
 
 
 const router = express.Router();
@@ -27,7 +29,8 @@ const otpService = new OtpService();
 const tokenService = new TokenService();
 const studentOtpRepository= new StudentOtpRepository()
 const studentOtpService= new StudentOtpService(studentOtpRepository,studentRepo)
-const studentService = new StudentService(studentRepo, hasher, otpService, tokenService);
+const enrollRepository= new EnrollmentRepository()
+const studentService = new StudentService(studentRepo, hasher, otpService, tokenService,enrollRepository);
 const studentController = new StudentController(studentService,studentOtpService);
 const moduleRepo=new ModuleRepository()
 const tutorRepo=new TutorRepository()
@@ -46,6 +49,12 @@ router.post('/login', studentController.loginStudent.bind(studentController));
 router.get('/refresh-token', studentController.refreshAccessToken.bind(studentController))
 router.post('/google-login', studentController.googleLoginStudent.bind(studentController) )
 
+//profile
+
+router.get(  "/profile", authMiddleware, studentController.getProfile.bind(studentController));
+router.put(  "/profile", authMiddleware, studentController.updateProfile.bind(studentController));
+router.put(  "/profile/password", authMiddleware, studentController.changePassword.bind(studentController));
+router.get("/profile/upload-url", getUploadUrl)
 //course
 
 router.get("/courses",authMiddleware,courseController.list.bind(courseController));
@@ -57,9 +66,14 @@ router.get('/courses/:courseId',authMiddleware,courseController.getCourseDetails
 router.post("/payments/order",authMiddleware,paymentController.createOrder.bind(paymentController));
 router.post("/payments/verify",authMiddleware,paymentController.verifyPayment.bind(paymentController));
 router.post("/payments/cancel", authMiddleware,paymentController.cancelPayment.bind(paymentController))
+router.get( "/stats",   authMiddleware, paymentController.getStats.bind(paymentController));
+router.get( "/history", authMiddleware, paymentController.getHistory.bind(paymentController));
 
 //paid Course
 
 router.get(
   "/mycourses",authMiddleware,paymentController.getMyCourses.bind(paymentController));
+
+
+
 export default router;
