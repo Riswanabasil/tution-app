@@ -13,11 +13,13 @@ export interface StatsDTO {
 }
 
 export interface PaymentHistoryDTO {
+  enrollmentId:string
   courseId:   string;
   title:      string;
   thumbnail:  string;
   amount:     number;
   paidAt:     string;
+  status:string
 }
 
 export interface UploadUrlDTO {

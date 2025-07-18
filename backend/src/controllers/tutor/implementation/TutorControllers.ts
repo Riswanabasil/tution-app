@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { TutorService, RegisterTutorResponse, TutorVerificationInput, LoginTutorResponse } from "../../../services/tutor/implementation/TutorService";
 import { ITutorController } from "../ITutorController";
+import { AuthenticatedRequest } from "../../../types/Index";
 
 export class TutorController implements ITutorController {
   constructor(private tutorService: TutorService) {}
@@ -89,4 +90,48 @@ export class TutorController implements ITutorController {
     res.status(403).json({ message: error.message || 'Invalid refresh token' });
   }
 }
+
+//profile
+
+ async getProfile(req: AuthenticatedRequest, res: Response) {
+  const tutorId= req.user!.id
+    const data = await this.tutorService.getProfile(tutorId);
+    res.json({ data });
+  }
+
+  async updateProfile(req: AuthenticatedRequest, res: Response) {
+    const tutorId= req.user!.id
+    
+    const profileKey = req.body.profilePicKey as string | undefined;
+    
+          const profileilUrl =profileKey
+            ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
+              encodeURIComponent(profileKey)
+            : undefined;
+          const updates = {
+            ...req.body,
+           profilePic:profileilUrl
+          };
+    const data = await this.tutorService.updateProfile(tutorId, updates);
+    res.json({ data });
+  }
+
+  async changePassword(req: AuthenticatedRequest, res: Response) {
+      const tutorId= req.user!.id
+    const { currentPassword, newPassword } = req.body;
+    await this.tutorService.changePassword(tutorId, currentPassword, newPassword);
+    res.json({ message: "Password updated" });
+  }
+
+  async getStats(req: AuthenticatedRequest, res: Response) {
+      const tutorId= req.user!.id
+    const data = await this.tutorService.getStats(tutorId);
+    res.json({ data });
+  }
+
+  async getMyCourses(req: AuthenticatedRequest, res: Response) {
+      const tutorId= req.user!.id
+    const data = await this.tutorService.getMyCourses(tutorId);
+    res.json({ data });
+  }
 }

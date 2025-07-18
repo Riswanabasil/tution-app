@@ -38,7 +38,7 @@ const courseRepo= new CourseRepository()
 const courseService=new StudentCourseService(courseRepo,moduleRepo,tutorRepo)
 const courseController= new StudentCourseController(courseService)
 const paymentRepo=new EnrollmentRepository()
-const paymentService= new PaymentService(paymentRepo)
+const paymentService= new PaymentService(paymentRepo,tutorRepo,courseRepo)
 const paymentController= new PaymentController(paymentService)
 
 // Route
@@ -68,6 +68,7 @@ router.post("/payments/verify",authMiddleware,paymentController.verifyPayment.bi
 router.post("/payments/cancel", authMiddleware,paymentController.cancelPayment.bind(paymentController))
 router.get( "/stats",   authMiddleware, paymentController.getStats.bind(paymentController));
 router.get( "/history", authMiddleware, paymentController.getHistory.bind(paymentController));
+router.post("/payments/retry",authMiddleware,paymentController.retryOrder.bind(paymentController))
 
 //paid Course
 

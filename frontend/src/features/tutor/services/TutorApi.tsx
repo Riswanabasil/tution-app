@@ -35,8 +35,8 @@ export interface CoursePayload {
   offer?: number;
   actualPrice?: number;
   details?: string;
-  imageKey?: string; 
-  demoKey?:string;
+  imageKey?: string;
+  demoKey?: string;
 }
 
 export const registerTutor = async (data: TutorSignupData) => {
@@ -44,7 +44,9 @@ export const registerTutor = async (data: TutorSignupData) => {
   return res.data;
 };
 
-export const submitTutorVerification = async (payload: TutorVerificationPayload) => {
+export const submitTutorVerification = async (
+  payload: TutorVerificationPayload
+) => {
   const formData = new FormData();
   formData.append("tutorId", payload.tutorId);
   formData.append("summary", payload.summary);
@@ -59,7 +61,7 @@ export const submitTutorVerification = async (payload: TutorVerificationPayload)
 
 export const loginTutor = async (data: LoginPayload) => {
   const res = await axios.post("/tutor/login", data);
-  
+
   return res.data;
 };
 
@@ -69,7 +71,9 @@ export const getCourses = async (
   search = ""
 ): Promise<PaginatedCourses> => {
   const res = await axios.get<PaginatedCourses>(
-    `/tutor/courses?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
+    `/tutor/courses?page=${page}&limit=${limit}&search=${encodeURIComponent(
+      search
+    )}`
   );
   return res.data;
 };
@@ -91,7 +95,7 @@ export const getUploadUrl = async (
   return res.data;
 };
 
-export const getDemoUploadUrl=async (
+export const getDemoUploadUrl = async (
   filename: string,
   contentType: string
 ): Promise<{ uploadUrl: string; key: string }> => {
@@ -103,8 +107,10 @@ export const getDemoUploadUrl=async (
 };
 
 // create new course
-export const createCourse = async (payload: CoursePayload): Promise<ICourse> => {
-  const res = await axios.post<ICourse>('/tutor/course', payload);
+export const createCourse = async (
+  payload: CoursePayload
+): Promise<ICourse> => {
+  const res = await axios.post<ICourse>("/tutor/course", payload);
   return res.data;
 };
 
@@ -119,4 +125,72 @@ export const updateCourse = async (
 
 export const deleteCourse = async (id: string): Promise<void> => {
   await axios.delete(`/tutor/course/${id}`);
+};
+
+//profile
+
+export interface VerificationDetails {
+  summary:    string;
+  education:  string;
+  experience: string;
+  idProof:    string;
+  resume:     string;
+}
+
+export interface TutorProfileDTO {
+  name: string;
+  email: string;
+  phone?: string;
+  profilePic: string;
+  createdAt: string;
+  verificationDetails?: VerificationDetails
+}
+
+export interface TutorStatsDTO {
+  courseCount: number;
+  studentCount: number;
+}
+
+export interface TutorCourseDTO {
+  _id: string;
+  title: string;
+  status: string;
+  studentCount: number;
+}
+
+export const getTutorProfile = () =>
+  axios
+    .get<{ data: TutorProfileDTO }>("/tutor/profile")
+    .then((r) => r.data.data);
+
+export const updateTutorProfile = (payload: Partial<TutorProfileDTO>) =>
+  axios
+    .put<{ data: TutorProfileDTO }>("/tutor/profile", payload)
+    .then((r) => r.data.data);
+
+export const changeTutorPassword = (current: string, next: string) =>
+  axios.put("/tutor/profile/password", {
+    currentPassword: current,
+    newPassword: next,
+  });
+
+export const getTutorStats = () =>
+  axios
+    .get<{ data: TutorStatsDTO }>("/tutor/profile/stats")
+    .then((r) => r.data.data);
+
+export const getTutorCourses = () =>
+  axios
+    .get<{ data: TutorCourseDTO[] }>("/tutor/profile/courses")
+    .then((r) => r.data.data);
+
+export const getAvatarUploadUrl = async (
+  filename: string,
+  contentType: string
+): Promise<{ uploadUrl: string; key: string }> => {
+  const res = await axios.get<{ uploadUrl: string; key: string }>(
+    `/tutor/profile/upload-url`,
+    { params: { filename, contentType } }
+  );
+  return res.data;
 };

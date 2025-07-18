@@ -15,23 +15,6 @@ export default function CourseGridPage() {
   const [loading, setLoading]       = useState(false);
   const navigate = useNavigate();
 
-  // const load = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const { courses, currentPage, totalPages } = await getApprovedCourses(
-  //       page,
-  //       limit,
-  //       search
-  //     );
-  //     setCourses(courses);
-  //     setPage(currentPage);
-  //     setTotalPages(totalPages);
-  //   } catch (err) {
-  //     console.error(err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const load = async () => {
     setLoading(true);
     try {
@@ -88,11 +71,7 @@ export default function CourseGridPage() {
         <p className="text-gray-600">No courses available yet.</p>
       ) : (
         <>
-          {/* <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {courses.map(c => (
-              <CourseCard key={c._id} course={c} onExplore={handleExplore} />
-            ))}
-          </div> */}
+  
 
            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {courses.map((c) => {

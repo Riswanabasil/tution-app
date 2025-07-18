@@ -92,4 +92,25 @@ async getMyCourses(req: AuthenticatedRequest, res: Response) {
     res.status(500).json({ message: err.message });
   }
 }
+async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { enrollmentId } = req.body;
+      if (!enrollmentId) {
+        res.status(400).json({ message: "Missing enrollmentId" });
+        return;    
+      }
+
+      const payload = await this.paymentService.retryOrder(enrollmentId);
+      res.json({ data: payload });
+      return;  
+
+    } catch (err: any) {
+      console.error("❌ retryOrder error:", err);
+       res
+        .status(400)
+        .json({ message: err.message || "Unknown error in retryOrder" });
+      return;
+    }
+  }
+  
 }

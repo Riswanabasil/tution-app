@@ -9,7 +9,7 @@ import { CourseRepository } from "../repositories/course/implementation/CourseRe
 import { TutorCourseService } from "../services/tutor/implementation/TutorCourseService";
 import { TutorCourseController } from "../controllers/tutor/implementation/TutorCourseController";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { getDemoUploadUrl, getUploadUrl } from "../controllers/tutor/implementation/upload.controller";
+import { getDemoUploadUrl, getProfileUploadUrl, getUploadUrl } from "../controllers/tutor/implementation/upload.controller";
 import { ModuleRepository } from '../repositories/module/implementation/ModuleRepository';
 import { TutorModuleService } from '../services/tutor/implementation/ModuleService';
 import { ModuleController } from '../controllers/tutor/implementation/ModuleController';
@@ -35,6 +35,15 @@ router.post("/register", tutorController.registerTutor.bind(tutorController));
 router.post("/submit-verification",uploadTutorDocs,tutorController.submitTutorVerification.bind(tutorController));
 router.post("/login",tutorController.loginTutor.bind(tutorController));
 router.get('/refresh-token', tutorController.refreshAccessToken.bind(tutorController))
+
+//profile
+
+router.get(  "/profile", authMiddleware,tutorController.getProfile.bind(tutorController));
+router.put(  "/profile", authMiddleware,tutorController.updateProfile.bind(tutorController));
+router.put(  "/profile/password", authMiddleware,tutorController.changePassword.bind(tutorController));
+router.get(  "/profile/stats", authMiddleware,tutorController.getStats.bind(tutorController));
+router.get(  "/profile/courses",authMiddleware,tutorController.getMyCourses.bind(tutorController));
+router.get("/profile/upload-url",getProfileUploadUrl )
 
 //course
 

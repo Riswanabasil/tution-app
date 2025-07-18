@@ -1,4 +1,5 @@
 
+import { Types } from "mongoose";
 import { ICourse } from "../../models/course/CourseSchema";
 
 export interface IPaginateOptions {
@@ -9,7 +10,7 @@ export interface IPaginateOptions {
 
 export interface ICourseRepository {
   create(data: Partial<ICourse>): Promise<ICourse>;
-  findById(id: string): Promise<ICourse | null>;
+  findById(id:Types.ObjectId | string): Promise<ICourse | null>;
   findMany(
     filter: any,
     options: IPaginateOptions
