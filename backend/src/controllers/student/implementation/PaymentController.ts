@@ -76,4 +76,41 @@ async getMyCourses(req: AuthenticatedRequest, res: Response) {
       res.status(500).json({ message: err.message || "Server error" });
     }
   }
+
+   async getStats(req: AuthenticatedRequest, res: Response) {
+    const userId = req.user!.id;
+    const stats = await this.paymentService.getStats(userId);
+    res.json({ data: stats });
+  }
+
+  async getHistory(req: AuthenticatedRequest, res: Response) {
+  try {
+    const userId = req.user!.id;
+    const list = await this.paymentService.getPaymentHistory(userId);
+    res.json({ data: list });
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
+async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { enrollmentId } = req.body;
+      if (!enrollmentId) {
+        res.status(400).json({ message: "Missing enrollmentId" });
+        return;    
+      }
+
+      const payload = await this.paymentService.retryOrder(enrollmentId);
+      res.json({ data: payload });
+      return;  
+
+    } catch (err: any) {
+      console.error("❌ retryOrder error:", err);
+       res
+        .status(400)
+        .json({ message: err.message || "Unknown error in retryOrder" });
+      return;
+    }
+  }
+  
 }

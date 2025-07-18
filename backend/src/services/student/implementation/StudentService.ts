@@ -6,13 +6,16 @@ import { OtpService } from "../../common/OtpService";
 import { TokenService } from "../../common/TokenService";
 import { IStudentService } from "../IStudentService";
 import { generateAccessToken, generateRefreshToken } from "../../../utils/GenerateToken";
+import { IEnrollmentRepository } from "../../../repositories/payment/IEnrollmentRepository";
+import bcrypt from "bcrypt"
 
 export class StudentService implements IStudentService {
   constructor(
     private studentRepo: IStudentRepository,
     private hasher: IHasher,
     private otpService: OtpService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+     private enrollRepo: IEnrollmentRepository
   ) {}
 
   async registerStudentService(
@@ -142,4 +145,51 @@ async googleLoginStudentService(idToken: string): Promise<{
   };
 }
 
+ async getProfile(userId: string) {
+    const student = await this.studentRepo.findById(userId);
+    if (!student) throw new Error("Student not found");
+    return student;
+  }
+
+  /** Update phone or profilePic */
+  // async updateProfile(
+  //   userId: string,
+  //   updates: Partial<{ phone: string; profilePic: string }>
+  // ) {
+  //   const updated = await this.studentRepo.updateById(userId, updates);
+  //   if (!updated) throw new Error("Failed to update profile");
+  //   return updated;
+  // }
+
+  /** Verify currentPassword, then change to newPassword */
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string
+  ) {
+    const student = await this.studentRepo.findById(userId);
+    if (!student) throw new Error("Student not found");
+
+    const match = await bcrypt.compare(currentPassword, (student as any).password);
+    if (!match) throw new Error("Current password is incorrect");
+
+    const hash = await bcrypt.hash(newPassword, 10);
+    await this.studentRepo.changePassword(userId, hash);
+  }
+
+ async updateProfile(
+    userId: string,
+    updates: { phone?: string; profilePicKey?: string }
+  ) {
+    let finalPic: string | undefined;
+    if (updates.profilePicKey) {
+      finalPic = `https://${process.env.S3_BUCKET_NAME!}.s3.amazonaws.com/`+encodeURIComponent(updates.profilePicKey);
+    }
+    const toSave: any = { ...(updates.phone && { phone: updates.phone }) };
+    if (finalPic) toSave.profilePic = finalPic;
+
+    const updated = await this.studentRepo.updateById(userId, toSave);
+    if (!updated) throw new Error("Failed to update profile");
+    return updated;
+  }
 }

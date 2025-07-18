@@ -126,4 +126,39 @@ async googleLoginStudent(req: Request, res: Response): Promise<void> {
     res.status(401).json({ message: error.message || 'Google login failed' });
   }
 }
+
+async getProfile(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const data = await this.studentService.getProfile(userId);
+      res.json({ data });
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  }
+
+  async updateProfile(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const data = await this.studentService.updateProfile(userId, req.body);
+      res.json({ data });
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  }
+
+  async changePassword(req:AuthenticatedRequest, res: Response) {
+    try {
+      const userId = req.user!.id;
+      const { currentPassword, newPassword } = req.body;
+      await this.studentService.changePassword(
+        userId,
+        currentPassword,
+        newPassword
+      );
+      res.json({ message: "Password updated" });
+    } catch (err: any) {
+      res.status(400).json({ message: err.message });
+    }
+  }
 }

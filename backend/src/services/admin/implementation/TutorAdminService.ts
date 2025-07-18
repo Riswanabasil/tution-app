@@ -30,7 +30,7 @@ export class TutorAdminService implements ITutorAdminService {
       name: t.name,
       email: t.email,
       status: t.status,
-      assignedCourses: t.assignedCourses.map(id => id.toString())
+      // assignedCourses: t.assignedCourses.map(id => id.toString())
     }));
 
     return {
@@ -52,7 +52,7 @@ export class TutorAdminService implements ITutorAdminService {
       phone: t.phone,
       isGoogleSignup: t.isGoogleSignup,
       status: t.status,
-      assignedCourses: t.assignedCourses.map(id => id.toString()),
+      // assignedCourses: t.assignedCourses.map(id => id.toString()),
       verificationDetails: t.verificationDetails
     };
   }

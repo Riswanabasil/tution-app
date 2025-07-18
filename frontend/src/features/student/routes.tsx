@@ -8,6 +8,7 @@ import CourseDetailPage from "./pages/CourseDetailPage";
 import StudentLayout from "./components/StudentLayout";
 import MyCoursesPage from "./pages/MyCourses";
 import MyCourseDetail from "./pages/MyCourseDetail";
+import ProfilePage from "./pages/ProfilePage";
 
 
 const StudentRoutes = () => {
@@ -22,6 +23,7 @@ const StudentRoutes = () => {
       <Route path="courses/:id"  element={<CourseDetailPage />} />
       <Route path="mycourse"  element={<MyCoursesPage />} />
       <Route path='purchased-course/:id' element={<MyCourseDetail/>}/>
+      <Route path="profile"  element={<ProfilePage />} />
     </Route>
       </Route>
     </Routes>

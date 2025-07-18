@@ -6,7 +6,7 @@ export interface PagedTutors {
     name: string;
     email: string;
     status: string;
-    assignedCourses: string[];
+    // assignedCourses: string[];
   }>;
   total: number;
   currentPage: number;
@@ -20,7 +20,7 @@ export interface TutorDetails {
   phone: string;
   isGoogleSignup: boolean;
   status: string;
-  assignedCourses: string[];
+  // assignedCourses: string[];
   verificationDetails?: {
     summary: string;
     education: string;

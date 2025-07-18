@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { submitTutorVerification } from "../services/TutorApi";
+import type { AxiosError } from "axios";
 
 type FormInputs = {
   fullName: string;
@@ -60,9 +61,10 @@ const TutorVerification = () => {
     //   localStorage.removeItem("pendingTutorEmail");
     //   localStorage.removeItem("pendingTutorName");
       navigate("/tutor/verification-status");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message: string }>;
       console.error(error);
-      setErrorMsg(error?.response?.data?.message || "Submission failed");
+      setErrorMsg(axiosError?.response?.data?.message || "Submission failed");
     }
   };
 

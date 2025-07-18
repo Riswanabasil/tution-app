@@ -6,10 +6,12 @@ export interface ITutor extends Document{
     email:string,
     phone:string,
     password:string,
+    profilePic: string;
     isGoogleSignup:boolean,
     status:'pending'|'verification-submitted'|'approved'|'rejected',
     role:'tutor',
-     assignedCourses: Types.ObjectId[]
+    walletBalance:number;
+    //  assignedCourses: Types.ObjectId[]
     verificationDetails?:{
     summary: string;
     education: string;
@@ -25,10 +27,16 @@ const tutorSchema= new Schema<ITutor>({
     email:{type:String,required:true},
     phone:{type:String},
     password:{type:String},
+    profilePic: {
+      type: String,
+      default:
+        "https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg",
+    },
     isGoogleSignup:{type:Boolean,default:false},
     status:{type:String,enum:['pending','verification-submitted','approved','rejected'],default:'pending'},
     role:{type:String,default:'tutor'},
-    assignedCourses:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
+     walletBalance: { type: Number, default: 0 },
+    // assignedCourses:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
      verificationDetails: {
     summary: String,
     education: String,

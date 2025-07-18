@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Course, ICourse } from "../../../models/course/CourseSchema";
 import { ICourseRepository, IPaginateOptions } from "../ICourseRepository";
 
@@ -11,7 +12,7 @@ export class CourseRepository implements ICourseRepository {
     return created;
   }
 
-  async findById(id: string): Promise<ICourse | null> {
+  async findById(id:Types.ObjectId | string): Promise<ICourse | null> {
     return Course.findById(id).exec();
   }
 

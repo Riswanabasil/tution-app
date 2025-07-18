@@ -14,4 +14,12 @@ export interface IStudentRepository {
   findByEmail(email: string): Promise<IStudent | null>;
   updateIsVerified(email: string): Promise<void>;
   updateBlockStatus(id: string, isBlocked: boolean): Promise<void>;
+  updateById(
+    id: string,
+    updates: Partial<Pick<IStudent, "phone" | "profilePic">>
+  ): Promise<IStudent | null>;
+  changePassword(
+    id: string,
+    newHashedPassword: string
+  ): Promise<IStudent | null>;
 }
