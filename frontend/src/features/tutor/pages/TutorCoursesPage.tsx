@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   getCourses,
-  deleteCourse
+  deleteCourse,
+  reapplyCourse
 } from '../services/TutorApi';
 import type { ICourse } from '../../../types/course';
 import { toast } from 'react-toastify';
 
 import Swal from 'sweetalert2';
+import type { AxiosError } from 'axios';
 
 
 export default function CourseListPage() {
@@ -53,6 +55,18 @@ const onDelete = async (id: string) => {
     load();
   }
 }
+
+const handleReapply = async (courseId: string) => {
+  try {
+    const updated = await reapplyCourse(courseId);
+    setCourses(cs => cs.map(c => (c._id === courseId ? updated : c)));
+    toast.success("Re-applied successfully! Status set to pending.");
+  } catch (err:unknown) {
+    const axiosError = err as AxiosError<{ message: string }>;
+    const message = axiosError.response?.data.message || "Failed to re-apply. Please try again.";
+    toast.error(message);
+  }
+};
 
   return (
     <div className="p-6 space-y-4">
@@ -121,7 +135,7 @@ const onDelete = async (id: string) => {
                     </button>
 
                     {/* Manage Content / Awaiting */}
-                    {c.status === 'approved' ? (
+                    {/* {c.status === 'approved' ? (
                       <Link
                         to={`/tutor/courses/${c._id}/content`}
                         className="text-green-600 hover:underline text-sm"
@@ -132,7 +146,25 @@ const onDelete = async (id: string) => {
                       <span className="text-gray-500 text-sm">
                         Awaiting approval
                       </span>
-                    )}
+                    )} */}
+
+                    {c.status === 'approved' ? (
+  <Link
+    to={`/tutor/courses/${c._id}/content`}
+    className="text-green-600 hover:underline text-sm"
+  >
+    Manage Content
+  </Link>
+) : c.status === 'rejected' ? (
+  <button
+     onClick={() => handleReapply(c._id)}
+    className="text-red-600 hover:underline text-sm"
+  >
+    Re-apply
+  </button>
+) : (
+  <span className="text-gray-500 text-sm">Awaiting approval</span>
+)}
                   </td>
                 </tr>
               ))}

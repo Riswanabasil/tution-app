@@ -123,6 +123,11 @@ export const updateCourse = async (
   return res.data;
 };
 
+export async function reapplyCourse(courseId: string): Promise<ICourse> {
+  const res = await axios.patch(`/tutor/courses/${courseId}/reapply`);
+  return res.data;
+}
+
 export const deleteCourse = async (id: string): Promise<void> => {
   await axios.delete(`/tutor/course/${id}`);
 };
@@ -144,6 +149,7 @@ export interface TutorProfileDTO {
   profilePic: string;
   createdAt: string;
   verificationDetails?: VerificationDetails
+  walletBalance:number
 }
 
 export interface TutorStatsDTO {

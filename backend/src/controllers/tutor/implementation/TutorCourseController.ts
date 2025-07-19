@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { ITutorCourseService } from "../../../services/tutor/ITutorCourseService";
 import { AuthenticatedRequest } from "../../../types/Index";
+import { ICourse } from "../../../models/course/CourseSchema";
 
 export class TutorCourseController {
   constructor(private courseService: ITutorCourseService) {}
@@ -16,7 +17,7 @@ export class TutorCourseController {
         ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
           encodeURIComponent(imageKey)
         : undefined;
-        const demoVideoUrl = demoKey
+      const demoVideoUrl = demoKey
         ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
           encodeURIComponent(demoKey)
         : undefined;
@@ -24,15 +25,12 @@ export class TutorCourseController {
         ...req.body,
         tutor: tutorId,
         thumbnail: thumbnailUrl,
-        demoVideoUrl:demoVideoUrl
+        demoVideoUrl: demoVideoUrl,
       };
-
-    
-      
 
       const course = await this.courseService.createCourse(data);
       console.log(course);
-      
+
       res.status(201).json(course);
     } catch (err: any) {
       res.status(400).json({ message: err.message });
@@ -87,6 +85,17 @@ export class TutorCourseController {
       res.status(400).json({ message: err.message });
     }
   }
+
+  async reapplyCourse(req: AuthenticatedRequest, res: Response): Promise<void> {
+  try {
+    const courseId = req.params.id;
+    const tutorId = req.user!.id; 
+    const updated = await this.courseService.reapply(courseId, tutorId);
+    res.status(200).json(updated);
+  } catch (error: any) {
+    res.status(400).json({ message: error.message });
+  }
+}
   async softDeleteCourse(req: AuthenticatedRequest, res: Response) {
     const { id } = req.params;
     await this.courseService.softDeleteCourse(id);

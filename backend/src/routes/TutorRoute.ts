@@ -54,6 +54,7 @@ router.put('/course/:id',courseController.updateCourse.bind(courseController));
 router.delete('/course/:id',courseController.softDeleteCourse.bind(courseController));
 router.get("/courses/upload-url", getUploadUrl)
 router.get("/courses/demo-upload-url", getDemoUploadUrl)
+router.patch("/courses/:id/reapply",authMiddleware, courseController.reapplyCourse.bind(courseController));
 
 //Module
 

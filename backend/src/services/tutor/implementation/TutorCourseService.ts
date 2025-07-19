@@ -51,4 +51,12 @@ export class TutorCourseService implements ITutorCourseService {
   return this.courseRepo.softDelete(id);
 }
 
+async reapply(courseId: string, tutorId: string): Promise<ICourse> {
+  const course = await this.courseRepo.findById(courseId);
+  if (!course) throw new Error("Course not found");
+  if (course.tutor.toString() !== tutorId) throw new Error("Unauthorized");
+  course.status = "pending";
+  return await course.save();
+}
+
 }

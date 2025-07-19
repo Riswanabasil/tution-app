@@ -27,3 +27,21 @@ export const sendOtpEmail = async (to: string, otp: string) => {
   await transporter.sendMail(mailOptions);
   
 };
+
+export const sendCourseStatusEmail = async (
+  to: string,
+  courseTitle: string,
+  status: 'approved' | 'rejected' | 'pending'
+) => {
+  const mailOptions = {
+    from: `"Tuition App" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: `Course "${courseTitle}" is now ${status.toUpperCase()}`,
+    html: `
+      <h3>Course Status Update</h3>
+      <p>Your course <strong>${courseTitle}</strong> has been <b>${status.toUpperCase()}</b>.</p>
+      <p>If you have questions, please contact support.</p>
+    `,
+  }
+  await transporter.sendMail(mailOptions);
+}

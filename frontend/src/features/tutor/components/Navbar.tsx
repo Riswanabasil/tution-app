@@ -20,6 +20,9 @@ const Navbar = () => {
         <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-semibold">
           T
         </div>
+        <Link to="/tutor/courses" className="hover:text-green-600">
+          Mycourse
+        </Link>
         <Link to="/tutor/profile" className="hover:text-green-600">
           Profile
         </Link>

@@ -21,5 +21,6 @@ export interface ITutorCourseService {
   // deleteCourse(id: string): Promise<void>;
 
   softDeleteCourse(id: string): Promise<void>
+  reapply(courseId: string, tutorId: string): Promise<ICourse>
 }
 

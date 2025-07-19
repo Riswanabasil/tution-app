@@ -241,6 +241,7 @@
 
 
 import { useCallback, useEffect, useState } from "react";
+import { User, Pencil, Lock, BookOpen, CreditCard, Check, AlertTriangle, X, UploadCloud, Camera } from 'lucide-react';
 import Swal from "sweetalert2";
 import {
   getProfile,
@@ -251,71 +252,9 @@ import {
   changePassword,
 } from "../services/StudentApi";
 import type { ProfileDTO, StatsDTO, PaymentHistoryDTO } from "../services/StudentApi";
-// import { ProfileCard } from "../components/ProfileCard";
+
 import { PaymentButton } from "../components/PaymentButton";
 import type { AxiosError } from "axios";
-
-// Simple icons as SVG components (to replace Lucide)
-const UserIcon = () => (
-  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-  </svg>
-);
-
-const EditIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-  </svg>
-);
-
-const LockIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-  </svg>
-);
-
-const BookIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-  </svg>
-);
-
-const CreditCardIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-  </svg>
-);
-
-const CheckIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-  </svg>
-);
-
-const AlertIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-  </svg>
-);
-
-const XIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-  </svg>
-);
-
-const UploadIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-  </svg>
-);
-
-const CameraIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
@@ -416,9 +355,9 @@ export default function ProfilePage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "completed":
-        return <CheckIcon />;
+        return <Check />;
       case "failed":
-        return <AlertIcon />;
+        return <AlertTriangle/>;
       default:
         return null;
     }
@@ -437,30 +376,16 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-              <UserIcon />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Profile Dashboard</h1>
-              <p className="text-gray-600">Manage your account and view your progress</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="max-w-6xl mx-auto px-6 py-8">
         {/* Tab Navigation */}
         <div className="bg-white rounded-xl shadow-sm mb-8 p-2">
           <nav className="flex space-x-2">
             {[
-              { id: "profile", label: "Profile", icon: UserIcon },
-              { id: "stats", label: "My Stats", icon: BookIcon },
-              { id: "payments", label: "Payment History", icon: CreditCardIcon },
-              { id: "security", label: "Security", icon: LockIcon }
+              { id: "profile", label: "Profile", icon: User },
+              { id: "stats", label: "My Stats", icon: Pencil },
+              { id: "payments", label: "Payment History", icon: CreditCard },
+              { id: "security", label: "Security", icon: Lock}
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -492,7 +417,7 @@ export default function ProfilePage() {
                     />
                     {editing && (
                       <button className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:shadow-xl transition-shadow">
-                        <CameraIcon />
+                        <Camera />
                       </button>
                     )}
                   </div>
@@ -507,7 +432,7 @@ export default function ProfilePage() {
                         onClick={() => setEditing(true)}
                         className="bg-white text-blue-600 px-6 py-2 rounded-full font-medium hover:bg-blue-50 transition-colors flex items-center space-x-2"
                       >
-                        <EditIcon />
+                        <Pencil />
                         <span>Edit Profile</span>
                       </button>
                     ) : (
@@ -517,14 +442,14 @@ export default function ProfilePage() {
                           disabled={uploading}
                           className="bg-green-500 text-white px-6 py-2 rounded-full font-medium hover:bg-green-600 transition-colors flex items-center space-x-2 disabled:opacity-50"
                         >
-                          <CheckIcon />
+                          <Check/>
                           <span>{uploading ? "Saving..." : "Save"}</span>
                         </button>
                         <button
                           onClick={() => setEditing(false)}
                           className="bg-gray-500 text-white px-6 py-2 rounded-full font-medium hover:bg-gray-600 transition-colors flex items-center space-x-2"
                         >
-                          <XIcon />
+                          <X />
                           <span>Cancel</span>
                         </button>
                       </div>
@@ -564,12 +489,12 @@ export default function ProfilePage() {
                           htmlFor="avatar-upload"
                           className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg cursor-pointer transition-colors"
                         >
-                          <UploadIcon />
+                          <UploadCloud />
                           <span>Choose File</span>
                         </label>
                         {file && (
                           <span className="text-sm text-green-600 flex items-center space-x-1">
-                            <CheckIcon />
+                            <Check />
                             <span>{file.name}</span>
                           </span>
                         )}
@@ -598,7 +523,7 @@ export default function ProfilePage() {
                   <p className="text-3xl font-bold text-gray-900">{stats.totalEnrolled}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <BookIcon />
+                  <BookOpen/>
                 </div>
               </div>
             </div>
@@ -609,7 +534,7 @@ export default function ProfilePage() {
                   <p className="text-3xl font-bold text-green-600">{history.filter(h => h.status === 'completed').length}</p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckIcon />
+                  <Check />
                 </div>
               </div>
             </div>
@@ -620,7 +545,7 @@ export default function ProfilePage() {
                   <p className="text-3xl font-bold text-red-600">{history.filter(h => h.status === 'failed').length}</p>
                 </div>
                 <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                  <AlertIcon />
+                  <AlertTriangle/>
                 </div>
               </div>
             </div>
@@ -635,7 +560,7 @@ export default function ProfilePage() {
             </div>
             {history.length === 0 ? (
               <div className="p-12 text-center">
-                <CreditCardIcon />
+                <CreditCard />
                 <p className="text-gray-500 text-lg mt-4">No payments yet</p>
                 <p className="text-gray-400">Your payment history will appear here</p>
               </div>
@@ -696,7 +621,7 @@ export default function ProfilePage() {
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex items-center space-x-4 mb-6">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                <LockIcon />
+                <Lock/>
               </div>
               <div>
                 <h3 className="text-xl font-semibold text-gray-900">Account Security</h3>
@@ -707,7 +632,7 @@ export default function ProfilePage() {
               onClick={handleChangePassword}
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 flex items-center space-x-2"
             >
-              <LockIcon />
+              <Lock/>
               <span>Change Password</span>
             </button>
           </div>

@@ -27,7 +27,7 @@ const tutorRepo = new TutorRepository();
 const tutorService = new TutorAdminService(tutorRepo);
 const tutorController = new TutorAdminController(tutorService);
 const repo = new CourseRepository();
-const service = new AdminCourseService(repo);
+const service = new AdminCourseService(repo,tutorRepo);
 const controller = new AdminCourseController(service);
 
 // route

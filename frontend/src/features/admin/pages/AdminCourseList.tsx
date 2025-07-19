@@ -3,6 +3,7 @@ import {fetchCourses,updateCourseStatus,} from '../services/CourseApi';
 import type { IPaginatedCourses} from "../services/CourseApi"
 import type { ICourse } from '../../../types/course';
 import { AxiosError } from 'axios';
+import { toast } from "react-toastify";
 
 type Course = Pick<
   ICourse,
@@ -50,9 +51,11 @@ export default function CourseListPage() {
       setCourses(cs =>
         cs.map(c => (c._id === id ? updated : c))
       );
+      toast.success(`Status updated to ${status.toUpperCase()}!`)
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message: string }>;
       setError(axiosError.message ?? 'Failed to update status');
+      toast.error("Failed to update status");
     }
   };
 

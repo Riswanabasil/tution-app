@@ -4,8 +4,11 @@ import { Request, Response, NextFunction } from "express";
 import { AdminCourseService, PaginatedCourses } from "../../services/admin/implementation/CourseService";
 import { CourseStatus, ICourse } from "../../models/course/CourseSchema";
 
+
 export class AdminCourseController {
-  constructor(private service: AdminCourseService) {}
+  constructor(private service: AdminCourseService,
+    
+  ) {}
 
   listAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
