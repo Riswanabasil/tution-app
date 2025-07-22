@@ -13,6 +13,10 @@ import { getDemoUploadUrl, getProfileUploadUrl, getUploadUrl } from "../controll
 import { ModuleRepository } from '../repositories/module/implementation/ModuleRepository';
 import { TutorModuleService } from '../services/tutor/implementation/ModuleService';
 import { ModuleController } from '../controllers/tutor/implementation/ModuleController';
+//topic
+import { TopicRepository } from '../repositories/topic/implementation/TopicRepository';
+import { TopicService } from '../services/tutor/implementation/TopicService';
+import { TopicController } from '../controllers/tutor/implementation/TopicController';
 
 const router = express.Router();
 
@@ -28,6 +32,11 @@ const courseController = new TutorCourseController(courseService);
 const moduleRepo       = new ModuleRepository();
 const moduleService    = new TutorModuleService(moduleRepo);
 const moduleController = new ModuleController(moduleService);
+//topic
+const topicRepo= new TopicRepository()
+const topicService= new TopicService(topicRepo)
+const topicController= new TopicController(topicService)
+
 
 
 
@@ -63,6 +72,14 @@ router.post('/courses/:courseId/modules', authMiddleware, moduleController.creat
 router.put('/courses/:courseId/modules/:id', authMiddleware, moduleController.update.bind(moduleController))
 router.delete('/courses/:courseId/modules/:id', authMiddleware, moduleController.delete.bind(moduleController));
 router.get('/courses/:courseId/modules/:id', authMiddleware, moduleController.getById.bind(moduleController));
+
+//topic
+
+router.post('/modules/:moduleId/topics', topicController.create.bind(topicController));
+router.get('/modules/:moduleId/topics', topicController.getByModule.bind(topicController));
+router.get('/topics/:id', topicController.getById.bind(topicController));
+router.patch('/topics/:id', topicController.update.bind(topicController));
+router.delete('/topics/:id', topicController.delete.bind(topicController));
 
 
 export default router;
