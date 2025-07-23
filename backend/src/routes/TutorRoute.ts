@@ -9,7 +9,7 @@ import { CourseRepository } from "../repositories/course/implementation/CourseRe
 import { TutorCourseService } from "../services/tutor/implementation/TutorCourseService";
 import { TutorCourseController } from "../controllers/tutor/implementation/TutorCourseController";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { getDemoUploadUrl, getProfileUploadUrl, getUploadUrl } from "../controllers/tutor/implementation/upload.controller";
+import { getDemoUploadUrl, getNoteUploadUrls, getProfileUploadUrl, getUploadUrl } from "../controllers/tutor/implementation/upload.controller";
 import { ModuleRepository } from '../repositories/module/implementation/ModuleRepository';
 import { TutorModuleService } from '../services/tutor/implementation/ModuleService';
 import { ModuleController } from '../controllers/tutor/implementation/ModuleController';
@@ -17,6 +17,10 @@ import { ModuleController } from '../controllers/tutor/implementation/ModuleCont
 import { TopicRepository } from '../repositories/topic/implementation/TopicRepository';
 import { TopicService } from '../services/tutor/implementation/TopicService';
 import { TopicController } from '../controllers/tutor/implementation/TopicController';
+//note
+import { NoteRepository } from "../repositories/note/implementation/NoteRepository";
+import { NoteService } from "../services/tutor/implementation/NoteService";
+import { NoteController } from "../controllers/tutor/implementation/NoteController";
 
 const router = express.Router();
 
@@ -36,6 +40,10 @@ const moduleController = new ModuleController(moduleService);
 const topicRepo= new TopicRepository()
 const topicService= new TopicService(topicRepo)
 const topicController= new TopicController(topicService)
+//note
+const noteRepo= new NoteRepository()
+const noteService= new NoteService(noteRepo)
+const noteController= new NoteController(noteService)
 
 
 
@@ -80,6 +88,16 @@ router.get('/modules/:moduleId/topics', topicController.getByModule.bind(topicCo
 router.get('/topics/:id', topicController.getById.bind(topicController));
 router.patch('/topics/:id', topicController.update.bind(topicController));
 router.delete('/topics/:id', topicController.delete.bind(topicController));
+
+//note
+
+router.post("/note/upload-urls", getNoteUploadUrls)
+router.post("/topic/:topicId/notes", noteController.create.bind(noteController)); 
+router.get("/topic/:topicId/notes", noteController.getByTopic.bind(noteController));
+router.get("/notes/:id", noteController.getById.bind(noteController));
+router.patch("/notes/:id", noteController.update.bind(noteController));
+router.delete("/notes/:id", noteController.delete.bind(noteController));
+
 
 
 export default router;
