@@ -1,6 +1,6 @@
 import axios from '../../../api/TutorAxios';
 import type { Module } from '../../../types/module';
-import type { Topic } from '../../../types/topic';
+import type { Topic, TopicForm } from '../../../types/topic';
 
 // Modules
 export const fetchModules = async (courseId: string): Promise<Module[]> => {
@@ -30,6 +30,27 @@ export const deleteModule = async (courseId: string, moduleId: string): Promise<
 
 // Topics
 export const fetchTopics = async (moduleId: string): Promise<Topic[]> => {
-  const res = await axios.get<{ topics: Topic[] }>(`/api/tutor/modules/${moduleId}/topics?page=1&limit=20`);
+  const res = await axios.get<{ topics: Topic[] }>(`/tutor/modules/${moduleId}/topics?page=1&limit=20`);
+  console.log(res);
+  
   return res.data.topics;
 };
+
+export async function createTopic(moduleId: string, payload: TopicForm): Promise<Topic> {
+  const res = await axios.post(`/tutor/modules/${moduleId}/topics`, payload);
+  return res.data;
+}
+
+export async function getTopicById(id: string): Promise<Topic> {
+  const res = await axios.get(`/tutor/topics/${id}`);
+  return res.data;
+}
+
+export async function updateTopic(id: string, payload: TopicForm): Promise<Topic> {
+  const res = await axios.patch(`/tutor/topics/${id}`, payload);
+  return res.data;
+}
+
+export async function deleteTopic(id: string): Promise<void> {
+  await axios.delete(`/tutor/topics/${id}`);
+}

@@ -26,18 +26,6 @@ export default function ModuleSidebar() {
   + Add Module
 </Link>
       </button>
-      {/* {modules.map(m => (
-        <Link
-          key={m._id}
-          to={`modules/${m._id}`}
-          className={`block px-3 py-2 rounded hover:bg-gray-100 ${
-            moduleId === m._id ? 'bg-gray-200' : ''
-          }`}
-        >
-          {m.order}. {m.name}
-        </Link>
-        
-      ))} */}
       {modules.map(m => (
   <div key={m._id} className="flex justify-between items-center">
     <Link

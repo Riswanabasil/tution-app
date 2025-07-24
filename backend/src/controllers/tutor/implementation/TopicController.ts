@@ -22,7 +22,7 @@ export class TopicController {
   getByModule = async (req: Request, res: Response) => {
     try {
       const topics = await this.service.getByModule(req.params.moduleId);
-      res.json(topics);
+      res.json({topics:topics});
     } catch (error: any) {
       res.status(500).json({ message: error.message || 'Failed to fetch topics' });
     }

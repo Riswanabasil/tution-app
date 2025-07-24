@@ -4,10 +4,21 @@ export interface Topic {
   title: string;
   description?: string;
   order: number;
-  videoUrl?: string;
-  noteId?: string;
-  liveSessionId?: string;
-  deletedAt?: string;
+  isDeleted: boolean
   createdAt: string;
   updatedAt: string;
+}
+
+
+export interface TopicPayload {
+  moduleId: string;
+  title: string;
+  description?: string;
+  order: number;
+}
+
+export interface TopicForm {
+  title: string;
+  description?: string;
+  order: number;
 }
