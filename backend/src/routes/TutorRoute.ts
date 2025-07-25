@@ -21,6 +21,10 @@ import { TopicController } from '../controllers/tutor/implementation/TopicContro
 import { NoteRepository } from "../repositories/note/implementation/NoteRepository";
 import { NoteService } from "../services/tutor/implementation/NoteService";
 import { NoteController } from "../controllers/tutor/implementation/NoteController";
+//assignment
+import { AssignmentRepository } from "../repositories/assignment/implementation/AssignmentRepository";
+import { AssignmentService } from "../services/tutor/implementation/AssignmentService";
+import { AssignmentController } from "../controllers/tutor/implementation/AssignmentController";
 
 const router = express.Router();
 
@@ -44,6 +48,10 @@ const topicController= new TopicController(topicService)
 const noteRepo= new NoteRepository()
 const noteService= new NoteService(noteRepo)
 const noteController= new NoteController(noteService)
+//assignment
+const assRepo=new AssignmentRepository()
+const assService= new AssignmentService(assRepo,topicRepo,moduleRepo,courseRepo)
+const assController=new AssignmentController(assService)
 
 
 
@@ -98,6 +106,14 @@ router.get("/notes/:id", noteController.getById.bind(noteController));
 router.patch("/notes/:id", noteController.update.bind(noteController));
 router.delete("/notes/:id", noteController.delete.bind(noteController));
 
+
+//assignment
+
+router.post("/:topicId/assgn", assController.createAssignment.bind(assController));
+router.get("/:topicId/assgn", assController.getAssignmentsByTopic.bind(assController));
+router.get("/assgn/:id", assController.getAssignmentById.bind(assController));
+router.patch("/assgn/:id", assController.updateAssignment.bind(assController));
+router.delete("/assgn/:id", assController.deleteAssignment.bind(assController));
 
 
 export default router;

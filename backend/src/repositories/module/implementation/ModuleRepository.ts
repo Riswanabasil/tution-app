@@ -1,7 +1,12 @@
+
 import { Module, IModule } from '../../../models/module/ModuleSchema';
+import { BaseRepository } from '../../base/BaseRepository';
 import type { IModuleRepository } from '../IModuleRepository';
 
-export class ModuleRepository implements IModuleRepository {
+export class ModuleRepository extends BaseRepository<IModule> implements IModuleRepository {
+  constructor() {
+      super(Module);
+    }
   async findByCourse(courseId: string): Promise<IModule[]> {
     return Module.find({
       courseId,

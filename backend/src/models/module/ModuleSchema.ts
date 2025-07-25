@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IModule extends Document {
    _id: string,
-  courseId: mongoose.Types.ObjectId;
+  courseId: mongoose.Types.ObjectId|string;
   name: string;
   order: number;
   deletedAt?: Date;

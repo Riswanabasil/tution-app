@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { IBaseRepository } from "./IBaseRepository";
 
 export class BaseRepository<T> implements IBaseRepository<T> {
@@ -12,7 +12,7 @@ export class BaseRepository<T> implements IBaseRepository<T> {
     return created.toObject();
   }
 
-  async findById(id: string): Promise<T | null> {
+  async findById(id: Types.ObjectId |string): Promise<T | null> {
     return this.model.findById(id);
   }
 

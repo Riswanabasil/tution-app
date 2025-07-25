@@ -12,7 +12,7 @@ export class CourseRepository implements ICourseRepository {
     return created;
   }
 
-  async findById(id:Types.ObjectId | string): Promise<ICourse | null> {
+  async findById(id:Types.ObjectId | string|undefined): Promise<ICourse | null> {
     return Course.findById(id).exec();
   }
 
