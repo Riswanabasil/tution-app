@@ -1,4 +1,4 @@
-import type { Module } from "./module";
+
 
 
 export interface ICourse {
@@ -29,7 +29,21 @@ export type CourseDetails = {
   actualPrice?: number
   details?: string
   tutorName: string
-  modules: Array<Pick<Module, '_id' | 'name' | 'order'>>
+  tutorProfilePic: string;
+  tutorEducation: string;
+  tutorExperience: string;
+  tutorSummary: string;
+   modules: {
+    _id: string;
+    name: string;
+    order: number;
+    topics: {
+      _id: string;
+      title: string;
+      description: string;
+      order: number;
+    }[];
+  }[];
   reviews?: Array<{ author: string; rating: number; when: string; comment: string }>
   enrolledAt?:string
 }

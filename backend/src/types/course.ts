@@ -1,5 +1,3 @@
-import { IModule } from "../models/module/ModuleSchema"
-
 export type CourseDetails = {
   _id: string
   title: string
@@ -12,6 +10,20 @@ export type CourseDetails = {
   actualPrice?: number
   details?: string
   tutorName: string
-  modules: Array<Pick<IModule, '_id' | 'name' | 'order'>>
+  tutorProfilePic:string
+  tutorEducation:string
+  tutorExperience:string
+  tutorSummary:string
+  modules: {
+    _id: string;
+    name: string;
+    order: number;
+    topics: {
+      _id: string;
+      title: string;
+      description: string;
+      order: number;
+    }[];
+  }[];
   reviews?: Array<{ author: string; rating: number; when: string; comment: string }>
 }

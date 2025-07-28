@@ -17,6 +17,7 @@ import { EnrollmentRepository } from "../repositories/payment/implementation/Enr
 import { PaymentService } from "../services/student/implementation/PaymentService";
 import { PaymentController } from "../controllers/student/implementation/PaymentController";
 import { getUploadUrl } from "../controllers/student/implementation/Upload.controller";
+import { TopicRepository } from "../repositories/topic/implementation/TopicRepository";
 
 
 
@@ -35,7 +36,8 @@ const studentController = new StudentController(studentService,studentOtpService
 const moduleRepo=new ModuleRepository()
 const tutorRepo=new TutorRepository()
 const courseRepo= new CourseRepository()
-const courseService=new StudentCourseService(courseRepo,moduleRepo,tutorRepo)
+const topicRepo= new TopicRepository
+const courseService=new StudentCourseService(courseRepo,moduleRepo,tutorRepo,topicRepo)
 const courseController= new StudentCourseController(courseService)
 const paymentRepo=new EnrollmentRepository()
 const paymentService= new PaymentService(paymentRepo,tutorRepo,courseRepo)
@@ -58,7 +60,7 @@ router.get("/profile/upload-url", getUploadUrl)
 //course
 
 router.get("/courses",authMiddleware,courseController.list.bind(courseController));
-router.get('/courses/:courseId',authMiddleware,courseController.getCourseDetails.bind(courseController))
+router.get('/courses/:courseId',courseController.getCourseDetails.bind(courseController))
 
 
 //payment

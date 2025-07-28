@@ -11,7 +11,6 @@ export interface ITutor extends Document{
     status:'pending'|'verification-submitted'|'approved'|'rejected',
     role:'tutor',
     walletBalance:number;
-    //  assignedCourses: Types.ObjectId[]
     verificationDetails?:{
     summary: string;
     education: string;
@@ -36,7 +35,6 @@ const tutorSchema= new Schema<ITutor>({
     status:{type:String,enum:['pending','verification-submitted','approved','rejected'],default:'pending'},
     role:{type:String,default:'tutor'},
      walletBalance: { type: Number, default: 0 },
-    // assignedCourses:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Course' }],
      verificationDetails: {
     summary: String,
     education: String,

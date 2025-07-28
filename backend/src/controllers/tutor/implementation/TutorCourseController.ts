@@ -27,7 +27,7 @@ export class TutorCourseController {
         thumbnail: thumbnailUrl,
         demoVideoUrl: demoVideoUrl,
       };
-
+      console.log(data)
       const course = await this.courseService.createCourse(data);
       console.log(course);
 

@@ -1,3 +1,4 @@
+
 import axios from '../../../api/AxiosInstance'
 import type { CourseDetails, ICourse } from '../../../types/course';
 
@@ -16,11 +17,19 @@ export interface MyCourseDTO {
 export const getApprovedCourses = async (
   page = 1,
   limit = 10,
-  search = ""
+  search = "",
+  semester?: number,
+  sortBy?: string
 ): Promise<PaginatedCourses> => {
-  const res = await axios.get<PaginatedCourses>(
-    `/student/courses?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`
-  );
+  const params = new URLSearchParams();
+  params.append("page", String(page));
+  params.append("limit", String(limit));
+  params.append("search", search);
+
+  if (semester !== undefined) params.append("semester", String(semester));
+  if (sortBy) params.append("sortBy", sortBy);
+
+  const res = await axios.get<PaginatedCourses>(`/student/courses?${params.toString()}`);
   return res.data;
 };
 
