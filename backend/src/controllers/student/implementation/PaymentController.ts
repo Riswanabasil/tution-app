@@ -105,7 +105,7 @@ async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
       return;  
 
     } catch (err: any) {
-      console.error("❌ retryOrder error:", err);
+      console.error(" retryOrder error:", err);
        res
         .status(400)
         .json({ message: err.message || "Unknown error in retryOrder" });

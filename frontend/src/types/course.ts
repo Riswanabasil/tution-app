@@ -47,3 +47,21 @@ export type CourseDetails = {
   reviews?: Array<{ author: string; rating: number; when: string; comment: string }>
   enrolledAt?:string
 }
+
+
+
+export type Module = {
+  _id: string;
+  name: string;
+  courseId: string;
+  description?: string;
+  order?: number;
+};
+
+export type Topic = {
+  _id: string;
+  moduleId: string;
+  title: string;
+  description?: string;
+  order?: number;
+};

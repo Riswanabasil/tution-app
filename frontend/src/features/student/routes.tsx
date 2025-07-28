@@ -22,7 +22,7 @@ const StudentRoutes = () => {
       <Route path="dashboard"    element={<CourseGridPage />} />
       <Route path="courses/:id"  element={<CourseDetailPage />} />
       <Route path="mycourse"  element={<MyCoursesPage />} />
-      <Route path='purchased-course/:id' element={<MyCourseDetail/>}/>
+      <Route path='purchased-course/:courseId' element={<MyCourseDetail/>}/>
       <Route path="profile"  element={<ProfilePage />} />
     </Route>
       </Route>

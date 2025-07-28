@@ -18,6 +18,8 @@ import { PaymentService } from "../services/student/implementation/PaymentServic
 import { PaymentController } from "../controllers/student/implementation/PaymentController";
 import { getUploadUrl } from "../controllers/student/implementation/Upload.controller";
 import { TopicRepository } from "../repositories/topic/implementation/TopicRepository";
+import { PaidCourseService } from "../services/student/implementation/PaidCourseService";
+import { PaidCourseController } from "../controllers/student/implementation/PaidCourseController";
 
 
 
@@ -42,6 +44,8 @@ const courseController= new StudentCourseController(courseService)
 const paymentRepo=new EnrollmentRepository()
 const paymentService= new PaymentService(paymentRepo,tutorRepo,courseRepo)
 const paymentController= new PaymentController(paymentService)
+const paidCourseService= new PaidCourseService(moduleRepo,topicRepo)
+const paidCourseController=new PaidCourseController(paidCourseService)
 
 // Route
 router.post('/register', studentController.registerStudent.bind(studentController));
@@ -74,8 +78,9 @@ router.post("/payments/retry",authMiddleware,paymentController.retryOrder.bind(p
 
 //paid Course
 
-router.get(
-  "/mycourses",authMiddleware,paymentController.getMyCourses.bind(paymentController));
+router.get("/mycourses",authMiddleware,paymentController.getMyCourses.bind(paymentController));
+router.get("/modules/:courseId", paidCourseController.getModulesByCourse.bind(paidCourseController));
+router.get("/topics/:moduleId", paidCourseController.getTopicsByModule.bind(paidCourseController));
 
 
 

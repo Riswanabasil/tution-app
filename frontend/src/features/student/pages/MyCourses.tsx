@@ -62,6 +62,8 @@ export default function MyCoursesPage() {
   const [courses, setCourses] = useState<MyCourseDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  console.log(courses);
+  
 
   useEffect(() => {
     getMyCourses()

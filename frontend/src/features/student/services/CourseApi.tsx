@@ -1,6 +1,6 @@
 
 import axios from '../../../api/AxiosInstance'
-import type { CourseDetails, ICourse } from '../../../types/course';
+import type { CourseDetails, ICourse, Module } from '../../../types/course';
 
 export interface PaginatedCourses {
   courses: ICourse[];
@@ -42,7 +42,25 @@ export const getMyCourses = async (): Promise<MyCourseDTO[]> => {
   const res = await axios.get<{ data: MyCourseDTO[] }>(
     "/student/mycourses"
   );
+  return res.data.data;
+};
+
+export const fetchModulesByCourseId = async (courseId: string): Promise<Module[]> => {
+  const res = await axios.get(`/student/modules/${courseId}`);
   console.log(res);
   
-  return res.data.data;
+  return res.data;
+};
+
+
+export const fetchTopicsByModuleId = async (
+  moduleId: string,
+  search = '',
+  page = 1,
+  limit = 5
+) => {
+  const res = await axios.get(`/student/topics/${moduleId}`, {
+    params: { search, page, limit },
+  });
+  return res.data;
 };
