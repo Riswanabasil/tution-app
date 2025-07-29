@@ -9,7 +9,9 @@ import StudentLayout from "./components/StudentLayout";
 import MyCoursesPage from "./pages/MyCourses";
 import MyCourseDetail from "./pages/MyCourseDetail";
 import ProfilePage from "./pages/ProfilePage";
-
+import TopicTabsLayout from "./pages/topicViewPages/TopicTabsLayout";
+import NoteTab from "./pages/topicViewPages/NoteTab";
+import AssignmentTab from "./pages/topicViewPages/AssignmentTab";
 
 const StudentRoutes = () => {
   return (
@@ -19,12 +21,19 @@ const StudentRoutes = () => {
       <Route path="login" element={<Login />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<StudentLayout />}>
-      <Route path="dashboard"    element={<CourseGridPage />} />
-      <Route path="courses/:id"  element={<CourseDetailPage />} />
-      <Route path="mycourse"  element={<MyCoursesPage />} />
-      <Route path='purchased-course/:courseId' element={<MyCourseDetail/>}/>
-      <Route path="profile"  element={<ProfilePage />} />
-    </Route>
+          <Route path="dashboard" element={<CourseGridPage />} />
+          <Route path="courses/:id" element={<CourseDetailPage />} />
+          <Route path="mycourse" element={<MyCoursesPage />} />
+          <Route
+            path="purchased-course/:courseId"
+            element={<MyCourseDetail />}
+          />
+          <Route path="profile" element={<ProfilePage />} />
+          <Route path="topic/:topicId" element={<TopicTabsLayout />}>
+            <Route path="notes" element={<NoteTab />} />
+            <Route path="assignments" element={<AssignmentTab />} />
+          </Route>
+        </Route>
       </Route>
     </Routes>
   );

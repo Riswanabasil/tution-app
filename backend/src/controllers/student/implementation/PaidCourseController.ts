@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { PaidCourseService } from "../../../services/student/implementation/PaidCourseService";
 
+
 export class PaidCourseController {
 
 
@@ -37,5 +38,16 @@ async getTopicsByModule(req: Request, res: Response) {
     res.status(500).json({ message: 'Failed to fetch topics',err  });
   }
 }
+
+ async getNotes(req: Request, res: Response) {
+    try {
+      const { topicId } = req.params;
+      const notes = await this.paidCourseService.getNotesByTopic(topicId)
+      res.json(notes);
+    } catch (err) {
+      res.status(500).json({ message: 'Failed to fetch notes' });
+    }
+  }
+
 
 }

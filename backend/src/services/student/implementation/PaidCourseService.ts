@@ -1,5 +1,6 @@
 
 import { ModuleRepository } from "../../../repositories/module/implementation/ModuleRepository";
+import { NoteRepository } from "../../../repositories/note/implementation/NoteRepository";
 import { TopicRepository } from "../../../repositories/topic/implementation/TopicRepository";
 
 export class PaidCourseService {
@@ -7,7 +8,8 @@ export class PaidCourseService {
 
   constructor(
      private moduleRepository: ModuleRepository,
-  private topicRepository: TopicRepository
+  private topicRepository: TopicRepository,
+  private noteRepository:NoteRepository
   ) {
    
   }
@@ -30,4 +32,7 @@ export class PaidCourseService {
   return this.topicRepository.findWithFilter(filter, page, limit);
 }
 
+  async getNotesByTopic(topicId: string) {
+    return await this.noteRepository.findByTopic(topicId);
+  }
 }

@@ -20,7 +20,11 @@ import { getUploadUrl } from "../controllers/student/implementation/Upload.contr
 import { TopicRepository } from "../repositories/topic/implementation/TopicRepository";
 import { PaidCourseService } from "../services/student/implementation/PaidCourseService";
 import { PaidCourseController } from "../controllers/student/implementation/PaidCourseController";
-
+import { NoteRepository } from "../repositories/note/implementation/NoteRepository";
+import { AssignmentRepository } from "../repositories/assignment/implementation/AssignmentRepository";
+import { SubmissionRepository } from "../repositories/submission/SubmissionRepository";
+import { StudentAssignmentService } from "../services/student/implementation/StudentAssignmentService";
+import { AssignmentController } from "../controllers/student/implementation/AssignmentService";
 
 
 const router = express.Router();
@@ -44,8 +48,13 @@ const courseController= new StudentCourseController(courseService)
 const paymentRepo=new EnrollmentRepository()
 const paymentService= new PaymentService(paymentRepo,tutorRepo,courseRepo)
 const paymentController= new PaymentController(paymentService)
-const paidCourseService= new PaidCourseService(moduleRepo,topicRepo)
+const noteRepo= new NoteRepository()
+const paidCourseService= new PaidCourseService(moduleRepo,topicRepo,noteRepo)
 const paidCourseController=new PaidCourseController(paidCourseService)
+const assignmentRepo=new AssignmentRepository()
+const SubmissionRepo= new SubmissionRepository()
+const assignmentService= new StudentAssignmentService(assignmentRepo,SubmissionRepo)
+const assignmentController= new AssignmentController(assignmentService)
 
 // Route
 router.post('/register', studentController.registerStudent.bind(studentController));
@@ -81,6 +90,9 @@ router.post("/payments/retry",authMiddleware,paymentController.retryOrder.bind(p
 router.get("/mycourses",authMiddleware,paymentController.getMyCourses.bind(paymentController));
 router.get("/modules/:courseId", paidCourseController.getModulesByCourse.bind(paidCourseController));
 router.get("/topics/:moduleId", paidCourseController.getTopicsByModule.bind(paidCourseController));
+router.get('/notes/:topicId', paidCourseController.getNotes.bind(paidCourseController));
+router.get('/assignments/:topicId',authMiddleware, assignmentController.getAssignmentsForStudent.bind(assignmentController));
+
 
 
 

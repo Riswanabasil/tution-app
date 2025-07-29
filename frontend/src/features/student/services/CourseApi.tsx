@@ -1,6 +1,7 @@
 
 import axios from '../../../api/AxiosInstance'
 import type { CourseDetails, ICourse, Module } from '../../../types/course';
+import type { Note } from '../../../types/note';
 
 export interface PaginatedCourses {
   courses: ICourse[];
@@ -63,4 +64,16 @@ export const fetchTopicsByModuleId = async (
     params: { search, page, limit },
   });
   return res.data;
+};
+
+
+export const fetchNotesByTopicId = async (topicId: string): Promise<Note[]> => {
+  const res = await axios.get(`/student/notes/${topicId}`);
+  return res.data;
+};
+
+export const fetchStudentAssignments = async (topicId: string) => {
+  const response = await axios.get(`/student/assignments/${topicId}`);
+  console.log(response.data)
+  return response.data;
 };
