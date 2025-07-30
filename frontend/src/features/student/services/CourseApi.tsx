@@ -77,3 +77,28 @@ export const fetchStudentAssignments = async (topicId: string) => {
   console.log(response.data)
   return response.data;
 };
+export const getSubmissionUploadUrl = async (fileName: string,contentType:string) => {
+  const res = await axios.get("/student/submissions/presigned-url", { params: { fileName, contentType } });
+  return res.data;
+};
+export const submitAssignmentResponse = async (assignmentId: string, payload: { response: string }) => {
+  console.log(assignmentId);
+  
+  const res = await axios.post(`/student/submissions/${assignmentId}`, payload);
+  return res.data;
+};
+
+export const fetchSubmissionByAssignment = async (assignmentId: string) => {
+  const response = await axios.get(`/student/submissions/${assignmentId}`);
+  return response.data;
+};
+
+export const updateAssignmentResponse = async (assignmentId: string, payload: { response: string }) => {
+  const res = await axios.put(`/student/submission/${assignmentId}`, payload);
+  return res.data;
+};
+
+// export const getSubmissionDetails = async (assignmentId: string) => {
+//   const res = await axios.get(`/student/submission/${assignmentId}`);
+//   return res.data;
+// };

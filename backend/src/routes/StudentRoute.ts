@@ -16,7 +16,7 @@ import { TutorRepository } from "../repositories/tutor/implementation/TutorRepos
 import { EnrollmentRepository } from "../repositories/payment/implementation/EnrollmentRepository";
 import { PaymentService } from "../services/student/implementation/PaymentService";
 import { PaymentController } from "../controllers/student/implementation/PaymentController";
-import { getUploadUrl } from "../controllers/student/implementation/Upload.controller";
+import { generatePresignedUrl, getUploadUrl } from "../controllers/student/implementation/Upload.controller";
 import { TopicRepository } from "../repositories/topic/implementation/TopicRepository";
 import { PaidCourseService } from "../services/student/implementation/PaidCourseService";
 import { PaidCourseController } from "../controllers/student/implementation/PaidCourseController";
@@ -24,7 +24,7 @@ import { NoteRepository } from "../repositories/note/implementation/NoteReposito
 import { AssignmentRepository } from "../repositories/assignment/implementation/AssignmentRepository";
 import { SubmissionRepository } from "../repositories/submission/SubmissionRepository";
 import { StudentAssignmentService } from "../services/student/implementation/StudentAssignmentService";
-import { AssignmentController } from "../controllers/student/implementation/AssignmentService";
+import { AssignmentController } from "../controllers/student/implementation/AssignmentController";
 
 
 const router = express.Router();
@@ -92,7 +92,10 @@ router.get("/modules/:courseId", paidCourseController.getModulesByCourse.bind(pa
 router.get("/topics/:moduleId", paidCourseController.getTopicsByModule.bind(paidCourseController));
 router.get('/notes/:topicId', paidCourseController.getNotes.bind(paidCourseController));
 router.get('/assignments/:topicId',authMiddleware, assignmentController.getAssignmentsForStudent.bind(assignmentController));
-
+router.get("/submissions/presigned-url", generatePresignedUrl)
+router.post("/submissions/:assignmentId",authMiddleware,assignmentController.createSubmissionController.bind(assignmentController))
+router.get("/submissions/:assignmentId", authMiddleware,assignmentController.getStudentSubmissionByAssignment.bind(assignmentController));
+router.put("/submission/:assignmentId", authMiddleware,assignmentController.updateSubmissionByAssignment.bind(assignmentController));
 
 
 

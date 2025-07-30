@@ -3,19 +3,18 @@ import mongoose, { Schema } from "mongoose";
 
 export interface ISubmission extends Document {
   _id?: Types.ObjectId;
-  studentId: Types.ObjectId;
-  topicId: Types.ObjectId;
-  courseId: Types.ObjectId;
-  assignmentId: Types.ObjectId;
-  submittedFiles: string[];
+  studentId: Types.ObjectId|string;
+  topicId: Types.ObjectId|string;
+  courseId: Types.ObjectId|string;
+  assignmentId: Types.ObjectId|string;
+  response:string;
+  submittedFile: string;
   feedback?: string;
-  status?: "pending" | "submitted" | "expired" | "verified";
+  status?: "pending" | "verified";
   isDeleted?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
-
-
 const submissionSchema = new Schema<ISubmission>(
   {
     studentId: {
@@ -38,8 +37,11 @@ const submissionSchema = new Schema<ISubmission>(
       ref: "Assignment",
       required: true,
     },
-    submittedFiles: {
-      type: [String],
+    response:{
+      type:String
+    },
+    submittedFile: {
+      type: String,
       required: true,
     },
     feedback: {
@@ -48,7 +50,7 @@ const submissionSchema = new Schema<ISubmission>(
     },
     status: {
       type: String,
-      enum: ["pending", "submitted", "expired", "verified"],
+      enum: ["pending", "verified"],
       default: "pending",
     },
     isDeleted: {
