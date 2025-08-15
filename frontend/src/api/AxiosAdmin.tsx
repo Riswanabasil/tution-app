@@ -23,9 +23,8 @@ adminAxios.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const res = await axios.post(
+        const res = await axios.get(
           "/admin/refresh-token",
-          {},
           { baseURL: BASE_API_URL, withCredentials: true }
         );
 

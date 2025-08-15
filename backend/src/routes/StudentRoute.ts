@@ -88,9 +88,9 @@ router.post("/payments/retry",authMiddleware,paymentController.retryOrder.bind(p
 //paid Course
 
 router.get("/mycourses",authMiddleware,paymentController.getMyCourses.bind(paymentController));
-router.get("/modules/:courseId", paidCourseController.getModulesByCourse.bind(paidCourseController));
-router.get("/topics/:moduleId", paidCourseController.getTopicsByModule.bind(paidCourseController));
-router.get('/notes/:topicId', paidCourseController.getNotes.bind(paidCourseController));
+router.get("/modules/:courseId",authMiddleware, paidCourseController.getModulesByCourse.bind(paidCourseController));
+router.get("/topics/:moduleId",authMiddleware, paidCourseController.getTopicsByModule.bind(paidCourseController));
+router.get('/notes/:topicId',authMiddleware, paidCourseController.getNotes.bind(paidCourseController));
 router.get('/assignments/:topicId',authMiddleware, assignmentController.getAssignmentsForStudent.bind(assignmentController));
 router.get("/submissions/presigned-url", generatePresignedUrl)
 router.post("/submissions/:assignmentId",authMiddleware,assignmentController.createSubmissionController.bind(assignmentController))

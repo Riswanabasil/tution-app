@@ -6,10 +6,6 @@ export interface CreateOrderResponse {
   currency:        string;
   enrollmentId:    string;
 }
-
-/**
- * 1️⃣ Create a Razorpay order + pending enrollment
- */
 export const createOrder = async (
   courseId: string,
   amount:   number
@@ -20,10 +16,6 @@ export const createOrder = async (
   );
   return res.data.data;
 };
-
-/**
- * 2️⃣ Verify a successful payment
- */
 export const verifyPayment = async (
   response:      RazorpayPaymentResponse,
   enrollmentId:  string
@@ -35,10 +27,6 @@ export const verifyPayment = async (
     enrollmentId,
   });
 };
-
-/**
- * 3️⃣ Mark a canceled/pending enrollment as failed
- */
 export const cancelEnrollment = async (
   enrollmentId: string
 ): Promise<void> => {

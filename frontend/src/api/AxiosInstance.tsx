@@ -19,9 +19,8 @@ instance.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        const refreshResponse = await instance.post(
+        const refreshResponse = await instance.get(
           "/student/refresh-token",
-          {},
           {
             baseURL: BASE_API_URL,
             withCredentials: true,

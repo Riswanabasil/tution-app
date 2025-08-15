@@ -1,54 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { fetchStudentAssignments } from "../../services/CourseApi";
-
-// type Assignment = {
-//   _id: string;
-//   title: string;
-//   dueDate: string;
-//   description: string;
-//   status: "pending" | "verified" | "expired";
-// };
-
-// export default function AssignmentTab() {
-//   const { topicId } = useParams<{ topicId: string }>();
-//   const [assignments, setAssignments] = useState<Assignment[]>([]);
-
-//   useEffect(() => {
-//     if (topicId) {
-//       fetchStudentAssignments(topicId)
-//         .then((res) => setAssignments(res))
-//         .catch((err) => console.error("Error fetching assignments:", err));
-//     }
-//   }, [topicId]);
-
-//   return (
-//     <div className="p-4 space-y-4">
-//       {assignments.map((assignment) => (
-//         <div key={assignment._id} className="border rounded-xl p-4 shadow-sm bg-white">
-//           <div className="flex justify-between items-center mb-2">
-//             <h2 className="text-lg font-semibold">{assignment.title}</h2>
-//             <span
-//               className={`text-sm px-3 py-1 rounded-full ${
-//                 assignment.status === "expired"
-//                   ? "bg-red-100 text-red-600"
-//                   : assignment.status === "verified"
-//                   ? "bg-green-100 text-green-600"
-//                   : "bg-yellow-100 text-yellow-600"
-//               }`}
-//             >
-//               {assignment.status}
-//             </span>
-//           </div>
-//           <p className="text-gray-600 text-sm mb-1">
-//             Due: {new Date(assignment.dueDate).toLocaleDateString()}
-//           </p>
-//           <p className="text-gray-700">{assignment.description}</p>
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchStudentAssignments } from "../../services/CourseApi";
@@ -86,68 +35,223 @@ export default function AssignmentTab() {
     setOpenModal(false);
   };
 
+  const getStatusConfig = (status: Assignment['status']) => {
+    switch (status) {
+      case "expired":
+        return {
+          bg: "bg-gradient-to-r from-red-100 to-red-200",
+          text: "text-red-700",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          ),
+          label: "Expired"
+        };
+      case "verified":
+        return {
+          bg: "bg-gradient-to-r from-green-100 to-emerald-200",
+          text: "text-green-700",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          ),
+          label: "Verified"
+        };
+      case "pending":
+        return {
+          bg: "bg-gradient-to-r from-yellow-100 to-amber-200",
+          text: "text-yellow-700",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          ),
+          label: "Pending Review"
+        };
+      default:
+        return {
+          bg: "bg-gradient-to-r from-blue-100 to-indigo-200",
+          text: "text-blue-700",
+          icon: (
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          ),
+          label: "Not Submitted"
+        };
+    }
+  };
+
+  const getActionButton = (assignment: Assignment) => {
+    switch (assignment.status) {
+      case "not submitted":
+        return (
+          <button
+            onClick={() => handleOpenModal(assignment)}
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+            <span>Submit Response</span>
+          </button>
+        );
+      case "pending":
+        return (
+          <button
+            onClick={() => handleOpenModal(assignment)}
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-yellow-500 to-amber-500 text-white rounded-xl hover:from-yellow-600 hover:to-amber-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            <span>Edit Response</span>
+          </button>
+        );
+      case "verified":
+        return (
+          <button
+            onClick={() => handleOpenModal(assignment)}
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-700 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span>View Feedback</span>
+          </button>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const isOverdue = (dueDate: string) => {
+    return new Date(dueDate) < new Date();
+  };
+
+  const formatDueDate = (dueDate: string) => {
+    const date = new Date(dueDate);
+    const now = new Date();
+    const diffTime = date.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      return `Overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''}`;
+    } else if (diffDays === 0) {
+      return 'Due today';
+    } else if (diffDays === 1) {
+      return 'Due tomorrow';
+    } else if (diffDays <= 7) {
+      return `Due in ${diffDays} days`;
+    } else {
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+  };
+
   return (
-    <div className="p-4 space-y-4">
-      {assignments.map((assignment) => (
-        <div key={assignment._id} className="border rounded-xl p-4 shadow-sm bg-white">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-semibold">{assignment.title}</h2>
-            <span
-              className={`text-sm px-3 py-1 rounded-full ${
-                assignment.status === "expired"
-                  ? "bg-red-100 text-red-600"
-                  : assignment.status === "verified"
-                  ? "bg-green-100 text-green-600"
-                  : assignment.status === "pending"
-                  ? "bg-yellow-100 text-yellow-600"
-                  : "bg-blue-100 text-blue-600"
-              }`}
-            >
-              {assignment.status}
-            </span>
-          </div>
-          <p className="text-gray-600 text-sm mb-1">
-            Due: {new Date(assignment.dueDate).toLocaleDateString()}
-          </p>
-          <p className="text-gray-700 mb-2">{assignment.description}</p>
-
-          {assignment.status === "not submitted" && (
-            <button
-              onClick={() => handleOpenModal(assignment)}
-              className="px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-            >
-              Submit Response
-            </button>
-          )}
-
-          {assignment.status === "pending" && (
-            <button
-              onClick={() => handleOpenModal(assignment)}
-              className="px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
-            >
-              Edit Response
-            </button>
-          )}
-
-          {assignment.status === "verified" && (
-            <button
-              onClick={() => handleOpenModal(assignment)}
-              className="px-4 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-            >
-              View Feedback
-            </button>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-100 p-6">
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Assignments</h1>
+          <div className="h-1 w-32 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full"></div>
         </div>
-      ))}
 
-      {openModal && selectedAssignment && (
-        <SubmitModal
-          open={openModal}
-          onClose={handleCloseModal}
-          assignment={selectedAssignment}
-          topicId={topicId!}
-        />
-      )}
+        {assignments.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-100 to-indigo-200 rounded-full flex items-center justify-center mb-6">
+              <svg className="w-12 h-12 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">No Assignments Available</h3>
+            <p className="text-gray-500 text-center max-w-md">No assignments have been posted for this topic yet. Check back later for new assignments.</p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {assignments.map((assignment, index) => {
+              const statusConfig = getStatusConfig(assignment.status);
+              const overdue = isOverdue(assignment.dueDate) && assignment.status === "not submitted";
+              
+              return (
+                <div 
+                  key={assignment._id} 
+                  className={`group bg-white/80 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 ease-out ${
+                    overdue ? 'ring-2 ring-red-200 bg-red-50/30' : ''
+                  }`}
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-800">{assignment.title}</h2>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4 mb-3">
+                        <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium ${statusConfig.bg} ${statusConfig.text}`}>
+                          {statusConfig.icon}
+                          <span>{statusConfig.label}</span>
+                        </div>
+                        
+                        <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium ${
+                          overdue ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'
+                        }`}>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span>{formatDueDate(assignment.dueDate)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <p className="text-gray-700 leading-relaxed">{assignment.description}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-gray-500">
+                      {/* Assignment ID: {assignment._id.slice(-8)} */}
+                    </div>
+                    {assignment.status !== "expired" && getActionButton(assignment)}
+                  </div>
+
+                  {overdue && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <div className="flex items-center space-x-2 text-red-700">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <span className="text-sm font-medium">This assignment is overdue!</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {openModal && selectedAssignment && (
+          <SubmitModal
+            open={openModal}
+            onClose={handleCloseModal}
+            assignment={selectedAssignment}
+            topicId={topicId!}
+          />
+        )}
+      </div>
     </div>
   );
 }
