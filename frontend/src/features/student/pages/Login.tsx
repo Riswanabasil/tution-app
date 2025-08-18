@@ -100,7 +100,11 @@ const Login = () => {
             />
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
           </div>
-
+          <div className="text-right">
+  <Link to="/student/forgot-password" className="text-sm text-indigo-600 hover:underline">
+    Forgot password?
+  </Link>
+</div>
           <button
             type="submit"
             className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"

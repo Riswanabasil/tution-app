@@ -12,6 +12,7 @@ import ProfilePage from "./pages/ProfilePage";
 import TopicTabsLayout from "./pages/topicViewPages/TopicTabsLayout";
 import NoteTab from "./pages/topicViewPages/NoteTab";
 import AssignmentTab from "./pages/topicViewPages/AssignmentTab";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 const StudentRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const StudentRoutes = () => {
       <Route path="register" element={<Register />} />
       <Route path="verify-otp" element={<VerifyOtp />} />
       <Route path="login" element={<Login />} />
+      <Route path="forgot-password" element={<ForgotPasswordPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<StudentLayout />}>
           <Route path="dashboard" element={<CourseGridPage />} />
