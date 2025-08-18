@@ -25,7 +25,9 @@ export class StudentService implements IStudentService {
     password: string
   ): Promise<{ student: IStudent; token: string }> {
     const existing = await this.studentRepo.findByEmail(email);
-    if (existing) throw new Error("Student already exists");
+    if (existing) {
+      throw new Error("Student already exists")
+    };
 
     const hashedPassword = await this.hasher.hash(password);
 
@@ -114,7 +116,7 @@ async googleLoginStudentService(idToken: string): Promise<{
     student = await this.studentRepo.create({
       name,
       email,
-      password: "", // since it's Google signup
+      password: "", 
       phone: "",
       isGoogleSignup: true,
       isVerified: true,

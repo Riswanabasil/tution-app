@@ -8,6 +8,7 @@ export class StudentRepository
 {
   constructor() {
     super(Student);
+    
   }
 
   async findByEmail(email: string): Promise<IStudent | null> {
@@ -60,5 +61,15 @@ export class StudentRepository
     )
       .select("-password")
       .exec();
+  }
+
+    async updatePasswordByEmail(email: string, passwordHash: string): Promise<void> {
+    const res = await Student.updateOne(
+      { email },
+      { $set: { password: passwordHash } }
+    );
+    if (res.matchedCount === 0) {
+      throw new Error('Account not found');
+    }
   }
 }

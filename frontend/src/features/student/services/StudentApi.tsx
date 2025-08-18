@@ -110,3 +110,25 @@ export const getAvatarUploadUrl = async (
   return res.data;
 };
 
+//forgot password
+
+export async function requestPasswordReset(email: string): Promise<{ message: string }> {
+  const { data } = await axios.post("/student/forgot-password", { email });
+  return data;
+}
+
+export async function verifyResetOtp(email: string, otp: string): Promise<{ message: string }> {
+  const { data } = await axios.post("/student/verify-reset-otp", { email, otp });
+  return data;
+}
+
+export async function resetPasswordWithOtp(params: {
+  email: string;
+  otp: string;
+  newPassword: string;
+  confirmPassword: string;
+}): Promise<{ message: string }> {
+  const { data } = await axios.post("/student/reset-password", params);
+  return data;
+}
+

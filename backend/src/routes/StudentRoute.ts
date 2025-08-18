@@ -25,6 +25,8 @@ import { AssignmentRepository } from "../repositories/assignment/implementation/
 import { SubmissionRepository } from "../repositories/submission/SubmissionRepository";
 import { StudentAssignmentService } from "../services/student/implementation/StudentAssignmentService";
 import { AssignmentController } from "../controllers/student/implementation/AssignmentController";
+import { PasswordResetService } from "../services/student/implementation/PasswordResetService";
+import { PasswordResetController } from "../controllers/student/implementation/PasswordResetController";
 
 
 const router = express.Router();
@@ -38,7 +40,7 @@ const studentOtpRepository= new StudentOtpRepository()
 const studentOtpService= new StudentOtpService(studentOtpRepository,studentRepo)
 const enrollRepository= new EnrollmentRepository()
 const studentService = new StudentService(studentRepo, hasher, otpService, tokenService,enrollRepository);
-const studentController = new StudentController(studentService,studentOtpService);
+const studentController = new StudentController(studentService,studentOtpService,otpService);
 const moduleRepo=new ModuleRepository()
 const tutorRepo=new TutorRepository()
 const courseRepo= new CourseRepository()
@@ -55,7 +57,8 @@ const assignmentRepo=new AssignmentRepository()
 const SubmissionRepo= new SubmissionRepository()
 const assignmentService= new StudentAssignmentService(assignmentRepo,SubmissionRepo)
 const assignmentController= new AssignmentController(assignmentService)
-
+const passwordService= new PasswordResetService(studentOtpRepository,studentRepo,otpService)
+const passwordController= new PasswordResetController(passwordService)
 // Route
 router.post('/register', studentController.registerStudent.bind(studentController));
 router.post("/verify-otp", authMiddleware, studentController.verifyStudentOtp.bind(studentController));
@@ -63,6 +66,10 @@ router.post("/resend-otp", authMiddleware, studentController.resendOtp.bind(stud
 router.post('/login', studentController.loginStudent.bind(studentController));
 router.get('/refresh-token', studentController.refreshAccessToken.bind(studentController))
 router.post('/google-login', studentController.googleLoginStudent.bind(studentController) )
+//forgot-password
+router.post('/forgot-password', passwordController.forgotPassword.bind(passwordController));
+router.post('/verify-reset-otp', passwordController.verifyResetOtp.bind(passwordController));
+router.post('/reset-password', passwordController.resetPassword.bind(passwordController));
 
 //profile
 

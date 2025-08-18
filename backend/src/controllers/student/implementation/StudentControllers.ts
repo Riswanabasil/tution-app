@@ -3,10 +3,12 @@ import { StudentService } from "../../../services/student/implementation/Student
 import { IStudentController } from "../IStudentController";
 import { AuthenticatedRequest } from "../../../types/Index";
 import { IOtpService } from "../../../services/student/IOtpService";
+import { OtpService } from "../../../services/common/OtpService";
 
 export class StudentController implements IStudentController {
   constructor(private studentService: StudentService,
-    private otpService: IOtpService
+    private otpService: IOtpService,
+    private commonOtp:OtpService
   ) {}
 
   async registerStudent(req: Request, res: Response): Promise<void> {
@@ -57,7 +59,6 @@ export class StudentController implements IStudentController {
       res.status(400).json({ message: error.message || "Resend OTP failed" });
     }
   }
-
   async loginStudent(req:Request,res:Response):Promise<void>{
       try{
         const {email,password}=req.body

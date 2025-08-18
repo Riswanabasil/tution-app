@@ -22,4 +22,5 @@ export interface IStudentRepository {
     id: string,
     newHashedPassword: string
   ): Promise<IStudent | null>;
+   updatePasswordByEmail(email: string, passwordHash: string): Promise<void>;
 }
