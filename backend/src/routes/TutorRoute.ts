@@ -25,6 +25,9 @@ import { NoteController } from "../controllers/tutor/implementation/NoteControll
 import { AssignmentRepository } from "../repositories/assignment/implementation/AssignmentRepository";
 import { AssignmentService } from "../services/tutor/implementation/AssignmentService";
 import { AssignmentController } from "../controllers/tutor/implementation/AssignmentController";
+import { VideoRepository } from "../repositories/video/implementation/VideoRepository";
+import { VideoService } from "../services/tutor/implementation/VideoService";
+import { VideoController } from "../controllers/tutor/implementation/VideoController";
 
 const router = express.Router();
 
@@ -52,6 +55,11 @@ const noteController= new NoteController(noteService)
 const assRepo=new AssignmentRepository()
 const assService= new AssignmentService(assRepo,topicRepo,moduleRepo,courseRepo)
 const assController=new AssignmentController(assService)
+//video
+
+const videoRepo = new VideoRepository();          
+const videoService = new VideoService(videoRepo); 
+const videoCtrl = new VideoController(videoService);
 
 
 
@@ -115,5 +123,12 @@ router.get("/assgn/:id", assController.getAssignmentById.bind(assController));
 router.patch("/assgn/:id", assController.updateAssignment.bind(assController));
 router.delete("/assgn/:id", assController.deleteAssignment.bind(assController));
 
+//video
+
+router.get("/videos/upload-url", authMiddleware, videoCtrl.getVideoUploadUrl.bind(videoCtrl));
+router.post("/videos",           authMiddleware, videoCtrl.createVideo.bind(videoCtrl));
+router.get("/videos/topic/:topicId", authMiddleware, videoCtrl.listByTopic.bind(videoCtrl));
+router.patch("/videos/:id",      authMiddleware, videoCtrl.update.bind(videoCtrl));
+router.delete("/videos/:id",     authMiddleware, videoCtrl.remove.bind(videoCtrl));
 
 export default router;
