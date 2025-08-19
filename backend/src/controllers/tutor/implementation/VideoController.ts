@@ -27,7 +27,7 @@ export class VideoController implements IVideoController {
         Bucket: process.env.S3_BUCKET_NAME!,
         Key: key,
         ContentType: contentType,
-        ACL: "public-read",            
+        ACL: "private",            
       });
       const uploadUrl = await getSignedUrl(this.s3, cmd, { expiresIn: 900 });
 

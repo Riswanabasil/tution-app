@@ -4,10 +4,11 @@ import { useParams } from "react-router-dom";
 import NotesTab from "./NotesTab";
 import { useState } from "react";
 import AssignmentTab from "./AssignmentTab"
+import VideosTab from "./VideosTab";
 
 export default function TopicViewPage() {
   const { topicId } = useParams<{ topicId: string }>();
-  const [activeTab, setActiveTab] = useState<"notes" | "assignments" | "live">("notes");
+  const [activeTab, setActiveTab] = useState<"notes" | "assignments" |"videos"| "live">("notes");
 
   const tabs = [
     {
@@ -30,6 +31,16 @@ export default function TopicViewPage() {
       ),
       description: "Tasks and homework"
     },
+    {
+  id: "videos" as const,
+  label: "Videos",
+  icon: (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+    </svg>
+  ),
+  description: "Topic videos"
+},
     {
       id: "live" as const,
       label: "Live Sessions",
@@ -136,6 +147,7 @@ export default function TopicViewPage() {
             <div className="animate-fadeIn">
               {activeTab === "notes" && <NotesTab topicId={topicId!} />}
               {activeTab === "assignments" && <AssignmentTab topicId={topicId!} />}
+              {activeTab === "videos" && <VideosTab topicId={topicId!} />}
               {activeTab === "live" && (
                 <div className="text-center py-16">
                   <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -161,22 +173,6 @@ export default function TopicViewPage() {
           </div>
         </div>
       </div>
-
-      {/* <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-      `}</style> */}
     </div>
   );
 }
