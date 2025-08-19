@@ -37,7 +37,6 @@ export default function VideosTab({ topicId }: Props) {
 
   useEffect(() => { load(); }, [topicId]);
 
-  // read duration from selected file
   const onFileChange = (f: File | null) => {
     setFile(f);
     if (!f) { setDurationSec(0); return; }
@@ -61,7 +60,6 @@ export default function VideosTab({ topicId }: Props) {
       setUploading(true);
 
       if (editing) {
-        // edit metadata only
         await updateVideo(editing._id, { title, description, durationSec });
         Swal.fire("Updated!", "Video updated successfully", "success");
         setOpen(false); resetForm(); load(); return;
@@ -69,16 +67,16 @@ export default function VideosTab({ topicId }: Props) {
 
       if (!file) { Swal.fire("Required", "Select a video file", "warning"); return; }
 
-      // 1) get presigned PUT
+    
       const { uploadUrl, key } = await getVideoUploadUrl(file.name, file.type);
       console.log("uploadUrl",uploadUrl,key);
       
 
-      // 2) PUT to S3
+  
       const putRes = await fetch(uploadUrl, { method: "PUT", headers: { "Content-Type": file.type }, body: file });
       if (!putRes.ok) throw new Error("Upload failed");
 
-      // 3) create DB record
+    
       await createVideo({
         topicId,
         title,

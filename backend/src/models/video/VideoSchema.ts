@@ -11,6 +11,7 @@ export interface IVideo {
   contentType: string;
   url: string;             
   isDeleted: boolean;
+  createdAt?:Date
 }
 
 const VideoSchema = new Schema<IVideo>(
