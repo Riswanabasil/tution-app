@@ -14,6 +14,7 @@ import NoteTab from "./pages/topicViewPages/NoteTab";
 import AssignmentTab from "./pages/topicViewPages/AssignmentTab";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import VideoTab from "./pages/topicViewPages/VideoTab";
+import NotFoundPage from "../../components/NotFoundPage";
 
 const StudentRoutes = () => {
   return (
@@ -38,6 +39,7 @@ const StudentRoutes = () => {
             <Route path="videos" element={<VideoTab />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFoundPage/>} />
       </Route>
     </Routes>
   );

@@ -11,6 +11,7 @@ import ContentArea from "./pages/ContentArea";
 import AddEditModulePage from "./pages/AddEditModulePage";
 import TutorProfilePage from "./pages/TutorProfilePage";
 import TopicViewPage from "./pages/topicTabs/TopicViewPage";
+import NotFoundPage from "../../components/NotFoundPage";
 
 const TutorRoutes = () => {
   return (
@@ -39,6 +40,7 @@ const TutorRoutes = () => {
         </Route>
 
       </Route>
+      <Route path="*" element={<NotFoundPage/>} />
     </Routes>
   );
 };
