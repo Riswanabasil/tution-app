@@ -13,6 +13,7 @@ import TopicTabsLayout from "./pages/topicViewPages/TopicTabsLayout";
 import NoteTab from "./pages/topicViewPages/NoteTab";
 import AssignmentTab from "./pages/topicViewPages/AssignmentTab";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import VideoTab from "./pages/topicViewPages/VideoTab";
 
 const StudentRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const StudentRoutes = () => {
           <Route path="topic/:topicId" element={<TopicTabsLayout />}>
             <Route path="notes" element={<NoteTab />} />
             <Route path="assignments" element={<AssignmentTab />} />
+            <Route path="videos" element={<VideoTab />} />
           </Route>
         </Route>
       </Route>

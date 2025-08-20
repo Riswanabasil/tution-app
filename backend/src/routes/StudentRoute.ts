@@ -27,6 +27,9 @@ import { StudentAssignmentService } from "../services/student/implementation/Stu
 import { AssignmentController } from "../controllers/student/implementation/AssignmentController";
 import { PasswordResetService } from "../services/student/implementation/PasswordResetService";
 import { PasswordResetController } from "../controllers/student/implementation/PasswordResetController";
+import { StudentVideoProgressRepository } from "../repositories/video/implementation/VideoProgressRepository";
+import { StudentVideoService } from "../services/student/implementation/VideoService";
+import { StudentVideoController } from "../controllers/student/implementation/VideoController";
 
 
 const router = express.Router();
@@ -59,6 +62,9 @@ const assignmentService= new StudentAssignmentService(assignmentRepo,SubmissionR
 const assignmentController= new AssignmentController(assignmentService)
 const passwordService= new PasswordResetService(studentOtpRepository,studentRepo,otpService)
 const passwordController= new PasswordResetController(passwordService)
+const videoRepo = new StudentVideoProgressRepository();
+const videoSvc = new StudentVideoService(videoRepo);
+const videoCtrl = new StudentVideoController(videoSvc);
 // Route
 router.post('/register', studentController.registerStudent.bind(studentController));
 router.post("/verify-otp", authMiddleware, studentController.verifyStudentOtp.bind(studentController));
@@ -103,6 +109,10 @@ router.get("/submissions/presigned-url", generatePresignedUrl)
 router.post("/submissions/:assignmentId",authMiddleware,assignmentController.createSubmissionController.bind(assignmentController))
 router.get("/submissions/:assignmentId", authMiddleware,assignmentController.getStudentSubmissionByAssignment.bind(assignmentController));
 router.put("/submission/:assignmentId", authMiddleware,assignmentController.updateSubmissionByAssignment.bind(assignmentController));
+
+//video
+router.get("/topics/:topicId/videos", authMiddleware, videoCtrl.listByTopic.bind(videoCtrl));
+router.post("/videos/:videoId/progress", authMiddleware, videoCtrl.upsertProgress.bind(videoCtrl));
 
 
 
