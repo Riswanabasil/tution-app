@@ -14,6 +14,21 @@ export interface MyCourseDTO {
   course: CourseDetails;
   enrolledAt: string;
 }
+export type StudentVideoItem = {
+  _id: string;
+  title: string;
+  description?: string;
+  durationSec: number;
+  url: string;
+  createdAt: string;
+  progress: {
+    lastPositionSec: number;
+    totalWatchedSec: number;
+    percent: number;
+    completed: boolean;
+  };
+};
+
 
 export const getApprovedCourses = async (
   page = 1,
@@ -102,3 +117,30 @@ export const updateAssignmentResponse = async (assignmentId: string, payload: { 
 //   const res = await axios.get(`/student/submission/${assignmentId}`);
 //   return res.data;
 // };
+
+//videos
+
+export async function listStudentVideosByTopic(topicId: string) {
+  const { data } = await axios.get<StudentVideoItem[]>(`/student/topics/${topicId}/videos`);
+  return data;
+}
+
+export async function upsertVideoProgress(
+  videoId: string,
+  payload: {
+    ranges: { startSec: number; endSec: number }[];
+    lastPositionSec: number;
+    durationSec?: number;
+  }
+) {
+  const { data } = await axios.post(`/student/videos/${videoId}/progress`, payload);
+  return data as {
+    videoId: string;
+    lastPositionSec: number;
+    totalWatchedSec: number;
+    percent: number;
+    completed: boolean;
+    updatedAt: string;
+  };
+}
+
