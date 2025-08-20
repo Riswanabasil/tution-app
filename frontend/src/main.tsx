@@ -9,13 +9,16 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ErrorBoundary from './components/ErrorBoundary.tsx'
   
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
   <GoogleOAuthProvider clientId={clientId}>
   <StrictMode>
-    <App />
+   <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
     <ToastContainer position="top-center" autoClose={3000} />
   </StrictMode>,
   </GoogleOAuthProvider>
