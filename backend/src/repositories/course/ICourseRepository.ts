@@ -16,6 +16,24 @@ export type CourseListItem = {
   status: CourseStatus;
   createdAt: Date;
 };
+export type TutorPendingCourseItem = {
+  _id: string;
+  title: string;
+  code: string;
+  semester: number;
+  createdAt: Date;
+};
+
+export type TutorCourseListItem = {
+  _id: string;
+  title: string;
+  code: string;
+  semester: number;
+  status: CourseStatus;
+  price: number;
+  createdAt: Date;
+};
+
 export type CourseStatus = "pending" | "approved" | "rejected";
 export interface ICourseRepository {
   create(data: Partial<ICourse>): Promise<ICourse>;
@@ -30,4 +48,8 @@ export interface ICourseRepository {
    countByStatusMap(): Promise<Record<CourseStatus, number>>;
   listByStatus(status: CourseStatus, limit: number): Promise<CourseListItem[]>;
   findByIds(ids: string[]): Promise<Array<ICourse>>;
+   countByStatusForTutor(tutorId: string): Promise<Record<CourseStatus, number>>;
+  listIdsByTutor(tutorId: string, statuses?: CourseStatus[]): Promise<string[]>;
+  listPendingForTutor(tutorId: string, limit: number): Promise<TutorPendingCourseItem[]>;
+  listByTutor(tutorId: string, opts: { status?: CourseStatus; skip?: number; limit?: number }): Promise<TutorCourseListItem[]>;
 }

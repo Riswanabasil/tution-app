@@ -45,7 +45,7 @@ export class AdminDashboardService implements IAdminDashboardService {
       this.tutors.countByStatusMap(),
       this.enrollments.sumPaidAmountInRange(r),
       this.enrollments.sumPaidAmountToday(startOfToday()),
-      this.enrollments.sumPaidAmountMonthToDate(startOfMonth()),
+      this.enrollments.sumPaidAmountMonthToDate(new Date()),
       this.enrollments.countFailedLast24h(),
     ]);
 

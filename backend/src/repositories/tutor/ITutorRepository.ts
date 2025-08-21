@@ -52,4 +52,5 @@ export interface ITutorRepository {
     limit: number
   ): Promise<TutorQueueItem[]>;
   findByIds(ids: string[]): Promise<Array<Pick<TutorQueueItem, "_id" | "name" | "email">>>;
+  getWalletBalance(tutorId: string): Promise<number>;
 }

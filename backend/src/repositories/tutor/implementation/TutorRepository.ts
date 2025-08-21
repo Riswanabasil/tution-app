@@ -147,5 +147,8 @@ export class TutorRepository
     createdAt: d.createdAt,
   }));
 }
-
+async getWalletBalance(tutorId: string): Promise<number> {
+  const doc = await Tutor.findById(tutorId).select("walletBalance").lean().exec();
+  return doc?.walletBalance ?? 0;
+}
 }

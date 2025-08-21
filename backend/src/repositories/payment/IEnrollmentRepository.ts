@@ -21,4 +21,17 @@ export interface IEnrollmentRepository{
   revenueSeries(range: DateRange, by: TimeGranularity): Promise<Array<{ period: string; value: number }>>;
   enrollmentSeries(range: DateRange, by: TimeGranularity): Promise<Array<{ period: string; value: number }>>;
   topCoursesByPaid(range: DateRange, limit: number): Promise<Array<{ courseId: string; enrollments: number; revenue: number }>>;
+   sumPaidAmountForCourses(range: DateRange, courseIds: string[]): Promise<number>;
+  revenueSeriesForCourses(range: DateRange, by: TimeGranularity, courseIds: string[]): Promise<Array<{ period: string; value: number }>>;
+  enrollmentSeriesForCourses(range: DateRange, by: TimeGranularity, courseIds: string[]): Promise<Array<{ period: string; value: number }>>;
+  topCoursesByPaidForCourses(range: DateRange, courseIds: string[], limit: number): Promise<Array<{ courseId: string; enrollments: number; revenue: number }>>;
+  countDistinctPaidUsersForCourses(range: DateRange, courseIds: string[]): Promise<number>;
+  countPaidForCourses(range: DateRange, courseIds: string[]): Promise<number>;
+  countFailedLast24hForCourses(now: Date, courseIds: string[]): Promise<number>;
+  recentPaidEnrollmentsForCourses(range: DateRange, courseIds: string[], limit: number): Promise<Array<{
+    date: string; 
+    studentName: string; studentEmail: string;
+    courseId: string; courseTitle: string; courseCode: string;
+    amount: number;
+  }>>;
 }

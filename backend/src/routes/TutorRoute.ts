@@ -28,6 +28,10 @@ import { AssignmentController } from "../controllers/tutor/implementation/Assign
 import { VideoRepository } from "../repositories/video/implementation/VideoRepository";
 import { VideoService } from "../services/tutor/implementation/VideoService";
 import { VideoController } from "../controllers/tutor/implementation/VideoController";
+import { EnrollmentRepository } from "../repositories/payment/implementation/EnrollmentRepository";
+import { AdminDashboardService } from "../services/admin/implementation/AdminDashboardService";
+import { TutorDashboardService } from "../services/tutor/implementation/DashboardService";
+import { TutorDashboardController } from "../controllers/tutor/implementation/DashboardController";
 
 const router = express.Router();
 
@@ -35,64 +39,69 @@ const router = express.Router();
 const tutorRepo = new TutorRepository();
 const hasher = new BcryptHasher();
 const tokenService = new TokenService();
-const tutorService = new TutorService(tutorRepo, hasher,tokenService);
+const tutorService = new TutorService(tutorRepo, hasher, tokenService);
 const tutorController = new TutorController(tutorService);
 const courseRepo = new CourseRepository();
 const courseService = new TutorCourseService(courseRepo);
 const courseController = new TutorCourseController(courseService);
-const moduleRepo       = new ModuleRepository();
-const moduleService    = new TutorModuleService(moduleRepo);
+const moduleRepo = new ModuleRepository();
+const moduleService = new TutorModuleService(moduleRepo);
 const moduleController = new ModuleController(moduleService);
 //topic
-const topicRepo= new TopicRepository()
-const topicService= new TopicService(topicRepo)
-const topicController= new TopicController(topicService)
+const topicRepo = new TopicRepository()
+const topicService = new TopicService(topicRepo)
+const topicController = new TopicController(topicService)
 //note
-const noteRepo= new NoteRepository()
-const noteService= new NoteService(noteRepo)
-const noteController= new NoteController(noteService)
+const noteRepo = new NoteRepository()
+const noteService = new NoteService(noteRepo)
+const noteController = new NoteController(noteService)
 //assignment
-const assRepo=new AssignmentRepository()
-const assService= new AssignmentService(assRepo,topicRepo,moduleRepo,courseRepo)
-const assController=new AssignmentController(assService)
+const assRepo = new AssignmentRepository()
+const assService = new AssignmentService(assRepo, topicRepo, moduleRepo, courseRepo)
+const assController = new AssignmentController(assService)
 //video
 
-const videoRepo = new VideoRepository();          
-const videoService = new VideoService(videoRepo); 
+const videoRepo = new VideoRepository();
+const videoService = new VideoService(videoRepo);
 const videoCtrl = new VideoController(videoService);
+
+//dashboard
+const enrollmentRepo = new EnrollmentRepository();
+const enrollmentService = new TutorDashboardService(courseRepo, enrollmentRepo, tutorRepo);
+const enrollmentController = new TutorDashboardController(enrollmentService)
 
 
 
 
 router.post("/register", tutorController.registerTutor.bind(tutorController));
-router.post("/submit-verification",uploadTutorDocs,tutorController.submitTutorVerification.bind(tutorController));
-router.post("/login",tutorController.loginTutor.bind(tutorController));
-router.post("/logout",tutorController.logoutTutor.bind(tutorController));
+router.post("/submit-verification", uploadTutorDocs, tutorController.submitTutorVerification.bind(tutorController));
+router.post("/login", tutorController.loginTutor.bind(tutorController));
+router.post("/logout", tutorController.logoutTutor.bind(tutorController));
 router.get('/refresh-token', tutorController.refreshAccessToken.bind(tutorController))
 
 //profile
 
-router.get(  "/profile", authMiddleware,tutorController.getProfile.bind(tutorController));
-router.put(  "/profile", authMiddleware,tutorController.updateProfile.bind(tutorController));
-router.put(  "/profile/password", authMiddleware,tutorController.changePassword.bind(tutorController));
-router.get(  "/profile/stats", authMiddleware,tutorController.getStats.bind(tutorController));
-router.get(  "/profile/courses",authMiddleware,tutorController.getMyCourses.bind(tutorController));
-router.get("/profile/upload-url",getProfileUploadUrl )
+router.get("/profile", authMiddleware, tutorController.getProfile.bind(tutorController));
+router.put("/profile", authMiddleware, tutorController.updateProfile.bind(tutorController));
+router.put("/profile/password", authMiddleware, tutorController.changePassword.bind(tutorController));
+router.get("/profile/stats", authMiddleware, tutorController.getStats.bind(tutorController));
+router.get("/profile/courses", authMiddleware, tutorController.getMyCourses.bind(tutorController));
+router.get("/profile/upload-url", getProfileUploadUrl)
 
 //course
 
-router.post("/course" ,authMiddleware,courseController.createCourse.bind(courseController))
-router.get("/courses",authMiddleware,courseController.getAllCourses.bind(courseController));
-router.get('/course/:id',courseController.getCourseById.bind(courseController));
-router.put('/course/:id',courseController.updateCourse.bind(courseController));
-router.delete('/course/:id',courseController.softDeleteCourse.bind(courseController));
+router.post("/course", authMiddleware, courseController.createCourse.bind(courseController))
+router.get("/courses", authMiddleware, courseController.getAllCourses.bind(courseController));
+router.get('/course/:id', courseController.getCourseById.bind(courseController));
+router.put('/course/:id', courseController.updateCourse.bind(courseController));
+router.delete('/course/:id', courseController.softDeleteCourse.bind(courseController));
 router.get("/courses/upload-url", getUploadUrl)
 router.get("/courses/demo-upload-url", getDemoUploadUrl)
-router.patch("/courses/:id/reapply",authMiddleware, courseController.reapplyCourse.bind(courseController));
+router.patch("/courses/:id/reapply", authMiddleware, courseController.reapplyCourse.bind(courseController));
 
 //Module
 
-router.get('/courses/:courseId/modules',authMiddleware, moduleController.list.bind(moduleController));
+router.get('/courses/:courseId/modules', authMiddleware, moduleController.list.bind(moduleController));
 router.post('/courses/:courseId/modules', authMiddleware, moduleController.create.bind(moduleController));
 router.put('/courses/:courseId/modules/:id', authMiddleware, moduleController.update.bind(moduleController))
 router.delete('/courses/:courseId/modules/:id', authMiddleware, moduleController.delete.bind(moduleController));
@@ -109,7 +118,7 @@ router.delete('/topics/:id', topicController.delete.bind(topicController));
 //note
 
 router.post("/note/upload-urls", getNoteUploadUrls)
-router.post("/topic/:topicId/notes", noteController.create.bind(noteController)); 
+router.post("/topic/:topicId/notes", noteController.create.bind(noteController));
 router.get("/topic/:topicId/notes", noteController.getByTopic.bind(noteController));
 router.get("/notes/:id", noteController.getById.bind(noteController));
 router.patch("/notes/:id", noteController.update.bind(noteController));
@@ -127,9 +136,19 @@ router.delete("/assgn/:id", assController.deleteAssignment.bind(assController));
 //video
 
 router.get("/videos/upload-url", authMiddleware, videoCtrl.getVideoUploadUrl.bind(videoCtrl));
-router.post("/videos",           authMiddleware, videoCtrl.createVideo.bind(videoCtrl));
+router.post("/videos", authMiddleware, videoCtrl.createVideo.bind(videoCtrl));
 router.get("/videos/topic/:topicId", authMiddleware, videoCtrl.listByTopic.bind(videoCtrl));
-router.patch("/videos/:id",      authMiddleware, videoCtrl.update.bind(videoCtrl));
-router.delete("/videos/:id",     authMiddleware, videoCtrl.remove.bind(videoCtrl));
+router.patch("/videos/:id", authMiddleware, videoCtrl.update.bind(videoCtrl));
+router.delete("/videos/:id", authMiddleware, videoCtrl.remove.bind(videoCtrl));
+
+//dashboard
+
+router.get("/dashboard/kpis", authMiddleware, enrollmentController.getKpis);
+router.get("/dashboard/revenue", authMiddleware, enrollmentController.getRevenueTrend);
+router.get("/dashboard/enrollments", authMiddleware, enrollmentController.getEnrollmentTrend);
+router.get("/dashboard/top-courses", authMiddleware, enrollmentController.getTopCourses);
+router.get("/dashboard/recent-enrollments", authMiddleware, enrollmentController.getRecentEnrollments);
+router.get("/dashboard/my-courses", authMiddleware, enrollmentController.getMyCoursesOverview);
+router.get("/dashboard/pending-approvals", authMiddleware, enrollmentController.getPendingApprovalsPreview);
 
 export default router;

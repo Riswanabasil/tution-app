@@ -30,7 +30,7 @@ const tutorRepo = new TutorRepository();
 const tutorService = new TutorAdminService(tutorRepo);
 const tutorController = new TutorAdminController(tutorService);
 const courseRepo = new CourseRepository();
-const courseService = new AdminCourseService(courseRepo,tutorRepo);
+const courseService = new AdminCourseService(courseRepo, tutorRepo);
 const courseController = new AdminCourseController(courseService);
 const enrollmentRepo = new EnrollmentRepository()
 const dashboardService = new AdminDashboardService(
@@ -38,40 +38,33 @@ const dashboardService = new AdminDashboardService(
     tutorRepo,
     courseRepo,
     enrollmentRepo
-  )
-  const dashboardController = new AdminDashboardController(dashboardService)
+)
+const dashboardController = new AdminDashboardController(dashboardService)
 
 // route
-router.post("/login",adminController.loginAdmin.bind(adminController));
-router.post("/logout",adminController.logoutAdmin.bind(adminController));
+router.post("/login", adminController.loginAdmin.bind(adminController));
+router.post("/logout", adminController.logoutAdmin.bind(adminController));
 router.get('/refresh-token', adminController.refreshAccessToken.bind(adminController))
 
 //Student
-router.get("/students",adminAuthMiddleware,studentController.getAllStudents.bind(studentController));
-router.patch("/student/:id/block",adminAuthMiddleware,studentController.blockStudent.bind(studentController));
+router.get("/students", adminAuthMiddleware, studentController.getAllStudents.bind(studentController));
+router.patch("/student/:id/block", adminAuthMiddleware, studentController.blockStudent.bind(studentController));
 
 //tutor
-router.get("/tutors",adminAuthMiddleware,tutorController.getAllTutors.bind(tutorController));
-router.get("/tutor/:id",adminAuthMiddleware,tutorController.getTutorById.bind(tutorController));
-router.patch("/tutor/:id/status",adminAuthMiddleware,tutorController.updateTutorStatus.bind(tutorController));
+router.get("/tutors", adminAuthMiddleware, tutorController.getAllTutors.bind(tutorController));
+router.get("/tutor/:id", adminAuthMiddleware, tutorController.getTutorById.bind(tutorController));
+router.patch("/tutor/:id/status", adminAuthMiddleware, tutorController.updateTutorStatus.bind(tutorController));
 
 //course
 router.get("/courses", courseController.listAll);
 router.patch("/courses/:id/status", courseController.updateStatus);
 
 //dashboard
-
- router.get("/dashboard/kpis",adminAuthMiddleware,dashboardController.getKpis);
-  router.get("/dashboard/revenue",adminAuthMiddleware,dashboardController.getRevenueTrend);
-
-  // Enrollment trend (query: from=ISO&to=ISO&granularity=daily|monthly)
-  router.get("/dashboard/enrollments",adminAuthMiddleware,dashboardController.getEnrollmentTrend );
-
-  // Top courses (query: from=ISO&to=ISO&limit=5)
-  router.get("/dashboard/top-courses",adminAuthMiddleware,dashboardController.getTopCourses);
-
-  // Approval queues (query: limit=10)
-  router.get("/dashboard/approval-queues",adminAuthMiddleware,dashboardController.getApprovalQueues);
+router.get("/dashboard/kpis", adminAuthMiddleware, dashboardController.getKpis);
+router.get("/dashboard/revenue", adminAuthMiddleware, dashboardController.getRevenueTrend);
+router.get("/dashboard/enrollments", adminAuthMiddleware, dashboardController.getEnrollmentTrend);
+router.get("/dashboard/top-courses", adminAuthMiddleware, dashboardController.getTopCourses);
+router.get("/dashboard/approval-queues", adminAuthMiddleware, dashboardController.getApprovalQueues);
 
 
 
