@@ -42,3 +42,12 @@ const courseSchema = new mongoose.Schema<ICourse>({
 });
 
 export const Course = mongoose.model<ICourse>('Course', courseSchema);
+courseSchema.index(
+  { status: 1, createdAt: -1 },
+  { partialFilterExpression: { deletedAt: { $exists: false } } }
+);
+courseSchema.index(
+  { semester: 1, status: 1 },
+  { partialFilterExpression: { deletedAt: { $exists: false } } }
+);
+courseSchema.index({ tutor: 1, status: 1 });

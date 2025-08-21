@@ -20,5 +20,8 @@ const EnrollmentSchema = new Schema<IEnrollment>({
   status:    { type: String, enum: ["pending","paid","failed"], default: "pending" },
   amount:    { type: Number, required: true },
 }, { timestamps: true });
+EnrollmentSchema.index({ status: 1, createdAt: 1 });
+EnrollmentSchema.index({ status: 1, courseId: 1, createdAt: 1 });
+EnrollmentSchema.index({ status: 1, userId: 1, createdAt: 1 });
 
 export const EnrollmentModel = model<IEnrollment>("Enrollment", EnrollmentSchema);

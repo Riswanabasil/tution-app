@@ -46,4 +46,6 @@ const tutorSchema= new Schema<ITutor>({
 },{ timestamps: true })
 
 const Tutor = mongoose.model<ITutor>('Tutor', tutorSchema);
+tutorSchema.index({ status: 1, createdAt: -1 });
+tutorSchema.index({ email: 1 }, { unique: true });
 export default Tutor;

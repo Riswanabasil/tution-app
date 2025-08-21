@@ -34,4 +34,7 @@ const studentSchema = new Schema<IStudent>(
   }
 );
 const Student = mongoose.model<IStudent>("Student", studentSchema);
+studentSchema.index({ isVerified: 1 });
+studentSchema.index({ isBlocked: 1 });
+studentSchema.index({ createdAt: -1 });
 export default Student;

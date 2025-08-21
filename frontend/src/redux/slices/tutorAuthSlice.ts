@@ -20,18 +20,17 @@ const initialState: TutorAuthState = {
 };
 
 export const loginTutorThunk = createAsyncThunk<
-  string, // return: accessToken
+  string, 
   { email: string; password: string },
   { rejectValue: string }
 >("tutor/login", async (payload, thunkAPI) => {
   try {
-    const res = await loginTutor(payload); // expects { accessToken } or throws with message
+    const res = await loginTutor(payload); 
     localStorage.setItem(LS_KEY, res.accessToken);
     return res.accessToken;
   } catch (err) {
     const e = err as AxiosError<{ message?: string }>;
     const msg = e.response?.data?.message || "Login failed";
-    // pass through VERIFICATION_PENDING so the UI can redirect
     return thunkAPI.rejectWithValue(msg);
   }
 });
@@ -40,7 +39,6 @@ export const logoutTutorThunk = createAsyncThunk(
   "tutor/logout",
   async (_, thunkAPI) => {
     try {
-      // if you have a server logout, keep this:
       await logoutTutor();
       localStorage.removeItem(LS_KEY);
       return;
