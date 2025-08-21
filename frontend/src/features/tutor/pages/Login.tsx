@@ -140,7 +140,7 @@ const TutorLogin = () => {
     useForm<LoginFormData>({ resolver: yupResolver(schema) });
 
   useEffect(() => { if (error) setErrorMsg(error); }, [error]);
-  useEffect(() => { if (isAuthenticated) navigate("/tutor/courses"); }, [isAuthenticated, navigate]);
+  useEffect(() => { if (isAuthenticated) navigate("/tutor/dashboard"); }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data: LoginFormData) => {
     setErrorMsg("");

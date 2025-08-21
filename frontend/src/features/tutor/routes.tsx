@@ -12,6 +12,7 @@ import AddEditModulePage from "./pages/AddEditModulePage";
 import TutorProfilePage from "./pages/TutorProfilePage";
 import TopicViewPage from "./pages/topicTabs/TopicViewPage";
 import NotFoundPage from "../../components/NotFoundPage";
+import TutorDashboardPage from "./pages/DashboardPage";
 
 const TutorRoutes = () => {
   return (
@@ -21,12 +22,13 @@ const TutorRoutes = () => {
       <Route path="verification-status" element={<TutorVerificationStatus />} />
       <Route path="login" element={<TutorLogin />} />
       <Route element={<TutorLayout />}>
+        <Route path="dashboard" element={<TutorDashboardPage />} />
         <Route path="courses" element={<CourseListPage />} />
         <Route path="courses/add" element={<AddEditCoursePage />} />
         <Route path="courses/:id/edit" element={<AddEditCoursePage />} />
         <Route path="profile" element={<TutorProfilePage />} />
-         <Route path="topic/:topicId" element={<TopicViewPage />} >
-         </Route>
+        <Route path="topic/:topicId" element={<TopicViewPage />} >
+        </Route>
         <Route
           path="courses/:courseId/content"
           element={<CourseContentLayout />}
@@ -40,7 +42,7 @@ const TutorRoutes = () => {
         </Route>
 
       </Route>
-      <Route path="*" element={<NotFoundPage/>} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 };
