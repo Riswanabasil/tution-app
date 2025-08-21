@@ -1,4 +1,12 @@
 import { ITutor } from "../../models/tutor/TutorSchema";
+export type TutorStatus = "pending" | "verification-submitted" | "approved" | "rejected";
+export type TutorQueueItem = {
+  _id: string;
+  name: string;
+  email: string;
+  status: TutorStatus;
+  createdAt: Date;
+};
 
 export interface ITutorRepository {
   create(student: Partial<ITutor>): Promise<ITutor>;
@@ -37,4 +45,12 @@ export interface ITutorRepository {
   >;
 
   incrementWallet(tutorId: string, amount: number): Promise<void>;
+  countByStatusMap(): Promise<Record<TutorStatus, number>>;
+  findByIds(ids: string[]): Promise<Array<Pick<ITutor, "_id" | "name" | "email">>>;
+  listByStatuses(
+    statuses: Array<"pending" | "verification-submitted">,
+    limit: number
+  ): Promise<TutorQueueItem[]>;
+  findByIds(ids: string[]): Promise<Array<Pick<TutorQueueItem, "_id" | "name" | "email">>>;
+  getWalletBalance(tutorId: string): Promise<number>;
 }

@@ -12,6 +12,9 @@ import { TokenService } from "../services/common/TokenService";
 import { CourseRepository } from "../repositories/course/implementation/CourseRepository";
 import { AdminCourseService } from "../services/admin/implementation/CourseService";
 import { AdminCourseController } from "../controllers/admin/CourseAdminController";
+import { EnrollmentRepository } from "../repositories/payment/implementation/EnrollmentRepository";
+import { AdminDashboardService } from "../services/admin/implementation/AdminDashboardService";
+import AdminDashboardController from "../controllers/admin/AdminDashboardController";
 
 
 const router = express.Router();
@@ -26,27 +29,45 @@ const studentController = new StudentAdminController(studentService);
 const tutorRepo = new TutorRepository();
 const tutorService = new TutorAdminService(tutorRepo);
 const tutorController = new TutorAdminController(tutorService);
-const repo = new CourseRepository();
-const service = new AdminCourseService(repo,tutorRepo);
-const controller = new AdminCourseController(service);
+const courseRepo = new CourseRepository();
+const courseService = new AdminCourseService(courseRepo, tutorRepo);
+const courseController = new AdminCourseController(courseService);
+const enrollmentRepo = new EnrollmentRepository()
+const dashboardService = new AdminDashboardService(
+    studentRepo,
+    tutorRepo,
+    courseRepo,
+    enrollmentRepo
+)
+const dashboardController = new AdminDashboardController(dashboardService)
 
 // route
-router.post("/login",adminController.loginAdmin.bind(adminController));
-router.post("/logout",adminController.logoutAdmin.bind(adminController));
+router.post("/login", adminController.loginAdmin.bind(adminController));
+router.post("/logout", adminController.logoutAdmin.bind(adminController));
 router.get('/refresh-token', adminController.refreshAccessToken.bind(adminController))
 
 //Student
-router.get("/students",adminAuthMiddleware,studentController.getAllStudents.bind(studentController));
-router.patch("/student/:id/block",adminAuthMiddleware,studentController.blockStudent.bind(studentController));
+router.get("/students", adminAuthMiddleware, studentController.getAllStudents.bind(studentController));
+router.patch("/student/:id/block", adminAuthMiddleware, studentController.blockStudent.bind(studentController));
 
 //tutor
-router.get("/tutors",adminAuthMiddleware,tutorController.getAllTutors.bind(tutorController));
-router.get("/tutor/:id",adminAuthMiddleware,tutorController.getTutorById.bind(tutorController));
-router.patch("/tutor/:id/status",adminAuthMiddleware,tutorController.updateTutorStatus.bind(tutorController));
+router.get("/tutors", adminAuthMiddleware, tutorController.getAllTutors.bind(tutorController));
+router.get("/tutor/:id", adminAuthMiddleware, tutorController.getTutorById.bind(tutorController));
+router.patch("/tutor/:id/status", adminAuthMiddleware, tutorController.updateTutorStatus.bind(tutorController));
 
 //course
-router.get("/courses", controller.listAll);
-router.patch("/courses/:id/status", controller.updateStatus);
+router.get("/courses", courseController.listAll);
+router.patch("/courses/:id/status", courseController.updateStatus);
+
+//dashboard
+router.get("/dashboard/kpis", adminAuthMiddleware, dashboardController.getKpis);
+router.get("/dashboard/revenue", adminAuthMiddleware, dashboardController.getRevenueTrend);
+router.get("/dashboard/enrollments", adminAuthMiddleware, dashboardController.getEnrollmentTrend);
+router.get("/dashboard/top-courses", adminAuthMiddleware, dashboardController.getTopCourses);
+router.get("/dashboard/approval-queues", adminAuthMiddleware, dashboardController.getApprovalQueues);
+
+
+
 
 
 export default router;
