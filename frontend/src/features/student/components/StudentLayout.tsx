@@ -1,13 +1,19 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom'
+import { logoutStudentThunk } from '../../../redux/slices/studentAuthSlice';
+import type { AppDispatch } from "../../../redux/store";
+import { useDispatch } from 'react-redux';
 
 export default function StudentLayout() {
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    navigate("/student/login");
-  };
-
+  const dispatch = useDispatch<AppDispatch>();
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutStudentThunk()).unwrap();
+      navigate("/student/login", { replace: true });
+    } catch (e) {
+      console.error("Logout failed", e);
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <nav className="bg-white shadow-lg border-b border-gray-200">

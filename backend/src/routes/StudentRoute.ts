@@ -70,6 +70,7 @@ router.post('/register', studentController.registerStudent.bind(studentControlle
 router.post("/verify-otp", authMiddleware, studentController.verifyStudentOtp.bind(studentController));
 router.post("/resend-otp", authMiddleware, studentController.resendOtp.bind(studentController));
 router.post('/login', studentController.loginStudent.bind(studentController));
+router.post("/logout",studentController.logoutStudent.bind(studentController));
 router.get('/refresh-token', studentController.refreshAccessToken.bind(studentController))
 router.post('/google-login', studentController.googleLoginStudent.bind(studentController) )
 //forgot-password

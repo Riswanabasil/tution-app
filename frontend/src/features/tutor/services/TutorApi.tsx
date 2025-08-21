@@ -64,7 +64,9 @@ export const loginTutor = async (data: LoginPayload) => {
 
   return res.data;
 };
-
+export const logoutTutor = async () => {
+  await axios.post("/tutor/logout");
+};
 export const getCourses = async (
   page = 1,
   limit = 10,

@@ -80,7 +80,14 @@ export class StudentController implements IStudentController {
       res.status(401).json({ message: error.message || 'Login failed' });
     }
     }
-
+  async logoutStudent(req: Request, res: Response): Promise<void> {
+     res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+    res.status(200).json({ message: "Student logged out successfully" });
+  }
 
     async refreshAccessToken(req: Request, res: Response): Promise<void> {
   try {

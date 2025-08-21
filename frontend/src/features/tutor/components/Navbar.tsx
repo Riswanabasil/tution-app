@@ -1,12 +1,20 @@
 import { useNavigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutTutorThunk } from "../../../redux/slices/tutorAuthSlice";
+import type { AppDispatch, RootState } from "../../../redux/store";
 
 const Navbar = () => {
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("tutorAccessToken");
-    navigate("/tutor/login");
-  };
+const dispatch = useDispatch<AppDispatch>();
+const { loading } = useSelector((s: RootState) => s.tutorAuth);
+ const handleLogout = async () => {
+     try {
+       await dispatch(logoutTutorThunk()).unwrap();
+       navigate("/tutor/login", { replace: true });
+     } catch (e) {
+       console.error("Logout failed", e);
+     }
+   }
 
   return (
     <header className="w-full bg-white/95 backdrop-blur-sm border-b border-slate-200 px-6 py-4 sticky top-0 z-50">
@@ -68,7 +76,7 @@ const Navbar = () => {
               <svg className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
-              Logout
+              {loading ? "Logging out..." : "Logout"}
             </div>
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-red-500 to-pink-500 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
           </button>
