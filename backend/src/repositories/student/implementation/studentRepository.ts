@@ -72,4 +72,11 @@ export class StudentRepository
       throw new Error('Account not found');
     }
   }
+    async countAll(): Promise<number> {
+    return Student.countDocuments({});
+  }
+
+  async countVerified(): Promise<number> {
+    return Student.countDocuments({ isVerified: true });
+  }
 }

@@ -1,6 +1,6 @@
 import Tutor, { ITutor } from "../../../models/tutor/TutorSchema";
 import { Course, ICourse } from "../../../models/course/CourseSchema";
-import { ITutorRepository } from "../ITutorRepository";
+import { ITutorRepository, TutorQueueItem } from "../ITutorRepository";
 import { BaseRepository } from "../../base/BaseRepository";
 import { EnrollmentModel } from "../../../models/payment/Enrollment";
 
@@ -61,27 +61,6 @@ export class TutorRepository
     return !!updated;
   }
 
-  // async assignCoursesToTutor(
-  //   tutorId: string,
-  //   courseIds: string[]
-  // ): Promise<ITutor | null> {
-  //   const updatedTutor = Tutor.findByIdAndUpdate(
-  //     tutorId,
-  //     { assignedCourses: courseIds },
-  //     { new: true }
-  //   ).populate("assignedCourses");
-
-  //   return updatedTutor;
-  // }
-
-  // async findCoursesByTutorId(tutorId: string): Promise<ICourse[]> {
-  //   const tutor = await Tutor.findById(tutorId).populate<{
-  //     assignedCourses: ICourse[];
-  //   }>("assignedCourses");
-
-  //   return (tutor?.assignedCourses as ICourse[]) || [];
-  // }
-
   async updateById(id: string, updates: any) {
     return Tutor.findByIdAndUpdate(id, updates, { new: true })
       .select("-password")
@@ -130,5 +109,43 @@ export class TutorRepository
       { new: true }
     ).exec();
   }
-  
+   async countByStatusMap(): Promise<Record<"pending" | "verification-submitted" | "approved" | "rejected", number>> {
+    const rows = await (await import("../../../models/tutor/TutorSchema")).default.aggregate<{ _id: string; n: number }>([
+      { $group: { _id: "$status", n: { $sum: 1 } } }
+    ]).exec();
+    return {
+      pending: rows.find(r => r._id === "pending")?.n ?? 0,
+      "verification-submitted": rows.find(r => r._id === "verification-submitted")?.n ?? 0,
+      approved: rows.find(r => r._id === "approved")?.n ?? 0,
+      rejected: rows.find(r => r._id === "rejected")?.n ?? 0,
+    };
+  }
+
+  async findByIds(ids: string[]) {
+    return Tutor.find({ _id: { $in: ids } })
+      .select("_id name email")
+      .lean()
+      .exec();
+  }
+
+ async listByStatuses(
+  statuses: Array<"pending" | "verification-submitted">,
+  limit: number
+): Promise<TutorQueueItem[]> {
+  const docs = await Tutor.find({ status: { $in: statuses } })
+    .select("_id name email status createdAt")
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean()        
+    .exec();
+
+  return docs.map((d: any) => ({
+    _id: String(d._id),
+    name: d.name,
+    email: d.email,
+    status: d.status,
+    createdAt: d.createdAt,
+  }));
+}
+
 }
