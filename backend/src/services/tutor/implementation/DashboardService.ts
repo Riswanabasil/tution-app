@@ -146,19 +146,12 @@ export class TutorDashboardService implements ITutorDashboardService {
       limit: opts?.limit ?? 50,
       skip: opts?.skip ?? 0,
     });
-
-    // total count (for pagination UI)
     const totalFilter: any = { tutor: tutorId };
     if (opts?.status) totalFilter.status = opts.status;
-    // reuse your existing generic countDocuments(filter)
     const total = await this.courses.countDocuments(totalFilter);
 
     const ids = list.map(c => String(c._id));
     if (!ids.length) return { items: [], total };
-
-    // Get per-course enrollments & revenue in the range.
-    // Using "top" API with limit = ids.length will return stats for those that have data;
-    // others default to zeros.
     const stats = await this.enrollments.topCoursesByPaidForCourses(range, ids, ids.length);
     const statMap = new Map(stats.map(s => [s.courseId, s]));
 

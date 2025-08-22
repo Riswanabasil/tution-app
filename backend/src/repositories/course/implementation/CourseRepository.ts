@@ -118,7 +118,7 @@ async listPendingForTutor(tutorId: string, limit: number): Promise<TutorPendingC
     title: d.title,
     code: d.code,
     semester: d.semester,
-    createdAt: d.createdAt as Date, // 👈 assert it's there
+    createdAt: d.createdAt as Date, 
   }));
 }
 
@@ -147,7 +147,7 @@ async listByTutor(
     semester: d.semester,
     status: d.status,
     price: d.price,
-    createdAt: d.createdAt as Date, // 👈 assert
+    createdAt: d.createdAt as Date, 
   }));
 }
 }

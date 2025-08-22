@@ -9,7 +9,7 @@ function parseDateRange(q: Request["query"]): DateRange {
   const to = q.to ? new Date(String(q.to)) : new Date();
   const from = q.from
     ? new Date(String(q.from))
-    : new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000); // last 30d
+    : new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
   return { from, to };
 }
 

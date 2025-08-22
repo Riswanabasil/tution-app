@@ -30,6 +30,9 @@ import { PasswordResetController } from "../controllers/student/implementation/P
 import { StudentVideoProgressRepository } from "../repositories/video/implementation/VideoProgressRepository";
 import { StudentVideoService } from "../services/student/implementation/VideoService";
 import { StudentVideoController } from "../controllers/student/implementation/VideoController";
+import { ReviewRepository } from "../repositories/review/implementation/ReviewRepository";
+import { ReviewService } from "../services/student/implementation/ReviewService";
+import ReviewController from "../controllers/student/implementation/reviewController";
 
 
 const router = express.Router();
@@ -65,6 +68,9 @@ const passwordController= new PasswordResetController(passwordService)
 const videoRepo = new StudentVideoProgressRepository();
 const videoSvc = new StudentVideoService(videoRepo);
 const videoCtrl = new StudentVideoController(videoSvc);
+const reviewRepo = new ReviewRepository();
+const  reviewService= new ReviewService(reviewRepo);
+const reviewCtrl = new ReviewController(reviewService);
 // Route
 router.post('/register', studentController.registerStudent.bind(studentController));
 router.post("/verify-otp", authMiddleware, studentController.verifyStudentOtp.bind(studentController));
@@ -114,6 +120,14 @@ router.put("/submission/:assignmentId", authMiddleware,assignmentController.upda
 //video
 router.get("/topics/:topicId/videos", authMiddleware, videoCtrl.listByTopic.bind(videoCtrl));
 router.post("/videos/:videoId/progress", authMiddleware, videoCtrl.upsertProgress.bind(videoCtrl));
+
+//review
+router.post("/reviews",authMiddleware,reviewCtrl.create.bind(reviewCtrl));
+router.get("/reviews/:id",authMiddleware,reviewCtrl.getById.bind(reviewCtrl));
+router.get("/courses/:courseId/reviews",authMiddleware, reviewCtrl.listByCourse.bind(reviewCtrl));
+router.get("/courses/:courseId/reviews/stats",authMiddleware, reviewCtrl.stats.bind(reviewCtrl));
+router.patch("/reviews/:id",authMiddleware, reviewCtrl.update.bind(reviewCtrl));
+router.delete("/reviews/:id",authMiddleware, reviewCtrl.remove.bind(reviewCtrl));
 
 
 

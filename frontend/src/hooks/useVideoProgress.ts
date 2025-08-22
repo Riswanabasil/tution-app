@@ -31,12 +31,9 @@ export default function useVideoProgress({
   const lastTickRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
 
-  // attach to <video>
   const ref = useCallback((node: HTMLVideoElement | null) => {
     if (!node) return;
     videoRef.current = node;
-
-    // resume position
     if (resumeAt && resumeAt > 0) {
       try { node.currentTime = resumeAt; } catch {}
     }
@@ -50,7 +47,7 @@ export default function useVideoProgress({
         setRanges(prev => mergeRanges([...prev, { startSec: last, endSec: now }]));
         lastTickRef.current = now;
       } else {
-        lastTickRef.current = now; // seeking backwards
+        lastTickRef.current = now; 
       }
     };
     const onPauseOrEnded = () => {
@@ -75,7 +72,6 @@ export default function useVideoProgress({
     };
   }, [resumeAt]);
 
-  // periodic sync + final flush
   useEffect(() => {
     const send = async () => {
       const v = videoRef.current;
@@ -86,9 +82,8 @@ export default function useVideoProgress({
           lastPositionSec: Math.floor(v.currentTime),
           durationSec: durationSecFromDb || Math.floor(v.duration || 0) || undefined,
         });
-        // optional: clear ranges after successful sync to keep payload small
-        // setRanges([]);
-      } catch { /* ignore */ }
+        
+      } catch {  }
     };
 
     const id = window.setInterval(send, syncEveryMs);
@@ -99,7 +94,7 @@ export default function useVideoProgress({
     return () => {
       window.clearInterval(id);
       document.removeEventListener("visibilitychange", onVisibility);
-      send(); // final flush
+      send(); 
     };
   }, [ranges, videoId, durationSecFromDb, syncEveryMs]);
 
