@@ -1,10 +1,28 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ITutorCourseService } from "../../../services/tutor/ITutorCourseService";
 import { AuthenticatedRequest } from "../../../types/Index";
 import { ICourse } from "../../../models/course/CourseSchema";
+import { presignPutObject } from "../../../utils/s3Presign";
 
 export class TutorCourseController {
   constructor(private courseService: ITutorCourseService) {}
+
+ async getUploadUrl(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { filename, contentType } = req.query as { filename: string; contentType: string };
+    const data = await presignPutObject({ keyPrefix: "courses", filename, contentType });
+    res.json(data);
+  } catch (err) { next(err); }
+}
+
+ async getDemoUploadUrl(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { filename, contentType } = req.query as { filename: string; contentType: string };
+    const data = await presignPutObject({ keyPrefix: "videos", filename, contentType });
+    res.json(data);
+  } catch (err) { next(err); }
+}
+
 
   async createCourse(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {

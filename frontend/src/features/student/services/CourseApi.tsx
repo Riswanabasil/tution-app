@@ -1,5 +1,6 @@
 
-import axios from '../../../api/AxiosInstance'
+import { getAxios } from "../../../api/Axios";
+const axios = getAxios("student");
 import type { CourseDetails, ICourse, Module } from '../../../types/course';
 import type { Note } from '../../../types/note';
 

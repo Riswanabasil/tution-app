@@ -5,7 +5,7 @@ import { DateRange, IEnrollmentRepository, TimeGranularity } from "../IEnrollmen
  // helper
 function toObjectIds(ids: string[]) { return ids.map(id => new Types.ObjectId(id)); }
 function matchPaid(range: DateRange, courseIds: string[]) {
-  if (!courseIds.length) return { _id: { $exists: false } }; // return empty set fast
+  if (!courseIds.length) return { _id: { $exists: false } }; 
   return {
     status: "paid",
     courseId: { $in: toObjectIds(courseIds) },

@@ -8,7 +8,7 @@
 //   const { videoRef } = useVideoProgress({ videoId, resumeAt, durationSecFromDb });
 //   return <video ref={videoRef} className="w-full rounded-lg bg-black" src={src} controls preload="metadata" />;
 // }
-import { X } from "lucide-react"; // nice icon library
+import { X } from "lucide-react";
 import useVideoProgress from "../../../../hooks/useVideoProgress";
 
 export default function VideoPlayerWithProgress({
@@ -16,7 +16,7 @@ export default function VideoPlayerWithProgress({
   src,
   durationSecFromDb,
   resumeAt,
-  onClose, // allow parent to control closing
+  onClose,
 }: {
   videoId: string;
   src: string;

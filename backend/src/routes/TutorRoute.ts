@@ -9,7 +9,7 @@ import { CourseRepository } from "../repositories/course/implementation/CourseRe
 import { TutorCourseService } from "../services/tutor/implementation/TutorCourseService";
 import { TutorCourseController } from "../controllers/tutor/implementation/TutorCourseController";
 import { authMiddleware } from "../middlewares/authMiddleware";
-import { getDemoUploadUrl, getNoteUploadUrls, getProfileUploadUrl, getUploadUrl } from "../controllers/tutor/implementation/upload.controller";
+import { getDemoUploadUrl, getNoteUploadUrls, getProfileUploadUrl, } from "../controllers/tutor/implementation/upload.controller";
 import { ModuleRepository } from '../repositories/module/implementation/ModuleRepository';
 import { TutorModuleService } from '../services/tutor/implementation/ModuleService';
 import { ModuleController } from '../controllers/tutor/implementation/ModuleController';
@@ -95,8 +95,8 @@ router.get("/courses", authMiddleware, courseController.getAllCourses.bind(cours
 router.get('/course/:id', courseController.getCourseById.bind(courseController));
 router.put('/course/:id', courseController.updateCourse.bind(courseController));
 router.delete('/course/:id', courseController.softDeleteCourse.bind(courseController));
-router.get("/courses/upload-url", getUploadUrl)
-router.get("/courses/demo-upload-url", getDemoUploadUrl)
+router.get("/courses/upload-url", courseController.getUploadUrl)
+router.get("/courses/demo-upload-url", courseController.getDemoUploadUrl)
 router.patch("/courses/:id/reapply", authMiddleware, courseController.reapplyCourse.bind(courseController));
 
 //Module

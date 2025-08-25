@@ -1,4 +1,5 @@
-import adminAxios from "../../../api/AxiosAdmin";
+import { getAxios } from "../../../api/Axios";
+const adminAxios = getAxios("admin");
 import type { ICourse } from "../../../types/course";
 
 export interface IPaginatedCourses {

@@ -1,4 +1,5 @@
-import axios from '../../../api/TutorAxios';
+import { getAxios } from "../../../api/Axios";
+const axios = getAxios("tutor");
 import type { IAssignment } from '../../../types/assignment';
 type Assignment = {
   _id: string;

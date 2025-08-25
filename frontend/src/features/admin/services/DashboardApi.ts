@@ -1,4 +1,5 @@
-import api from "../../../api/AxiosAdmin"; 
+import { getAxios } from "../../../api/Axios";
+const api = getAxios("admin");
 
 export type TimeGranularity = "daily" | "monthly";
 export type CourseStatus = "pending" | "approved" | "rejected";

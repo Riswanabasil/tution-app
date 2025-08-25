@@ -1,4 +1,5 @@
-import axios from '../../../api/TutorAxios';
+import { getAxios } from "../../../api/Axios";
+const axios = getAxios("tutor");
 import type { Module } from '../../../types/module';
 import type { Topic, TopicForm } from '../../../types/topic';
 

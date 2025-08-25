@@ -24,7 +24,7 @@ export class AdminCourseService {
     search?: string
   ): Promise<PaginatedCourses> {
     const skip = (page - 1) * limit;
-    const filter: any = {};
+    const filter: any = {deletedAt: { $exists: false }};
     if (status) filter.status = status;
     if (search) {
       const re = new RegExp(search, "i");

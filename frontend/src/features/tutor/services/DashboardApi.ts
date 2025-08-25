@@ -1,4 +1,5 @@
-import api from "../../../api/TutorAxios";
+import { getAxios } from "../../../api/Axios";
+const api = getAxios("tutor");
 
 export type TimeGranularity = "daily" | "monthly";
 export type CourseStatus = "pending" | "approved" | "rejected";

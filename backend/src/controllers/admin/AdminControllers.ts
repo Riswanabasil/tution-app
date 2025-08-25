@@ -1,13 +1,16 @@
 import { Request, Response } from "express";
-import { AdminService, LoginAdminResponse } from "../../services/admin/implementation/AdminService";
+import { IAdminController } from "./IAdminController";
+import { IAdminService } from "../../services/admin/IAdminService";
+import { HttpStatus } from "../../constants/statusCode";
+// import { LoginAdminResponseDTO } from "../../dto/admin/adminAuth";
 
-export class AdminController {
-  constructor(private adminService: AdminService) {}
+export class AdminController implements IAdminController {
+  constructor(private adminService: IAdminService) {}
 
   async loginAdmin(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
-      const result: LoginAdminResponse = await this.adminService.loginAdmin(
+      const result= await this.adminService.loginAdmin(
         email,
         password
       );
@@ -19,12 +22,12 @@ export class AdminController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res.status(200).json({
+      res.status(HttpStatus.OK).json({
         message: "Admin login successful",
         accessToken: result.accessToken,
       });
     } catch (error: any) {
-      res.status(401).json({ message: error.message || "Login failed" });
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || "Login failed" });
     }
   }
 
@@ -34,7 +37,7 @@ export class AdminController {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
   });
-    res.status(200).json({ message: "Admin logged out successfully" });
+    res.status(HttpStatus.OK).json({ message: "Admin logged out successfully" });
   }
 
    async refreshAccessToken(req: Request, res: Response): Promise<void> {
@@ -42,15 +45,15 @@ export class AdminController {
     const refreshToken = req.cookies.adminRefreshToken;
 
     if (!refreshToken) {
-      res.status(401).json({ message: 'No refresh token provided' });
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: 'No refresh token provided' });
       return;
     }
 
     const newAccessToken = await this.adminService.refreshAccessToken(refreshToken);
 
-    res.status(200).json({ accessToken: newAccessToken });
+    res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
   } catch (error: any) {
-    res.status(403).json({ message: error.message || 'Invalid refresh token' });
+    res.status(HttpStatus.FORBIDDEN).json({ message: error.message || 'Invalid refresh token' });
   }
 }
 }

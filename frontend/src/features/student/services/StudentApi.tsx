@@ -1,4 +1,5 @@
-import axios from "../../../api/AxiosInstance.tsx";
+import { getAxios } from "../../../api/Axios";
+const axios = getAxios("student");
 
 export interface ProfileDTO {
   name:       string;

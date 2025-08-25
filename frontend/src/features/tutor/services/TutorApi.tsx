@@ -1,4 +1,5 @@
-import axios from "../../../api/TutorAxios";
+import { getAxios } from "../../../api/Axios";
+const axios = getAxios("tutor");
 import type { ICourse } from "../../../types/course";
 interface LoginPayload {
   email: string;

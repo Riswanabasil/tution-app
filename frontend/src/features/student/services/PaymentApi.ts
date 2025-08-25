@@ -1,4 +1,5 @@
-import axios from "../../../api/AxiosInstance";
+import { getAxios } from "../../../api/Axios";
+const axios = getAxios("student");
 import type { RazorpayPaymentResponse } from "../../../types/razorpay";
 
 export interface CreateOrderResponse {

@@ -15,6 +15,7 @@ import { AdminCourseController } from "../controllers/admin/CourseAdminControlle
 import { EnrollmentRepository } from "../repositories/payment/implementation/EnrollmentRepository";
 import { AdminDashboardService } from "../services/admin/implementation/AdminDashboardService";
 import AdminDashboardController from "../controllers/admin/AdminDashboardController";
+import { IAdminController } from "../controllers/admin/IAdminController";
 
 
 const router = express.Router();
@@ -22,7 +23,7 @@ const router = express.Router();
 // DI
 const tokenService = new TokenService();
 const adminService = new AdminService(tokenService);
-const adminController = new AdminController(adminService);
+const adminController:IAdminController = new AdminController(adminService);
 const studentRepo = new StudentRepository();
 const studentService = new StudentAdminService(studentRepo);
 const studentController = new StudentAdminController(studentService);

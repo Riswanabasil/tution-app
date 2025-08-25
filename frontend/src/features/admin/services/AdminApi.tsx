@@ -1,4 +1,5 @@
-import adminAxios from "../../../api/AxiosAdmin";
+import { getAxios } from "../../../api/Axios";
+const adminAxios = getAxios("admin");
 import type { ITutor } from "../../../types/types";
 
 export const loginAdmin=async (email:string,password:string)=>{

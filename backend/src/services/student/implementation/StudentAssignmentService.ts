@@ -46,40 +46,6 @@ export class StudentAssignmentService {
 
     return enriched;
   }
-  // async createSubmissionService(  data: {
-  //   topicId: string;
-  //   response: string;
-  //   submittedFileKeys: string[]; 
-  // },
-  // studentId: string, assignmentId: string){
-  //    const { topicId, response, submittedFileKeys } = data;
-  //    const assgn= new mongoose.Types.ObjectId(assignmentId)
-  //    console.log("sevrvice",assgn);
-     
-  // const assignment = await this.assignmentRepo.findById( assgn);
-  // if (!assignment) throw new Error('Assignment not found');
-
-  // const courseId = assignment.courseId;
-
-  // const submittedFiles: string[] = submittedFileKeys.map(
-  //   (key) =>
-  //     `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${encodeURIComponent(
-  //       key
-  //     )}`
-  // );
-
-  // const toSave: Partial<ISubmission> = {
-  //   studentId,
-  //   topicId,
-  //   courseId,
-  //   assignmentId,
-  //   response,
-  //   submittedFiles,
-  //   status: 'pending',
-  // };
-
-  // return await this.submissionRepo.create(toSave);
-  // }
 
   async createSubmissionService(
   data: {

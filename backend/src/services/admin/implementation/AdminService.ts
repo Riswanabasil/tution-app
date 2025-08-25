@@ -1,17 +1,13 @@
+import { LoginAdminResponseDTO } from "../../../dto/admin/adminAuth";
 import { generateAccessToken, generateRefreshToken } from "../../../utils/GenerateToken";
 import { TokenService } from "../../common/TokenService";
+import { IAdminService } from "../IAdminService";
 
-
-export interface LoginAdminResponse {
-  accessToken: string;
-  refreshToken: string;
-}
-
-export class AdminService {
+export class AdminService implements IAdminService{
   constructor(
    private tokenService: TokenService
   ) {}
-  async loginAdmin(email: string, password: string): Promise<LoginAdminResponse> {
+  async loginAdmin(email: string, password: string): Promise<LoginAdminResponseDTO> {
    
   if (email !== process.env.ADMIN_EMAIL || password !== process.env.ADMIN_PASSWORD) {
  throw new Error("Invalid credentials");
@@ -26,7 +22,6 @@ export class AdminService {
       email,
       "admin"
     );
-
     return { accessToken, refreshToken };
   }
 
