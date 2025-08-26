@@ -1,4 +1,4 @@
-import axios  from "axios";
+import axios from "axios";
 import type { AxiosInstance, AxiosRequestConfig } from "axios"
 import { BASE_API_URL } from "../constants/api";
 
@@ -11,11 +11,11 @@ declare module "axios" {
 type Role = "admin" | "student" | "tutor";
 
 type RoleCfg = {
-  tokenKey: string;            
-  refreshUrl: string;          
-  redirectTo: string;          
-  loginIgnore?: string[];      
-  passThroughMessage?: string; 
+  tokenKey: string;
+  refreshUrl: string;
+  redirectTo: string;
+  loginIgnore?: string[];
+  passThroughMessage?: string;
 };
 
 const roleCfg: Record<Role, RoleCfg> = {
@@ -60,13 +60,13 @@ export function getAxios(role: Role): AxiosInstance {
     return config;
   });
 
- 
+
   api.interceptors.response.use(
     (response) => response,
     async (error) => {
       const originalRequest: AxiosRequestConfig & { _retry?: boolean } = error.config || {};
 
-     
+
       if (
         cfg.passThroughMessage &&
         error?.response?.data?.message === cfg.passThroughMessage
@@ -82,7 +82,7 @@ export function getAxios(role: Role): AxiosInstance {
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
-          
+
           const { data } = await axios.get(cfg.refreshUrl, {
             baseURL: BASE_API_URL,
             withCredentials: true,
@@ -101,7 +101,19 @@ export function getAxios(role: Role): AxiosInstance {
           return Promise.reject(refreshErr);
         }
       }
+      if (error.response?.status === 403) {
+        const msg = error.response?.data?.message;
 
+        if (msg === "ACCOUNT_BLOCKED") {
+          localStorage.removeItem(cfg.tokenKey);
+
+          const url = new URL(cfg.redirectTo, window.location.origin);
+          url.searchParams.set("reason", "blocked");
+          window.location.href = url.toString();
+
+          return Promise.reject(error);
+        }
+      }
       return Promise.reject(error);
     }
   );

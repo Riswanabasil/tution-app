@@ -79,4 +79,12 @@ export class StudentRepository
   async countVerified(): Promise<number> {
     return Student.countDocuments({ isVerified: true });
   }
+   async getAuthStateById(
+    id: string
+  ): Promise<{ isBlocked: boolean } | null> {
+    const doc = await Student.findById(id)
+      .select("isBlocked")
+      .lean<{ isBlocked?: boolean } | null>();
+    return doc ? { isBlocked: !!doc.isBlocked } : null;
+  }
 }

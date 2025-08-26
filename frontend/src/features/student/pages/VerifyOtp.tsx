@@ -3,7 +3,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../../api/AxiosInstance";
+import { getAxios } from "../../../api/Axios";
+const axios = getAxios("student");
 import type { AxiosError } from "axios";
 
 const schema = yup.object().shape({
