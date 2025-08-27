@@ -1,2 +1,1 @@
-export const BASE_API_URL = 'http://localhost:5000/api';
-// export const IMAGE_BASE ="http://localhost:5000/uploads"
+export const BASE_API_URL = import.meta.env.VITE_API_BASE_URL as string;
