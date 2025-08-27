@@ -1,5 +1,5 @@
-import bcrypt from "bcrypt";
-import { IHasher } from "../../interfaces/common/IHasher";
+import bcrypt from 'bcrypt';
+import { IHasher } from '../../interfaces/common/IHasher';
 
 export class BcryptHasher implements IHasher {
   async hash(data: string): Promise<string> {

@@ -1,28 +1,39 @@
 import type {
-  IAdminDashboardService, AdminKpis, DateRange, TimeGranularity,
-  TrendPoint, TopCourseRow, PendingCourseListItem, PendingTutorListItem,
-  CourseStatus, TutorStatus
-} from "../IAdminDashboardService";
+  IAdminDashboardService,
+  AdminKpis,
+  DateRange,
+  TimeGranularity,
+  TrendPoint,
+  TopCourseRow,
+  PendingCourseListItem,
+  PendingTutorListItem,
+  CourseStatus,
+  TutorStatus,
+} from '../IAdminDashboardService';
 
-import type { IStudentRepository } from "../../../repositories/student/IStudentRepository";
-import type { ITutorRepository } from "../../../repositories/tutor/ITutorRepository";
-import type { ICourseRepository } from "../../../repositories/course/ICourseRepository";
-import type { IEnrollmentRepository } from "../../../repositories/payment/IEnrollmentRepository";
+import type { IStudentRepository } from '../../../repositories/student/IStudentRepository';
+import type { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
+import type { ICourseRepository } from '../../../repositories/course/ICourseRepository';
+import type { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
 
 function resolveRange(partial?: Partial<DateRange>): DateRange {
   const to = partial?.to ?? new Date();
   const from = partial?.from ?? new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
   return { from, to };
 }
-function startOfToday(d = new Date()) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-function startOfMonth(d = new Date()) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+function startOfToday(d = new Date()) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+function startOfMonth(d = new Date()) {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
 
 export class AdminDashboardService implements IAdminDashboardService {
   constructor(
     private readonly students: IStudentRepository,
     private readonly tutors: ITutorRepository,
     private readonly courses: ICourseRepository,
-    private readonly enrollments: IEnrollmentRepository
+    private readonly enrollments: IEnrollmentRepository,
   ) {}
 
   async getKpis(range?: Partial<DateRange>): Promise<AdminKpis> {
@@ -50,16 +61,16 @@ export class AdminDashboardService implements IAdminDashboardService {
     ]);
 
     const tutors: Record<TutorStatus, number> = {
-      pending: tutorStatusMap["pending"] ?? 0,
-      "verification-submitted": tutorStatusMap["verification-submitted"] ?? 0,
-      approved: tutorStatusMap["approved"] ?? 0,
-      rejected: tutorStatusMap["rejected"] ?? 0,
+      pending: tutorStatusMap['pending'] ?? 0,
+      'verification-submitted': tutorStatusMap['verification-submitted'] ?? 0,
+      approved: tutorStatusMap['approved'] ?? 0,
+      rejected: tutorStatusMap['rejected'] ?? 0,
     };
 
     const courses: Record<CourseStatus, number> = {
-      pending: courseStatusMap["pending"] ?? 0,
-      approved: courseStatusMap["approved"] ?? 0,
-      rejected: courseStatusMap["rejected"] ?? 0,
+      pending: courseStatusMap['pending'] ?? 0,
+      approved: courseStatusMap['approved'] ?? 0,
+      rejected: courseStatusMap['rejected'] ?? 0,
     };
 
     return {
@@ -85,41 +96,43 @@ export class AdminDashboardService implements IAdminDashboardService {
     const top = await this.enrollments.topCoursesByPaid(range, limit);
     if (top.length === 0) return [];
 
-    const courseIds = top.map(t => t.courseId);
+    const courseIds = top.map((t) => t.courseId);
     const courseDocs = await this.courses.findByIds(courseIds);
-    const tutorIds = Array.from(new Set(courseDocs.map(c => String(c.tutor))));
+    const tutorIds = Array.from(new Set(courseDocs.map((c) => String(c.tutor))));
     const tutorDocs = await this.tutors.findByIds(tutorIds);
 
-    const tutorNameMap = new Map(tutorDocs.map(t => [String(t._id), t.name]));
-    const courseMap = new Map(courseDocs.map(c => [String(c._id), c]));
+    const tutorNameMap = new Map(tutorDocs.map((t) => [String(t._id), t.name]));
+    const courseMap = new Map(courseDocs.map((c) => [String(c._id), c]));
 
-    return top.map(row => {
+    return top.map((row) => {
       const c = courseMap.get(row.courseId);
       return {
         courseId: row.courseId,
-        title: c?.title ?? "(deleted)",
-        code: c?.code ?? "-",
+        title: c?.title ?? '(deleted)',
+        code: c?.code ?? '-',
         semester: c?.semester ?? 0,
-        tutorId: String(c?.tutor ?? ""),
+        tutorId: String(c?.tutor ?? ''),
         tutorName: c?.tutor ? tutorNameMap.get(String(c.tutor)) : undefined,
-        status: (c?.status ?? "rejected") as CourseStatus,
+        status: (c?.status ?? 'rejected') as CourseStatus,
         enrollments: row.enrollments,
-        revenue: row.revenue
+        revenue: row.revenue,
       };
     });
   }
 
-  async getApprovalQueues(limit = 10): Promise<{ pendingCourses: PendingCourseListItem[]; pendingTutors: PendingTutorListItem[]; }> {
+  async getApprovalQueues(
+    limit = 10,
+  ): Promise<{ pendingCourses: PendingCourseListItem[]; pendingTutors: PendingTutorListItem[] }> {
     const [courses, tutors] = await Promise.all([
-      this.courses.listByStatus("pending", limit),
-      this.tutors.listByStatuses(["pending", "verification-submitted"], limit),
+      this.courses.listByStatus('pending', limit),
+      this.tutors.listByStatuses(['pending', 'verification-submitted'], limit),
     ]);
 
-    const tutorIds = Array.from(new Set(courses.map(c => String(c.tutor))));
+    const tutorIds = Array.from(new Set(courses.map((c) => String(c.tutor))));
     const tutorDocs = tutorIds.length ? await this.tutors.findByIds(tutorIds) : [];
-    const tutorMap = new Map(tutorDocs.map(t => [String(t._id), t.name]));
+    const tutorMap = new Map(tutorDocs.map((t) => [String(t._id), t.name]));
 
-    const pendingCourses: PendingCourseListItem[] = courses.map(c => ({
+    const pendingCourses: PendingCourseListItem[] = courses.map((c) => ({
       courseId: String(c._id),
       title: c.title,
       code: c.code,
@@ -129,11 +142,11 @@ export class AdminDashboardService implements IAdminDashboardService {
       createdAt: c.createdAt,
     }));
 
-    const pendingTutors: PendingTutorListItem[] = tutors.map(t => ({
+    const pendingTutors: PendingTutorListItem[] = tutors.map((t) => ({
       tutorId: String(t._id),
       name: t.name,
       email: t.email,
-      status: t.status as Extract<TutorStatus, "pending" | "verification-submitted">,
+      status: t.status as Extract<TutorStatus, 'pending' | 'verification-submitted'>,
       createdAt: t.createdAt,
     }));
 

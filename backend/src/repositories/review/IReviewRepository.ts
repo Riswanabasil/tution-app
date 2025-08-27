@@ -12,12 +12,12 @@ export interface ReviewDTO {
 export type CreateReviewInput = {
   courseId: string;
   studentId: string;
-  rating: number;    
+  rating: number;
   comment?: string;
 };
 
 export type UpdateReviewInput = {
-  rating?: number;    
+  rating?: number;
   comment?: string;
 };
 
@@ -32,7 +32,11 @@ export interface Paginated<T> {
 export interface IReviewRepository {
   create(payload: CreateReviewInput): Promise<ReviewDTO>;
   findById(id: string): Promise<ReviewDTO | null>;
-  listByCoursePaginated(courseId: string, page: number, limit: number): Promise<Paginated<ReviewDTO>>;
+  listByCoursePaginated(
+    courseId: string,
+    page: number,
+    limit: number,
+  ): Promise<Paginated<ReviewDTO>>;
   update(id: string, updates: UpdateReviewInput): Promise<ReviewDTO | null>;
   softDelete(id: string): Promise<boolean>;
   statsByCourse(courseId: string): Promise<{ count: number; avg: number }>;

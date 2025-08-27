@@ -1,8 +1,7 @@
-
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { createTopic, getTopicById, updateTopic } from "../services/CourseApi";
-import type { TopicForm } from "../../../types/topic";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { createTopic, getTopicById, updateTopic } from '../services/CourseApi';
+import type { TopicForm } from '../../../types/topic';
 
 interface Props {
   topicId?: string;
@@ -15,17 +14,17 @@ export default function AddEditTopicForm({ topicId, onSuccess }: Props) {
 
   const [form, setForm] = useState<TopicForm>({
     order: 1,
-    title: "",
-    description: "",
+    title: '',
+    description: '',
   });
 
   useEffect(() => {
     if (topicId) {
-      getTopicById(topicId).then(data => {
+      getTopicById(topicId).then((data) => {
         setForm({
           order: data.order,
           title: data.title,
-          description: data.description ?? "",
+          description: data.description ?? '',
         });
       });
     }
@@ -33,7 +32,7 @@ export default function AddEditTopicForm({ topicId, onSuccess }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: name === "order" ? parseInt(value) : value }));
+    setForm((prev) => ({ ...prev, [name]: name === 'order' ? parseInt(value) : value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,7 +58,7 @@ export default function AddEditTopicForm({ topicId, onSuccess }: Props) {
         onChange={handleChange}
         placeholder="Order"
         required
-        className="w-full border p-2 rounded"
+        className="w-full rounded border p-2"
       />
       <input
         type="text"
@@ -68,17 +67,17 @@ export default function AddEditTopicForm({ topicId, onSuccess }: Props) {
         onChange={handleChange}
         placeholder="Title"
         required
-        className="w-full border p-2 rounded"
+        className="w-full rounded border p-2"
       />
       <textarea
         name="description"
         value={form.description}
         onChange={handleChange}
         placeholder="Description (optional)"
-        className="w-full border p-2 rounded"
+        className="w-full rounded border p-2"
       />
-      <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
-        {topicId ? "Update Topic" : "Create Topic"}
+      <button type="submit" className="rounded bg-green-600 px-4 py-2 text-white">
+        {topicId ? 'Update Topic' : 'Create Topic'}
       </button>
     </form>
   );

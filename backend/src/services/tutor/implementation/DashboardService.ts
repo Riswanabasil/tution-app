@@ -1,4 +1,3 @@
-
 import type {
   ITutorDashboardService,
   TutorKpis,
@@ -9,35 +8,39 @@ import type {
   RecentEnrollmentRow,
   MyCourseRow,
   CourseStatus,
-} from "../IDashboardService";
+} from '../IDashboardService';
 
-import type { ICourseRepository } from "../../../repositories/course/ICourseRepository";
-import type { IEnrollmentRepository } from "../../../repositories/payment/IEnrollmentRepository";
-import type { ITutorRepository } from "../../../repositories/tutor/ITutorRepository";
+import type { ICourseRepository } from '../../../repositories/course/ICourseRepository';
+import type { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
+import type { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 
-//  helpers 
+//  helpers
 function resolveRange(partial?: Partial<DateRange>): DateRange {
   const to = partial?.to ?? new Date();
-  const from = partial?.from ?? new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000); 
+  const from = partial?.from ?? new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
   return { from, to };
 }
-function startOfToday(d = new Date()) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-function startOfMonth(d = new Date()) { return new Date(d.getFullYear(), d.getMonth(), 1); }
+function startOfToday(d = new Date()) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+function startOfMonth(d = new Date()) {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
 
 export class TutorDashboardService implements ITutorDashboardService {
   constructor(
     private readonly courses: ICourseRepository,
     private readonly enrollments: IEnrollmentRepository,
-    private readonly tutors: ITutorRepository
+    private readonly tutors: ITutorRepository,
   ) {}
 
-  //  KPIs 
+  //  KPIs
   async getKpis(tutorId: string, range?: Partial<DateRange>): Promise<TutorKpis> {
     const r = resolveRange(range);
     const [statusMap, approvedCourseIds, allCourseIds] = await Promise.all([
       this.courses.countByStatusForTutor(tutorId),
-      this.courses.listIdsByTutor(tutorId, ["approved"]),
-      this.courses.listIdsByTutor(tutorId), 
+      this.courses.listIdsByTutor(tutorId, ['approved']),
+      this.courses.listIdsByTutor(tutorId),
     ]);
 
     const now = new Date();
@@ -80,43 +83,39 @@ export class TutorDashboardService implements ITutorDashboardService {
   async getRevenueTrend(
     tutorId: string,
     range: DateRange,
-    granularity: TimeGranularity
+    granularity: TimeGranularity,
   ): Promise<TrendPoint[]> {
-    const courseIds = await this.courses.listIdsByTutor(tutorId, ["approved"]);
+    const courseIds = await this.courses.listIdsByTutor(tutorId, ['approved']);
     return this.enrollments.revenueSeriesForCourses(range, granularity, courseIds);
   }
 
   async getEnrollmentTrend(
     tutorId: string,
     range: DateRange,
-    granularity: TimeGranularity
+    granularity: TimeGranularity,
   ): Promise<TrendPoint[]> {
-    const courseIds = await this.courses.listIdsByTutor(tutorId, ["approved"]);
+    const courseIds = await this.courses.listIdsByTutor(tutorId, ['approved']);
     return this.enrollments.enrollmentSeriesForCourses(range, granularity, courseIds);
   }
 
   // ---------- Top courses table ----------
-  async getTopCourses(
-    tutorId: string,
-    range: DateRange,
-    limit = 5
-  ): Promise<TopCourseRow[]> {
-    const courseIds = await this.courses.listIdsByTutor(tutorId, ["approved"]);
+  async getTopCourses(tutorId: string, range: DateRange, limit = 5): Promise<TopCourseRow[]> {
+    const courseIds = await this.courses.listIdsByTutor(tutorId, ['approved']);
     if (!courseIds.length) return [];
 
     const stats = await this.enrollments.topCoursesByPaidForCourses(range, courseIds, limit);
     if (stats.length === 0) return [];
 
-    const ids = stats.map(s => s.courseId);
+    const ids = stats.map((s) => s.courseId);
     const courses = await this.courses.findByIds(ids);
     const byId = new Map(courses.map((c: any) => [String(c._id), c]));
 
-    return stats.map(s => {
+    return stats.map((s) => {
       const c = byId.get(s.courseId);
       return {
         courseId: s.courseId,
-        title: c?.title ?? "(deleted)",
-        code: c?.code ?? "-",
+        title: c?.title ?? '(deleted)',
+        code: c?.code ?? '-',
         semester: c?.semester ?? 0,
         enrollments: s.enrollments,
         revenue: s.revenue,
@@ -128,9 +127,9 @@ export class TutorDashboardService implements ITutorDashboardService {
   async getRecentEnrollments(
     tutorId: string,
     range: DateRange,
-    limit = 20
+    limit = 20,
   ): Promise<RecentEnrollmentRow[]> {
-    const courseIds = await this.courses.listIdsByTutor(tutorId, ["approved"]);
+    const courseIds = await this.courses.listIdsByTutor(tutorId, ['approved']);
     if (!courseIds.length) return [];
     return this.enrollments.recentPaidEnrollmentsForCourses(range, courseIds, limit);
   }
@@ -139,7 +138,7 @@ export class TutorDashboardService implements ITutorDashboardService {
   async getMyCoursesOverview(
     tutorId: string,
     range: DateRange,
-    opts?: { status?: CourseStatus; limit?: number; skip?: number }
+    opts?: { status?: CourseStatus; limit?: number; skip?: number },
   ): Promise<{ items: MyCourseRow[]; total: number }> {
     const list = await this.courses.listByTutor(tutorId, {
       status: opts?.status,
@@ -150,12 +149,12 @@ export class TutorDashboardService implements ITutorDashboardService {
     if (opts?.status) totalFilter.status = opts.status;
     const total = await this.courses.countDocuments(totalFilter);
 
-    const ids = list.map(c => String(c._id));
+    const ids = list.map((c) => String(c._id));
     if (!ids.length) return { items: [], total };
     const stats = await this.enrollments.topCoursesByPaidForCourses(range, ids, ids.length);
-    const statMap = new Map(stats.map(s => [s.courseId, s]));
+    const statMap = new Map(stats.map((s) => [s.courseId, s]));
 
-    const items: MyCourseRow[] = list.map(c => {
+    const items: MyCourseRow[] = list.map((c) => {
       const s = statMap.get(String(c._id));
       return {
         courseId: String(c._id),
@@ -176,10 +175,12 @@ export class TutorDashboardService implements ITutorDashboardService {
   // ---------- Pending approvals preview ----------
   async getPendingApprovalsPreview(
     tutorId: string,
-    limit = 6
-  ): Promise<Array<{ courseId: string; title: string; code: string; semester: number; createdAt: Date }>> {
+    limit = 6,
+  ): Promise<
+    Array<{ courseId: string; title: string; code: string; semester: number; createdAt: Date }>
+  > {
     const rows = await this.courses.listPendingForTutor(tutorId, limit);
-    return rows.map(r => ({
+    return rows.map((r) => ({
       courseId: String(r._id),
       title: r.title,
       code: r.code,

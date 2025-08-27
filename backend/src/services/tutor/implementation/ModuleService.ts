@@ -9,27 +9,17 @@ export class TutorModuleService {
     return this.moduleRepo.findByCourse(courseId);
   }
 
-  async createModule(
-    courseId: string,
-    name: string,
-    order: number
-  ): Promise<IModule> {
+  async createModule(courseId: string, name: string, order: number): Promise<IModule> {
     return this.moduleRepo.create({
       courseId: new mongoose.Types.ObjectId(courseId),
       name,
-      order
+      order,
     });
   }
- async getById(
-    courseId: string,
-    moduleId: string
-  ): Promise<IModule | null> {
-    return this.moduleRepo.findByModule(courseId,moduleId)
+  async getById(courseId: string, moduleId: string): Promise<IModule | null> {
+    return this.moduleRepo.findByModule(courseId, moduleId);
   }
-  async updateModule(
-    id: string,
-    data: Partial<IModule>
-  ): Promise<IModule | null> {
+  async updateModule(id: string, data: Partial<IModule>): Promise<IModule | null> {
     return this.moduleRepo.update(id, data);
   }
 

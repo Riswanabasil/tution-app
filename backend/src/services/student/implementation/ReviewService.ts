@@ -4,8 +4,8 @@ import type {
   CreateReviewInput,
   UpdateReviewInput,
   Paginated,
-} from "../../../repositories/review/IReviewRepository";
-import type { IReviewService } from "../IReviewService";
+} from '../../../repositories/review/IReviewRepository';
+import type { IReviewService } from '../IReviewService';
 
 export class ReviewService implements IReviewService {
   constructor(private repo: IReviewRepository) {}

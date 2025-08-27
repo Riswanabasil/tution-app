@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { AssignmentService } from "../../../services/tutor/implementation/AssignmentService";
+import { Request, Response } from 'express';
+import { AssignmentService } from '../../../services/tutor/implementation/AssignmentService';
 
 export class AssignmentController {
   constructor(private assignmentService: AssignmentService) {}
@@ -10,15 +10,19 @@ export class AssignmentController {
       const assignment = await this.assignmentService.createAssignment(topicId, req.body);
       res.status(201).json(assignment);
     } catch (error) {
-        console.error(error)
-      res.status(500).json({ message: "Failed to create assignment" });
+      console.error(error);
+      res.status(500).json({ message: 'Failed to create assignment' });
     }
   };
 
   getAssignmentsByTopic = async (req: Request, res: Response) => {
     try {
       const { topicId } = req.params;
-      const { page = 1, limit = 10, search = "" } = req.query as {
+      const {
+        page = 1,
+        limit = 10,
+        search = '',
+      } = req.query as {
         page?: string;
         limit?: string;
         search?: string;
@@ -26,7 +30,7 @@ export class AssignmentController {
 
       const allAssignments = await this.assignmentService.getAssignmentsByTopic(topicId);
       const filtered = allAssignments.filter((a) =>
-        a.title.toLowerCase().includes(search.toLowerCase())
+        a.title.toLowerCase().includes(search.toLowerCase()),
       );
 
       const startIndex = (Number(page) - 1) * Number(limit);
@@ -39,40 +43,38 @@ export class AssignmentController {
         data: paginated,
       });
     } catch (error) {
-          console.error(error)
-      res.status(500).json({ message: "Failed to fetch assignments" });
+      console.error(error);
+      res.status(500).json({ message: 'Failed to fetch assignments' });
     }
   };
 
-  getAssignmentById = async (req: Request, res: Response):Promise<void> => {
+  getAssignmentById = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const assignment = await this.assignmentService.getAssignmentById(id);
       if (!assignment) {
-         res.status(404).json({ message: "Assignment not found" });
-         return
+        res.status(404).json({ message: 'Assignment not found' });
+        return;
       }
       res.status(200).json(assignment);
     } catch (error) {
-          console.error(error)
-      res.status(500).json({ message: "Failed to fetch assignment"
-        
-      });
+      console.error(error);
+      res.status(500).json({ message: 'Failed to fetch assignment' });
     }
   };
 
-  updateAssignment = async (req: Request, res: Response):Promise<void> => {
+  updateAssignment = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const updated = await this.assignmentService.updateAssignment(id, req.body);
       if (!updated) {
-         res.status(404).json({ message: "Assignment not found" });
-         return
+        res.status(404).json({ message: 'Assignment not found' });
+        return;
       }
-      res.status(200).json({ message: "Assignment updated successfully", updated });
+      res.status(200).json({ message: 'Assignment updated successfully', updated });
     } catch (error) {
-          console.error(error)
-      res.status(500).json({ message: "Failed to update assignment" });
+      console.error(error);
+      res.status(500).json({ message: 'Failed to update assignment' });
     }
   };
 
@@ -80,9 +82,9 @@ export class AssignmentController {
     try {
       const { id } = req.params;
       await this.assignmentService.deleteAssignment(id);
-      res.status(200).json({ message: "Assignment deleted (soft)" });
+      res.status(200).json({ message: 'Assignment deleted (soft)' });
     } catch (error) {
-      res.status(500).json({ message: "Failed to delete assignment" });
+      res.status(500).json({ message: 'Failed to delete assignment' });
     }
   };
 }

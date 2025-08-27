@@ -1,10 +1,10 @@
-import { ITutorRepository } from "../../../repositories/tutor/ITutorRepository";
-import { IHasher } from "../../../interfaces/common/IHasher";
-import { ITutor } from "../../../models/tutor/TutorSchema";
-import { ITutorService } from "../ITutorService";
-import { generateAccessToken, generateRefreshToken } from "../../../utils/GenerateToken";
-import { TokenService } from "../../common/TokenService";
-import bcrypt from "bcrypt"
+import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
+import { IHasher } from '../../../interfaces/common/IHasher';
+import { ITutor } from '../../../models/tutor/TutorSchema';
+import { ITutorService } from '../ITutorService';
+import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
+import { TokenService } from '../../common/TokenService';
+import bcrypt from 'bcrypt';
 
 export interface RegisterTutorResponse {
   id: string;
@@ -39,17 +39,17 @@ export class TutorService implements ITutorService {
   constructor(
     private tutorRepo: ITutorRepository,
     private hasher: IHasher,
-    private tokenService: TokenService
+    private tokenService: TokenService,
   ) {}
 
   async registerTutor(
     name: string,
     email: string,
     phone: string,
-    password: string
+    password: string,
   ): Promise<RegisterTutorResponse> {
     const existing = await this.tutorRepo.findByEmail(email);
-    if (existing) throw new Error("Tutor already exists");
+    if (existing) throw new Error('Tutor already exists');
 
     const hashed = await this.hasher.hash(password);
 
@@ -59,8 +59,8 @@ export class TutorService implements ITutorService {
       phone,
       password: hashed,
       isGoogleSignup: false,
-      status: "pending",
-      role: "tutor",
+      status: 'pending',
+      role: 'tutor',
     } as ITutor);
 
     return {
@@ -73,40 +73,25 @@ export class TutorService implements ITutorService {
     };
   }
 
-   async submitTutorVerification(
-    tutorId: string,
-    details: TutorVerificationInput
-  ): Promise<ITutor> {
-    const updated = await this.tutorRepo.updateVerificationById(tutorId, details
-    );
-    if (!updated) throw new Error("Tutor not found");
+  async submitTutorVerification(tutorId: string, details: TutorVerificationInput): Promise<ITutor> {
+    const updated = await this.tutorRepo.updateVerificationById(tutorId, details);
+    if (!updated) throw new Error('Tutor not found');
     return updated;
   }
 
-  async loginTutor(
-    email: string,
-    password: string
-  ): Promise<LoginTutorResponse> {
+  async loginTutor(email: string, password: string): Promise<LoginTutorResponse> {
     const tutor = await this.tutorRepo.findByEmail(email);
-    if (!tutor) throw new Error("Tutor not found");
+    if (!tutor) throw new Error('Tutor not found');
 
-    if (tutor.status !== "approved") {
-      throw new Error("VERIFICATION_PENDING");
+    if (tutor.status !== 'approved') {
+      throw new Error('VERIFICATION_PENDING');
     }
 
     const valid = await this.hasher.compare(password, tutor.password);
-    if (!valid) throw new Error("Incorrect password");
+    if (!valid) throw new Error('Incorrect password');
 
-    const accessToken = generateAccessToken(
-      tutor._id.toString(),
-      tutor.email,
-      tutor.role
-    );
-    const refreshToken = generateRefreshToken(
-      tutor._id.toString(),
-      tutor.email,
-      tutor.role
-    );
+    const accessToken = generateAccessToken(tutor._id.toString(), tutor.email, tutor.role);
+    const refreshToken = generateRefreshToken(tutor._id.toString(), tutor.email, tutor.role);
 
     return {
       accessToken,
@@ -116,44 +101,42 @@ export class TutorService implements ITutorService {
         email: tutor.email,
         name: tutor.name,
         role: tutor.role,
-        status: tutor.status
-      }
+        status: tutor.status,
+      },
     };
   }
 
   async refreshAccessToken(refreshToken: string): Promise<string> {
-  return this.tokenService.verifyRefreshTokenAndGenerateAccess(refreshToken);
-}
+    return this.tokenService.verifyRefreshTokenAndGenerateAccess(refreshToken);
+  }
 
+  //profile
 
-//profile
-
-async getProfile(userId: string) {
+  async getProfile(userId: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
-    if (!tutor) throw new Error("Tutor not found");
+    if (!tutor) throw new Error('Tutor not found');
     return tutor;
   }
 
   async updateProfile(userId: string, updates: Partial<any>) {
-     
     const updated = await this.tutorRepo.updateById(userId, updates);
-    if (!updated) throw new Error("Failed to update tutor profile");
+    if (!updated) throw new Error('Failed to update tutor profile');
     return updated;
   }
 
   async changePassword(userId: string, current: string, next: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
-    if (!tutor) throw new Error("Tutor not found");
+    if (!tutor) throw new Error('Tutor not found');
 
     const match = await bcrypt.compare(current, (tutor as any).password);
-    if (!match) throw new Error("Current password incorrect");
+    if (!match) throw new Error('Current password incorrect');
 
     const hash = await bcrypt.hash(next, 10);
     await this.tutorRepo.updateById(userId, { password: hash });
   }
 
   async getStats(userId: string) {
-    const courseCount  = await this.tutorRepo.countCoursesByTutor(userId);
+    const courseCount = await this.tutorRepo.countCoursesByTutor(userId);
     const studentCount = await this.tutorRepo.countStudentsByTutor(userId);
     return { courseCount, studentCount };
   }

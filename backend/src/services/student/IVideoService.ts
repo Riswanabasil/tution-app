@@ -1,8 +1,11 @@
-import type { IVideo } from "../../models/video/VideoSchema";
-import type { IVideoProgress } from "../../models/video/VideoProgress";
+import type { IVideo } from '../../models/video/VideoSchema';
+import type { IVideoProgress } from '../../models/video/VideoProgress';
 
-export type StudentVideoWithProgress = Pick<IVideo,"_id"|"title"|"description"|"durationSec"|"url"|"createdAt"> & {
-  progress: Pick<IVideoProgress,"lastPositionSec"|"totalWatchedSec"|"percent"|"completed">;
+export type StudentVideoWithProgress = Pick<
+  IVideo,
+  '_id' | 'title' | 'description' | 'durationSec' | 'url' | 'createdAt'
+> & {
+  progress: Pick<IVideoProgress, 'lastPositionSec' | 'totalWatchedSec' | 'percent' | 'completed'>;
 };
 
 export interface IStudentVideoService {

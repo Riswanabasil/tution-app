@@ -1,6 +1,5 @@
-import { NoteRepository } from "../../../repositories/note/implementation/NoteRepository";
-import { INote } from "../../../models/note/NoteSchema";
-
+import { NoteRepository } from '../../../repositories/note/implementation/NoteRepository';
+import { INote } from '../../../models/note/NoteSchema';
 
 export class NoteService {
   constructor(private readonly repo: NoteRepository) {}

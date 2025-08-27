@@ -6,7 +6,7 @@ export class NoteRepository {
   }
 
   findByTopic(topicId: string) {
-    return NoteModel.find({ topicId ,isDeleted: false}).exec();
+    return NoteModel.find({ topicId, isDeleted: false }).exec();
   }
 
   findById(id: string) {
@@ -18,6 +18,6 @@ export class NoteRepository {
   }
 
   delete(id: string) {
-    return NoteModel.findByIdAndDelete(id,{ isDeleted: true }).exec();
+    return NoteModel.findByIdAndDelete(id, { isDeleted: true }).exec();
   }
 }

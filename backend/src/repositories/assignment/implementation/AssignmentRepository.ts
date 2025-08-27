@@ -1,5 +1,5 @@
-import { AssignmentModel, IAssignment } from "../../../models/assignment/AssignmentModel";
-import  { Types } from "mongoose";
+import { AssignmentModel, IAssignment } from '../../../models/assignment/AssignmentModel';
+import { Types } from 'mongoose';
 
 export class AssignmentRepository {
   async create(data: Partial<IAssignment>): Promise<IAssignment> {
@@ -10,7 +10,7 @@ export class AssignmentRepository {
     return AssignmentModel.find({ topicId, isDeleted: false }).sort({ createdAt: -1 }).exec();
   }
 
-  async findById(id: string|Types.ObjectId): Promise<IAssignment | null> {
+  async findById(id: string | Types.ObjectId): Promise<IAssignment | null> {
     return AssignmentModel.findOne({ _id: id, isDeleted: false }).exec();
   }
 

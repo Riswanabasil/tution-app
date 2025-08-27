@@ -1,6 +1,6 @@
-import StudentOtpSchema from "../../models/student/StudentOtpSchema";
-import { generateOtp } from "../../utils/GenerateOtp";
-import { sendOtpEmail } from "../../utils/SendEmail";
+import StudentOtpSchema from '../../models/student/StudentOtpSchema';
+import { generateOtp } from '../../utils/GenerateOtp';
+import { sendOtpEmail } from '../../utils/SendEmail';
 
 export class OtpService {
   async generateAndSendOtp(email: string): Promise<string> {

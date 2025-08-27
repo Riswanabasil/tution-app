@@ -1,8 +1,8 @@
-import { getAxios } from "../../../api/Axios";
-const api = getAxios("tutor");
+import { getAxios } from '../../../api/Axios';
+const api = getAxios('tutor');
 
-export type TimeGranularity = "daily" | "monthly";
-export type CourseStatus = "pending" | "approved" | "rejected";
+export type TimeGranularity = 'daily' | 'monthly';
+export type CourseStatus = 'pending' | 'approved' | 'rejected';
 
 export type DateRange = { from: Date; to: Date };
 export const toISO = (d: Date) => new Date(d).toISOString();
@@ -28,7 +28,7 @@ export type TopCourseRow = {
 };
 
 export type RecentEnrollmentRow = {
-  date: string; 
+  date: string;
   studentName: string;
   studentEmail: string;
   courseId: string;
@@ -44,7 +44,7 @@ export type MyCourseRow = {
   semester: number;
   status: CourseStatus;
   price: number;
-  createdAt: string; 
+  createdAt: string;
   enrollmentsInRange: number;
   revenueInRange: number;
 };
@@ -52,10 +52,10 @@ export type MyCourseRow = {
 // ---------- API calls ----------
 export async function fetchTutorKpis(range?: Partial<DateRange>) {
   const params = new URLSearchParams();
-  if (range?.from) params.set("from", toISO(range.from));
-  if (range?.to) params.set("to", toISO(range.to));
+  if (range?.from) params.set('from', toISO(range.from));
+  if (range?.to) params.set('to', toISO(range.to));
   const { data } = await api.get<TutorKpis>(
-    `/tutor/dashboard/kpis${params.toString() ? `?${params}` : ""}`
+    `/tutor/dashboard/kpis${params.toString() ? `?${params}` : ''}`,
   );
   return data;
 }
@@ -67,7 +67,7 @@ export async function fetchTutorRevenueTrend(range: DateRange, granularity: Time
     granularity,
   });
   const { data } = await api.get<{ granularity: TimeGranularity; points: TrendPoint[] }>(
-    `/tutor/dashboard/revenue?${params.toString()}`
+    `/tutor/dashboard/revenue?${params.toString()}`,
   );
   return data.points;
 }
@@ -79,7 +79,7 @@ export async function fetchTutorEnrollmentTrend(range: DateRange, granularity: T
     granularity,
   });
   const { data } = await api.get<{ granularity: TimeGranularity; points: TrendPoint[] }>(
-    `/tutor/dashboard/enrollments?${params.toString()}`
+    `/tutor/dashboard/enrollments?${params.toString()}`,
   );
   return data.points;
 }
@@ -91,7 +91,7 @@ export async function fetchTutorTopCourses(range: DateRange, limit = 5) {
     limit: String(limit),
   });
   const { data } = await api.get<{ limit: number; rows: TopCourseRow[] }>(
-    `/tutor/dashboard/top-courses?${params.toString()}`
+    `/tutor/dashboard/top-courses?${params.toString()}`,
   );
   return data.rows;
 }
@@ -103,33 +103,40 @@ export async function fetchTutorRecentEnrollments(range: DateRange, limit = 20) 
     limit: String(limit),
   });
   const { data } = await api.get<{ limit: number; rows: RecentEnrollmentRow[] }>(
-    `/tutor/dashboard/recent-enrollments?${params.toString()}`
+    `/tutor/dashboard/recent-enrollments?${params.toString()}`,
   );
   return data.rows;
 }
 
 export async function fetchTutorMyCourses(
   range: DateRange,
-  opts?: { status?: CourseStatus; limit?: number; skip?: number }
+  opts?: { status?: CourseStatus; limit?: number; skip?: number },
 ) {
   const params = new URLSearchParams({
     from: toISO(range.from),
     to: toISO(range.to),
   });
-  if (opts?.status) params.set("status", opts.status);
-  if (opts?.limit != null) params.set("limit", String(opts.limit));
-  if (opts?.skip != null) params.set("skip", String(opts.skip));
+  if (opts?.status) params.set('status', opts.status);
+  if (opts?.limit != null) params.set('limit', String(opts.limit));
+  if (opts?.skip != null) params.set('skip', String(opts.skip));
 
   const { data } = await api.get<{ items: MyCourseRow[]; total: number }>(
-    `/tutor/dashboard/my-courses?${params.toString()}`
+    `/tutor/dashboard/my-courses?${params.toString()}`,
   );
   return data;
 }
 
 export async function fetchTutorPendingApprovals(limit = 6) {
   const params = new URLSearchParams({ limit: String(limit) });
-  const { data } = await api.get<{ limit: number; rows: Array<{ courseId: string; title: string; code: string; semester: number; createdAt: string }> }>(
-    `/tutor/dashboard/pending-approvals?${params.toString()}`
-  );
+  const { data } = await api.get<{
+    limit: number;
+    rows: Array<{
+      courseId: string;
+      title: string;
+      code: string;
+      semester: number;
+      createdAt: string;
+    }>;
+  }>(`/tutor/dashboard/pending-approvals?${params.toString()}`);
   return data.rows;
 }

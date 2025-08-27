@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -8,15 +8,15 @@ import {
   TextField,
   InputLabel,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import {
   submitAssignmentResponse,
   updateAssignmentResponse,
   getSubmissionUploadUrl,
   fetchSubmissionByAssignment,
-} from "../../services/CourseApi";
-import type { Assignment } from "../../../../types/assignment";
-import { toast } from "react-toastify";
+} from '../../services/CourseApi';
+import type { Assignment } from '../../../../types/assignment';
+import { toast } from 'react-toastify';
 
 type Props = {
   open: boolean;
@@ -26,27 +26,27 @@ type Props = {
 };
 
 export default function SubmitModal({ open, onClose, assignment, topicId }: Props) {
-  const [responseText, setResponseText] = useState("");
+  const [responseText, setResponseText] = useState('');
   const [file, setFile] = useState<File | null>(null);
-  const [fileKey, setFileKey] = useState("");
+  const [fileKey, setFileKey] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [existingFileUrl, setExistingFileUrl] = useState("");
+  const [existingFileUrl, setExistingFileUrl] = useState('');
 
-  const isViewOnly = assignment.status === "verified";
-  const isEditMode = assignment.status === "pending";
+  const isViewOnly = assignment.status === 'verified';
+  const isEditMode = assignment.status === 'pending';
 
   useEffect(() => {
-    if (assignment.status === "verified" || assignment.status === "pending") {
+    if (assignment.status === 'verified' || assignment.status === 'pending') {
       fetchSubmissionByAssignment(assignment._id).then((res) => {
-        setResponseText(res.response || "");
-        setFileKey(res.fileKey || "");
-        setExistingFileUrl(res.fileUrl || "");
+        setResponseText(res.response || '');
+        setFileKey(res.fileKey || '');
+        setExistingFileUrl(res.fileUrl || '');
       });
     } else {
-      setResponseText("");
+      setResponseText('');
       setFile(null);
-      setFileKey("");
-      setExistingFileUrl("");
+      setFileKey('');
+      setExistingFileUrl('');
     }
   }, [assignment]);
 
@@ -54,9 +54,9 @@ export default function SubmitModal({ open, onClose, assignment, topicId }: Prop
     setUploading(true);
     const { uploadUrl, key } = await getSubmissionUploadUrl(file.name, file.type);
     await fetch(uploadUrl, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": file.type,
+        'Content-Type': file.type,
       },
       body: file,
     });
@@ -80,33 +80,33 @@ export default function SubmitModal({ open, onClose, assignment, topicId }: Prop
 
       if (isEditMode) {
         await updateAssignmentResponse(assignment._id, payload);
-        toast.success("Submission updated successfully 🎉");
+        toast.success('Submission updated successfully 🎉');
       } else {
         await submitAssignmentResponse(assignment._id, payload);
-        toast.success("Assignment submitted successfully 🎉");
+        toast.success('Assignment submitted successfully 🎉');
       }
 
       onClose();
     } catch (err) {
       console.error(err);
-      toast.error("Submission failed. Please try again.");
+      toast.error('Submission failed. Please try again.');
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>
-        {assignment.status === "not submitted"
-          ? "Submit Assignment"
+        {assignment.status === 'not submitted'
+          ? 'Submit Assignment'
           : isEditMode
-          ? "Edit Submission"
-          : "Feedback"}
+            ? 'Edit Submission'
+            : 'Feedback'}
       </DialogTitle>
 
       <DialogContent>
         <TextField
           fullWidth
-          label={isViewOnly ? "Feedback" : "Your Response"}
+          label={isViewOnly ? 'Feedback' : 'Your Response'}
           multiline
           rows={5}
           value={responseText}
@@ -116,9 +116,14 @@ export default function SubmitModal({ open, onClose, assignment, topicId }: Prop
         />
 
         {existingFileUrl && (
-          <div className="mt-2 mb-2">
+          <div className="mb-2 mt-2">
             <Typography variant="subtitle2">Current File:</Typography>
-            <a href={existingFileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+            <a
+              href={existingFileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline"
+            >
               View File
             </a>
           </div>
@@ -126,7 +131,7 @@ export default function SubmitModal({ open, onClose, assignment, topicId }: Prop
 
         {!isViewOnly && (
           <div className="mt-4">
-            <InputLabel>{existingFileUrl ? "Replace File" : "Upload File (optional)"}</InputLabel>
+            <InputLabel>{existingFileUrl ? 'Replace File' : 'Upload File (optional)'}</InputLabel>
             <input
               type="file"
               accept=".pdf,.doc,.docx,.jpg,.png"
@@ -141,11 +146,10 @@ export default function SubmitModal({ open, onClose, assignment, topicId }: Prop
         <Button onClick={onClose}>Cancel</Button>
         {!isViewOnly && (
           <Button onClick={handleSubmit} disabled={uploading} variant="contained">
-            {uploading ? "Uploading..." : isEditMode ? "Update" : "Submit"}
+            {uploading ? 'Uploading...' : isEditMode ? 'Update' : 'Submit'}
           </Button>
         )}
       </DialogActions>
     </Dialog>
   );
 }
-

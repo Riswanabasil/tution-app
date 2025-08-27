@@ -1,6 +1,6 @@
-import type { IVideo } from "../../../models/video/VideoSchema";
-import type { IVideoRepository } from "../../../repositories/video/IVideoRepository";
-import type { CreateVideoDTO, UpdateVideoDTO, IVideoService } from "../IVideoService";
+import type { IVideo } from '../../../models/video/VideoSchema';
+import type { IVideoRepository } from '../../../repositories/video/IVideoRepository';
+import type { CreateVideoDTO, UpdateVideoDTO, IVideoService } from '../IVideoService';
 
 export class VideoService implements IVideoService {
   constructor(private repo: IVideoRepository) {}

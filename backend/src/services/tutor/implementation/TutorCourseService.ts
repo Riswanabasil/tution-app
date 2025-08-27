@@ -1,36 +1,36 @@
-import { ITutorCourseService, PaginatedCourses } from "../ITutorCourseService";
-import { ICourseRepository } from "../../../repositories/course/ICourseRepository";
-import { ICourse } from "../../../models/course/CourseSchema";
+import { ITutorCourseService, PaginatedCourses } from '../ITutorCourseService';
+import { ICourseRepository } from '../../../repositories/course/ICourseRepository';
+import { ICourse } from '../../../models/course/CourseSchema';
 
 export class TutorCourseService implements ITutorCourseService {
   constructor(private courseRepo: ICourseRepository) {}
 
   async createCourse(data: Partial<ICourse>): Promise<ICourse> {
     console.log(data);
-    
+
     return this.courseRepo.create(data);
   }
 
   async getAllCourses(
-     tutorId: string,
+    tutorId: string,
     page: number,
     limit: number,
-    search: string = ""
+    search: string = '',
   ): Promise<PaginatedCourses> {
     const skip = (page - 1) * limit;
 
-    const filter: any = { tutor: tutorId,deletedAt: { $exists: false } };
+    const filter: any = { tutor: tutorId, deletedAt: { $exists: false } };
 
     if (search) {
-      const re = new RegExp(search, "i");
-      filter.$or = [
-        { title:  re },
-        { code:   re },
-        { details: re }
-      ];
+      const re = new RegExp(search, 'i');
+      filter.$or = [{ title: re }, { code: re }, { details: re }];
     }
     const total = await this.courseRepo.countDocuments(filter);
-    const courses = await this.courseRepo.findMany(filter, { skip, limit, sort: { createdAt: -1 } });
+    const courses = await this.courseRepo.findMany(filter, {
+      skip,
+      limit,
+      sort: { createdAt: -1 },
+    });
 
     return {
       courses,
@@ -47,16 +47,15 @@ export class TutorCourseService implements ITutorCourseService {
     return this.courseRepo.update(id, data);
   }
 
-   async softDeleteCourse(id: string): Promise<void> {
-  return this.courseRepo.softDelete(id);
-}
+  async softDeleteCourse(id: string): Promise<void> {
+    return this.courseRepo.softDelete(id);
+  }
 
-async reapply(courseId: string, tutorId: string): Promise<ICourse> {
-  const course = await this.courseRepo.findById(courseId);
-  if (!course) throw new Error("Course not found");
-  if (course.tutor.toString() !== tutorId) throw new Error("Unauthorized");
-  course.status = "pending";
-  return await course.save();
-}
-
+  async reapply(courseId: string, tutorId: string): Promise<ICourse> {
+    const course = await this.courseRepo.findById(courseId);
+    if (!course) throw new Error('Course not found');
+    if (course.tutor.toString() !== tutorId) throw new Error('Unauthorized');
+    course.status = 'pending';
+    return await course.save();
+  }
 }

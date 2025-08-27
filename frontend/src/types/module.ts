@@ -7,4 +7,3 @@ export interface Module {
   createdAt: string;
   updatedAt: string;
 }
-

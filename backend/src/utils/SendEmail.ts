@@ -1,8 +1,8 @@
 import nodemailer from 'nodemailer';
 
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -25,13 +25,12 @@ export const sendOtpEmail = async (to: string, otp: string) => {
   };
 
   await transporter.sendMail(mailOptions);
-  
 };
 
 export const sendCourseStatusEmail = async (
   to: string,
   courseTitle: string,
-  status: 'approved' | 'rejected' | 'pending'
+  status: 'approved' | 'rejected' | 'pending',
 ) => {
   const mailOptions = {
     from: `"Tuition App" <${process.env.EMAIL_USER}>`,
@@ -42,6 +41,6 @@ export const sendCourseStatusEmail = async (
       <p>Your course <strong>${courseTitle}</strong> has been <b>${status.toUpperCase()}</b>.</p>
       <p>If you have questions, please contact support.</p>
     `,
-  }
+  };
   await transporter.sendMail(mailOptions);
-}
+};

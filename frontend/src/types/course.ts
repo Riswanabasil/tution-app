@@ -1,39 +1,36 @@
-
-
-
 export interface ICourse {
   _id: string;
   title: string;
   code: string;
   semester: number;
   thumbnail?: string;
-  demoVideoUrl?:string;
+  demoVideoUrl?: string;
   price: number;
   offer?: number;
   actualPrice?: number;
   details?: string;
-  status:string,
+  status: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
 export type CourseDetails = {
-  _id: string
-  title: string
-  code: string
-  semester: number
-  thumbnail?: string
-  demoVideoUrl?: string
-  price: number
-  offer?: number
-  actualPrice?: number
-  details?: string
-  tutorName: string
+  _id: string;
+  title: string;
+  code: string;
+  semester: number;
+  thumbnail?: string;
+  demoVideoUrl?: string;
+  price: number;
+  offer?: number;
+  actualPrice?: number;
+  details?: string;
+  tutorName: string;
   tutorProfilePic: string;
   tutorEducation: string;
   tutorExperience: string;
   tutorSummary: string;
-   modules: {
+  modules: {
     _id: string;
     name: string;
     order: number;
@@ -44,11 +41,9 @@ export type CourseDetails = {
       order: number;
     }[];
   }[];
-  reviews?: Array<{ author: string; rating: number; when: string; comment: string }>
-  enrolledAt?:string
-}
-
-
+  reviews?: Array<{ author: string; rating: number; when: string; comment: string }>;
+  enrolledAt?: string;
+};
 
 export type Module = {
   _id: string;

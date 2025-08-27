@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 type Props = {
   isOpen: boolean;
@@ -11,12 +11,12 @@ const Modal = ({ isOpen, onClose, title, children }: Props) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-md relative">
-        <h2 className="text-xl font-semibold mb-4">{title}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-md">
+        <h2 className="mb-4 text-xl font-semibold">{title}</h2>
         <button
           onClick={onClose}
-          className="absolute top-2 right-3 text-gray-500 hover:text-red-600 text-xl"
+          className="absolute right-3 top-2 text-xl text-gray-500 hover:text-red-600"
         >
           ×
         </button>

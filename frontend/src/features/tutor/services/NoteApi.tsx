@@ -1,5 +1,5 @@
-import { getAxios } from "../../../api/Axios";
-const axios = getAxios("tutor");
+import { getAxios } from '../../../api/Axios';
+const axios = getAxios('tutor');
 import type { IAssignment } from '../../../types/assignment';
 type Assignment = {
   _id: string;
@@ -26,44 +26,45 @@ export type VideoItem = {
   createdAt: string;
 };
 //note
-export const getNoteUploadUrls = (count: number) => axios.post("/tutor/note/upload-urls", { count });
+export const getNoteUploadUrls = (count: number) =>
+  axios.post('/tutor/note/upload-urls', { count });
 
 export const createNote = (topicId: string, payload: { pdfKeys: string[] }) =>
   axios.post(`/tutor/topic/${topicId}/notes`, payload);
 
 export const fetchNotesByTopic = (topicId: string) =>
-  axios.get(`/tutor/topic/${topicId}/notes`).then(res => res.data);
+  axios.get(`/tutor/topic/${topicId}/notes`).then((res) => res.data);
 
 export const updateNote = (noteId: string, payload: { pdfKeys: string[] }) =>
   axios.patch(`/tutor/notes/${noteId}`, payload);
 
-export const deleteNote = (noteId: string) =>
-  axios.delete(`/tutor/notes/${noteId}`);
+export const deleteNote = (noteId: string) => axios.delete(`/tutor/notes/${noteId}`);
 
 //assignment
 
 export const fetchAssignmentsByTopic = async (topicId: string): Promise<Assignment[]> => {
-  const res = await axios.get<{data: Assignment[]}>(`/tutor/${topicId}/assgn`);
-  return res.data.data
+  const res = await axios.get<{ data: Assignment[] }>(`/tutor/${topicId}/assgn`);
+  return res.data.data;
 };
 export const createAssignment = (topicId: string, data: IAssignment) =>
   axios.post(`/tutor/${topicId}/assgn`, data);
 
-export const updateAssignment = (id: string, data:Partial< IAssignment>) =>
+export const updateAssignment = (id: string, data: Partial<IAssignment>) =>
   axios.patch(`/tutor/assgn/${id}`, data);
 
-export const deleteAssignment = (id: string) =>
-  axios.delete(`/tutor/assgn/${id}`);
+export const deleteAssignment = (id: string) => axios.delete(`/tutor/assgn/${id}`);
 
 //videos
 
 export async function getVideoUploadUrl(filename: string, contentType: string) {
-  const { data } = await axios.get("/tutor/videos/upload-url", { params: { filename, contentType } });
+  const { data } = await axios.get('/tutor/videos/upload-url', {
+    params: { filename, contentType },
+  });
   return data as { uploadUrl: string; key: string };
 }
 
 export async function createVideo(payload: NewVideoPayload) {
-  const { data } = await axios.post("/tutor/videos", payload);
+  const { data } = await axios.post('/tutor/videos', payload);
   return data as VideoItem;
 }
 
@@ -74,7 +75,7 @@ export async function listVideosByTopic(topicId: string) {
 
 export async function updateVideo(
   id: string,
-  patch: Partial<Pick<NewVideoPayload, "title" | "description" | "durationSec">>
+  patch: Partial<Pick<NewVideoPayload, 'title' | 'description' | 'durationSec'>>,
 ) {
   const { data } = await axios.patch(`/tutor/videos/${id}`, patch);
   return data as VideoItem;

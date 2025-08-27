@@ -5,8 +5,5 @@ export interface IModuleRepository {
   create(data: Partial<IModule>): Promise<IModule>;
   update(id: string, data: Partial<IModule>): Promise<IModule | null>;
   softDelete(id: string): Promise<void>;
-  findByModule(
-      courseId: string,
-      moduleId: string
-    ): Promise<IModule | null>
+  findByModule(courseId: string, moduleId: string): Promise<IModule | null>;
 }

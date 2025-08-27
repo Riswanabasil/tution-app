@@ -1,6 +1,5 @@
-
-import { Types } from "mongoose";
-import { ICourse } from "../../models/course/CourseSchema";
+import { Types } from 'mongoose';
+import { ICourse } from '../../models/course/CourseSchema';
 
 export interface IPaginateOptions {
   skip: number;
@@ -34,22 +33,22 @@ export type TutorCourseListItem = {
   createdAt: Date;
 };
 
-export type CourseStatus = "pending" | "approved" | "rejected";
+export type CourseStatus = 'pending' | 'approved' | 'rejected';
 export interface ICourseRepository {
   create(data: Partial<ICourse>): Promise<ICourse>;
-  findById(id:Types.ObjectId | string): Promise<ICourse | null>;
-  findMany(
-    filter: any,
-    options: IPaginateOptions
-  ): Promise<ICourse[]>;
+  findById(id: Types.ObjectId | string): Promise<ICourse | null>;
+  findMany(filter: any, options: IPaginateOptions): Promise<ICourse[]>;
   countDocuments(filter: any): Promise<number>;
   update(id: string, data: Partial<ICourse>): Promise<ICourse | null>;
   softDelete(id: string): Promise<void>;
-   countByStatusMap(): Promise<Record<CourseStatus, number>>;
+  countByStatusMap(): Promise<Record<CourseStatus, number>>;
   listByStatus(status: CourseStatus, limit: number): Promise<CourseListItem[]>;
   findByIds(ids: string[]): Promise<Array<ICourse>>;
-   countByStatusForTutor(tutorId: string): Promise<Record<CourseStatus, number>>;
+  countByStatusForTutor(tutorId: string): Promise<Record<CourseStatus, number>>;
   listIdsByTutor(tutorId: string, statuses?: CourseStatus[]): Promise<string[]>;
   listPendingForTutor(tutorId: string, limit: number): Promise<TutorPendingCourseItem[]>;
-  listByTutor(tutorId: string, opts: { status?: CourseStatus; skip?: number; limit?: number }): Promise<TutorCourseListItem[]>;
+  listByTutor(
+    tutorId: string,
+    opts: { status?: CourseStatus; skip?: number; limit?: number },
+  ): Promise<TutorCourseListItem[]>;
 }

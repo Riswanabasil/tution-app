@@ -1,15 +1,12 @@
-
-import './App.css'
-import AppRoutes from './routes/AppRoutes.tsx'
+import './App.css';
+import AppRoutes from './routes/AppRoutes.tsx';
 
 function App() {
-  
-
   return (
     <>
-     <AppRoutes />
+      <AppRoutes />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

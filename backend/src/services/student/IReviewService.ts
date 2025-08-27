@@ -3,7 +3,7 @@ import type {
   CreateReviewInput,
   UpdateReviewInput,
   Paginated,
-} from "../../repositories/review/IReviewRepository";
+} from '../../repositories/review/IReviewRepository';
 
 export interface IReviewService {
   create(payload: CreateReviewInput): Promise<ReviewDTO>;

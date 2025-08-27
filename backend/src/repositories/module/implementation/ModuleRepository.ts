@@ -1,27 +1,21 @@
-
 import { Module, IModule } from '../../../models/module/ModuleSchema';
 import { BaseRepository } from '../../base/BaseRepository';
 import type { IModuleRepository } from '../IModuleRepository';
 
 export class ModuleRepository extends BaseRepository<IModule> implements IModuleRepository {
   constructor() {
-      super(Module);
-    }
+    super(Module);
+  }
   async findByCourse(courseId: string): Promise<IModule[]> {
     return Module.find({
       courseId,
-      deletedAt: { $exists: false }
+      deletedAt: { $exists: false },
     })
-    .sort({ order: 1 })
-    .exec();
+      .sort({ order: 1 })
+      .exec();
   }
- async findByModule(
-    courseId: string,
-    moduleId: string
-  ): Promise<IModule | null> {
-    return Module
-      .findOne({ _id: moduleId, courseId })
-      .exec()
+  async findByModule(courseId: string, moduleId: string): Promise<IModule | null> {
+    return Module.findOne({ _id: moduleId, courseId }).exec();
   }
   async create(data: Partial<IModule>): Promise<IModule> {
     return Module.create(data);

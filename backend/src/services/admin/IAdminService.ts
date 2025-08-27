@@ -1,4 +1,4 @@
-import { LoginAdminResponseDTO } from "../../dto/admin/adminAuth";
+import { LoginAdminResponseDTO } from '../../dto/admin/adminAuth';
 
 export interface IAdminService {
   loginAdmin(email: string, password: string): Promise<LoginAdminResponseDTO>;

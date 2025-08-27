@@ -1,5 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { listStudentVideosByTopic, type StudentVideoItem } from "../features/student/services/CourseApi";
+import { useCallback, useEffect, useState } from 'react';
+import {
+  listStudentVideosByTopic,
+  type StudentVideoItem,
+} from '../features/student/services/CourseApi';
 
 export default function useStudentVideos(topicId: string) {
   const [data, setData] = useState<StudentVideoItem[]>([]);
@@ -19,7 +22,9 @@ export default function useStudentVideos(topicId: string) {
     }
   }, [topicId]);
 
-  useEffect(() => { if (topicId) reload(); }, [topicId, reload]);
+  useEffect(() => {
+    if (topicId) reload();
+  }, [topicId, reload]);
 
   return { videos: data, loading, error, reload };
 }

@@ -1,9 +1,9 @@
-import mongoose, { Document, Schema, Types } from "mongoose";
-export interface IReview extends Document{
+import mongoose, { Document, Schema, Types } from 'mongoose';
+export interface IReview extends Document {
   _id: string;
-  courseId: mongoose.Types.ObjectId|string;
-  studentId: mongoose.Types.ObjectId|string;   
-  rating: number;      
+  courseId: mongoose.Types.ObjectId | string;
+  studentId: mongoose.Types.ObjectId | string;
+  rating: number;
   comment?: string;
   isDeleted?: boolean;
   createdAt?: Date;
@@ -12,18 +12,18 @@ export interface IReview extends Document{
 
 const reviewSchema = new Schema<IReview>(
   {
-    courseId: { type: Schema.Types.ObjectId, ref: "Course", required: true, index: true },
-    studentId: { type: Schema.Types.ObjectId, ref: "Student", required: true, index: true },
+    courseId: { type: Schema.Types.ObjectId, ref: 'Course', required: true, index: true },
+    studentId: { type: Schema.Types.ObjectId, ref: 'Student', required: true, index: true },
     rating: { type: Number, min: 1, max: 5, required: true },
     comment: { type: String, trim: true },
     isDeleted: { type: Boolean, default: false, index: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 reviewSchema.index(
   { courseId: 1, studentId: 1 },
-  { unique: true, partialFilterExpression: { isDeleted: false } }
+  { unique: true, partialFilterExpression: { isDeleted: false } },
 );
-const Review = mongoose.model<IReview>("Review", reviewSchema);
-export default Review
+const Review = mongoose.model<IReview>('Review', reviewSchema);
+export default Review;

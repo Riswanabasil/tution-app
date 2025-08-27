@@ -1,13 +1,13 @@
-import { Model } from "mongoose";
-import Video, { IVideo } from "../../../models/video/VideoSchema";
-import VideoProgress, { IVideoProgress } from "../../../models/video/VideoProgress";
-import { BaseRepository } from "../../base/BaseRepository";
-import type { IVideoProgressRepository } from "../IVideoProgressRepository";
-import type { UpsertProgressInput } from "../IVideoProgressRepository";
-import { mergeRanges, recomputeProgress } from "../../../utils/progressUtils";
+import { Model } from 'mongoose';
+import Video, { IVideo } from '../../../models/video/VideoSchema';
+import VideoProgress, { IVideoProgress } from '../../../models/video/VideoProgress';
+import { BaseRepository } from '../../base/BaseRepository';
+import type { IVideoProgressRepository } from '../IVideoProgressRepository';
+import type { UpsertProgressInput } from '../IVideoProgressRepository';
+import { mergeRanges, recomputeProgress } from '../../../utils/progressUtils';
 
 export class StudentVideoProgressRepository
-  extends BaseRepository<IVideoProgress>   
+  extends BaseRepository<IVideoProgress>
   implements IVideoProgressRepository
 {
   private videoModel: Model<IVideo>;
@@ -15,7 +15,7 @@ export class StudentVideoProgressRepository
 
   constructor(
     videoModel: Model<IVideo> = Video,
-    progressModel: Model<IVideoProgress> = VideoProgress
+    progressModel: Model<IVideoProgress> = VideoProgress,
   ) {
     super(progressModel as unknown as Model<any>);
     this.videoModel = videoModel;
@@ -25,7 +25,7 @@ export class StudentVideoProgressRepository
   async listByTopicPublic(topicId: string) {
     return await this.videoModel
       .find({ topic: topicId, isDeleted: false })
-      .select("_id createdAt title description durationSec url")
+      .select('_id createdAt title description durationSec url')
       .sort({ createdAt: -1 })
       .lean()
       .exec();
@@ -41,14 +41,17 @@ export class StudentVideoProgressRepository
 
   async upsertAndMerge(input: UpsertProgressInput) {
     const duration = input.durationSecDb ?? input.durationSecHint ?? 0;
-    const doc = await this.progressModel.findOne({ student: input.studentId, video: input.videoId });
+    const doc = await this.progressModel.findOne({
+      student: input.studentId,
+      video: input.videoId,
+    });
 
     if (!doc) {
       const merged = mergeRanges([], input.addRanges, duration);
       const { totalWatchedSec, percent, completed } = recomputeProgress({
         ranges: merged,
         lastPositionSec: input.lastPositionSec,
-        durationSec: duration || 1
+        durationSec: duration || 1,
       });
       return this.progressModel.create({
         student: input.studentId,
@@ -58,7 +61,7 @@ export class StudentVideoProgressRepository
         ranges: merged,
         totalWatchedSec,
         percent,
-        completed
+        completed,
       });
     }
 
@@ -69,7 +72,7 @@ export class StudentVideoProgressRepository
     const { totalWatchedSec, percent, completed } = recomputeProgress({
       ranges: doc.ranges,
       lastPositionSec: doc.lastPositionSec,
-      durationSec: duration || doc.durationSecSnapshot || 1
+      durationSec: duration || doc.durationSecSnapshot || 1,
     });
 
     doc.totalWatchedSec = totalWatchedSec;

@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
+import type { Request, Response } from 'express';
 import type {
   IAdminDashboardService,
   DateRange,
   TimeGranularity,
-} from "../../services/admin/IAdminDashboardService.js";
+} from '../../services/admin/IAdminDashboardService.js';
 
-function parseDateRange(q: Request["query"]): DateRange {
+function parseDateRange(q: Request['query']): DateRange {
   const to = q.to ? new Date(String(q.to)) : new Date();
   const from = q.from
     ? new Date(String(q.from))
@@ -14,7 +14,7 @@ function parseDateRange(q: Request["query"]): DateRange {
 }
 
 function parseGranularity(v: unknown, fallback: TimeGranularity): TimeGranularity {
-  return v === "monthly" || v === "daily" ? v : fallback;
+  return v === 'monthly' || v === 'daily' ? v : fallback;
 }
 
 function parseLimit(v: unknown, fallback: number): number {
@@ -31,32 +31,32 @@ export default class AdminDashboardController {
       const data = await this.svc.getKpis(range);
       res.json(data);
     } catch (err: any) {
-      console.error("getKpis error:", err);
-      res.status(500).json({ message: "Failed to fetch KPIs" });
+      console.error('getKpis error:', err);
+      res.status(500).json({ message: 'Failed to fetch KPIs' });
     }
   };
 
   getRevenueTrend = async (req: Request, res: Response) => {
     try {
       const range = parseDateRange(req.query);
-      const granularity = parseGranularity(req.query.granularity, "daily");
+      const granularity = parseGranularity(req.query.granularity, 'daily');
       const data = await this.svc.getRevenueTrend(range, granularity);
       res.json({ granularity, points: data });
     } catch (err: any) {
-      console.error("getRevenueTrend error:", err);
-      res.status(500).json({ message: "Failed to fetch revenue trend" });
+      console.error('getRevenueTrend error:', err);
+      res.status(500).json({ message: 'Failed to fetch revenue trend' });
     }
   };
 
   getEnrollmentTrend = async (req: Request, res: Response) => {
     try {
       const range = parseDateRange(req.query);
-      const granularity = parseGranularity(req.query.granularity, "monthly");
+      const granularity = parseGranularity(req.query.granularity, 'monthly');
       const data = await this.svc.getEnrollmentTrend(range, granularity);
       res.json({ granularity, points: data });
     } catch (err: any) {
-      console.error("getEnrollmentTrend error:", err);
-      res.status(500).json({ message: "Failed to fetch enrollment trend" });
+      console.error('getEnrollmentTrend error:', err);
+      res.status(500).json({ message: 'Failed to fetch enrollment trend' });
     }
   };
 
@@ -67,8 +67,8 @@ export default class AdminDashboardController {
       const rows = await this.svc.getTopCourses(range, limit);
       res.json({ limit, rows });
     } catch (err: any) {
-      console.error("getTopCourses error:", err);
-      res.status(500).json({ message: "Failed to fetch top courses" });
+      console.error('getTopCourses error:', err);
+      res.status(500).json({ message: 'Failed to fetch top courses' });
     }
   };
 
@@ -78,8 +78,8 @@ export default class AdminDashboardController {
       const data = await this.svc.getApprovalQueues(limit);
       res.json({ limit, ...data });
     } catch (err: any) {
-      console.error("getApprovalQueues error:", err);
-      res.status(500).json({ message: "Failed to fetch approval queues" });
+      console.error('getApprovalQueues error:', err);
+      res.status(500).json({ message: 'Failed to fetch approval queues' });
     }
   };
 }

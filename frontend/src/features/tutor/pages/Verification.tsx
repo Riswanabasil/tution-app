@@ -1,8 +1,8 @@
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { submitTutorVerification } from "../services/TutorApi";
-import type { AxiosError } from "axios";
+import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { submitTutorVerification } from '../services/TutorApi';
+import type { AxiosError } from 'axios';
 
 type FormInputs = {
   fullName: string;
@@ -16,7 +16,7 @@ type FormInputs = {
 
 const TutorVerification = () => {
   const navigate = useNavigate();
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState('');
   const {
     register,
     handleSubmit,
@@ -25,146 +25,132 @@ const TutorVerification = () => {
   } = useForm<FormInputs>();
 
   useEffect(() => {
-    const tutorId = localStorage.getItem("pendingTutorId");
-    const email = localStorage.getItem("pendingTutorEmail");
-    const name = localStorage.getItem("pendingTutorName");
+    const tutorId = localStorage.getItem('pendingTutorId');
+    const email = localStorage.getItem('pendingTutorEmail');
+    const name = localStorage.getItem('pendingTutorName');
     if (tutorId && email && name) {
-      setValue("email", email);
-      setValue("fullName", name);
+      setValue('email', email);
+      setValue('fullName', name);
     } else {
-      navigate("/tutor/register");
+      navigate('/tutor/register');
     }
   }, [setValue, navigate]);
 
   const onSubmit = async (data: FormInputs) => {
-    const tutorId = localStorage.getItem("pendingTutorId");
+    const tutorId = localStorage.getItem('pendingTutorId');
     if (!tutorId) return;
 
     const formData = new FormData();
-    formData.append("tutorId", tutorId);
-    formData.append("summary", data.summary);
-    formData.append("education", data.education);
-    formData.append("experience", data.experience);
-    formData.append("idProof", data.idProof[0]);
-    formData.append("resume", data.resume[0]);
+    formData.append('tutorId', tutorId);
+    formData.append('summary', data.summary);
+    formData.append('education', data.education);
+    formData.append('experience', data.experience);
+    formData.append('idProof', data.idProof[0]);
+    formData.append('resume', data.resume[0]);
 
     try {
-     await submitTutorVerification({
-  tutorId,
-  summary: data.summary,
-  education: data.education,
-  experience: data.experience,
-  idProof: data.idProof[0],
-  resume: data.resume[0],
-})
-    //   localStorage.removeItem("pendingTutorId");
-    //   localStorage.removeItem("pendingTutorEmail");
-    //   localStorage.removeItem("pendingTutorName");
-      navigate("/tutor/verification-status");
+      await submitTutorVerification({
+        tutorId,
+        summary: data.summary,
+        education: data.education,
+        experience: data.experience,
+        idProof: data.idProof[0],
+        resume: data.resume[0],
+      });
+      //   localStorage.removeItem("pendingTutorId");
+      //   localStorage.removeItem("pendingTutorEmail");
+      //   localStorage.removeItem("pendingTutorName");
+      navigate('/tutor/verification-status');
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message: string }>;
       console.error(error);
-      setErrorMsg(axiosError?.response?.data?.message || "Submission failed");
+      setErrorMsg(axiosError?.response?.data?.message || 'Submission failed');
     }
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-r from-sky-100 to-indigo-100">
-      <div className="bg-white shadow-xl rounded-lg w-full max-w-3xl p-8">
-        <h2 className="text-2xl font-semibold text-center text-indigo-700 mb-6">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-sky-100 to-indigo-100">
+      <div className="w-full max-w-3xl rounded-lg bg-white p-8 shadow-xl">
+        <h2 className="mb-6 text-center text-2xl font-semibold text-indigo-700">
           Complete Verification
         </h2>
 
-        {errorMsg && (
-          <p className="text-red-500 text-center text-sm mb-4">{errorMsg}</p>
-        )}
+        {errorMsg && <p className="mb-4 text-center text-sm text-red-500">{errorMsg}</p>}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4 md:flex-row">
             <div className="w-full">
               <input
-                {...register("fullName")}
+                {...register('fullName')}
                 placeholder="Full Name"
                 disabled
-                className="w-full px-4 py-2 border rounded bg-gray-100"
+                className="w-full rounded border bg-gray-100 px-4 py-2"
               />
             </div>
             <div className="w-full">
               <input
-                {...register("email")}
+                {...register('email')}
                 placeholder="Email"
                 disabled
-                className="w-full px-4 py-2 border rounded bg-gray-100"
+                className="w-full rounded border bg-gray-100 px-4 py-2"
               />
             </div>
           </div>
 
           <textarea
-            {...register("summary", { required: true })}
+            {...register('summary', { required: true })}
             placeholder="Professional Summary"
             rows={4}
-            className="w-full px-4 py-2 border rounded"
+            className="w-full rounded border px-4 py-2"
           />
-          {errors.summary && (
-            <p className="text-red-500 text-sm">Summary is required</p>
-          )}
+          {errors.summary && <p className="text-sm text-red-500">Summary is required</p>}
 
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4 md:flex-row">
             <div className="w-full">
               <input
-                {...register("education", { required: true })}
+                {...register('education', { required: true })}
                 placeholder="Educational Qualification"
-                className="w-full px-4 py-2 border rounded"
+                className="w-full rounded border px-4 py-2"
               />
-              {errors.education && (
-                <p className="text-red-500 text-sm">Education is required</p>
-              )}
+              {errors.education && <p className="text-sm text-red-500">Education is required</p>}
             </div>
             <div className="w-full">
               <input
-                {...register("experience", { required: true })}
+                {...register('experience', { required: true })}
                 placeholder="Teaching Experience"
-                className="w-full px-4 py-2 border rounded"
+                className="w-full rounded border px-4 py-2"
               />
-              {errors.experience && (
-                <p className="text-red-500 text-sm">Experience is required</p>
-              )}
+              {errors.experience && <p className="text-sm text-red-500">Experience is required</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="mb-1 block text-sm font-medium text-gray-700">
               Upload ID Proof (PDF/DOC)
             </label>
             <input
               type="file"
-              {...register("idProof", { required: true })}
+              {...register('idProof', { required: true })}
               className="w-full"
               accept=".pdf,.doc,.docx"
             />
-            {errors.idProof && (
-              <p className="text-red-500 text-sm">ID Proof is required</p>
-            )}
+            {errors.idProof && <p className="text-sm text-red-500">ID Proof is required</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Upload Resume
-            </label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Upload Resume</label>
             <input
               type="file"
-              {...register("resume", { required: true })}
+              {...register('resume', { required: true })}
               className="w-full"
               accept=".pdf,.doc,.docx"
             />
-            {errors.resume && (
-              <p className="text-red-500 text-sm">Resume is required</p>
-            )}
+            {errors.resume && <p className="text-sm text-red-500">Resume is required</p>}
           </div>
 
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+            className="w-full rounded bg-indigo-600 py-2 text-white transition hover:bg-indigo-700"
           >
             Submit Verification
           </button>

@@ -6,14 +6,14 @@ interface AdminState {
   accessToken: string | null;
   loading: boolean;
   error: string | null;
-   isAuthenticated: boolean;
+  isAuthenticated: boolean;
 }
 
 const initialState: AdminState = {
   accessToken: localStorage.getItem('adminAccessToken'),
   loading: false,
   error: null,
-  isAuthenticated: false
+  isAuthenticated: false,
 };
 
 export const loginAdminThunk = createAsyncThunk(
@@ -24,25 +24,21 @@ export const loginAdminThunk = createAsyncThunk(
       localStorage.setItem('adminAccessToken', response.accessToken);
       return response.accessToken;
     } catch (error: unknown) {
-        const axiosError = error as AxiosError<{ message: string }>;
+      const axiosError = error as AxiosError<{ message: string }>;
       return thunkAPI.rejectWithValue(axiosError.response?.data?.message || 'Login failed');
     }
-  }
+  },
 );
 
-export const logoutAdminThunk = createAsyncThunk(
-  "admin/logout",
-  async (_, thunkAPI) => {
-    try {
-      await logoutAdmin();
-      localStorage.removeItem("adminAccessToken");
-    } catch (error:unknown) {
-        const axiosError = error as AxiosError<{ message: string }>;
-      return thunkAPI.rejectWithValue(axiosError.response?.data?.message
-        ||"Logout failed");
-    }
+export const logoutAdminThunk = createAsyncThunk('admin/logout', async (_, thunkAPI) => {
+  try {
+    await logoutAdmin();
+    localStorage.removeItem('adminAccessToken');
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message: string }>;
+    return thunkAPI.rejectWithValue(axiosError.response?.data?.message || 'Logout failed');
   }
-);
+});
 
 const adminSlice = createSlice({
   name: 'admin',
@@ -69,18 +65,18 @@ const adminSlice = createSlice({
         state.error = action.payload as string;
       });
 
-       builder
-    .addCase(logoutAdminThunk.pending, (state) => {
-      state.loading = true;
-    })
-    .addCase(logoutAdminThunk.fulfilled, (state) => {
-      state.isAuthenticated = false;
-      state.loading = false;
-    })
-    .addCase(logoutAdminThunk.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload as string;
-    });
+    builder
+      .addCase(logoutAdminThunk.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(logoutAdminThunk.fulfilled, (state) => {
+        state.isAuthenticated = false;
+        state.loading = false;
+      })
+      .addCase(logoutAdminThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

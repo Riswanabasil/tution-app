@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 import {
   fetchKpis,
   fetchRevenueTrend,
@@ -11,17 +11,26 @@ import {
   type PendingCourseListItem,
   type PendingTutorListItem,
   type TimeGranularity,
-} from "../services/DashboardApi";
+} from '../services/DashboardApi';
 
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar, Legend,
-} from "recharts";
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  Legend,
+} from 'recharts';
 
 // ----- small date helpers -----
-type PresetRange = "7d" | "30d" | "90d";
+type PresetRange = '7d' | '30d' | '90d';
 const computeRange = (preset: PresetRange) => {
   const to = new Date();
-  const days = preset === "7d" ? 7 : preset === "30d" ? 30 : 90;
+  const days = preset === '7d' ? 7 : preset === '30d' ? 30 : 90;
   const from = new Date(to.getTime() - days * 24 * 60 * 60 * 1000);
   return { from, to };
 };
@@ -41,18 +50,18 @@ function KpiCard({ label, value, sub }: { label: string; value: number | string;
 function TrendBlock({
   title,
   data,
-  kind = "line",
+  kind = 'line',
 }: {
   title: string;
   data: TrendPoint[];
-  kind?: "line" | "bar";
+  kind?: 'line' | 'bar';
 }) {
   return (
     <div className="rounded-2xl border bg-white p-4 shadow-sm">
       <div className="mb-3 font-medium text-gray-800">{title}</div>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
-          {kind === "line" ? (
+          {kind === 'line' ? (
             <LineChart data={data}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="period" tick={{ fontSize: 12 }} />
@@ -100,7 +109,7 @@ function TopCoursesTable({ rows }: { rows: TopCourseRow[] }) {
                   <div className="font-medium">{r.title}</div>
                   <div className="text-xs text-gray-500">{r.code}</div>
                 </td>
-                <td className="p-3">{r.tutorName ?? "—"}</td>
+                <td className="p-3">{r.tutorName ?? '—'}</td>
                 <td className="p-3">{r.semester}</td>
                 <td className="p-3">{r.enrollments}</td>
                 <td className="p-3">₹{r.revenue.toLocaleString()}</td>
@@ -141,12 +150,18 @@ function ApprovalQueues({
             <li key={c.courseId} className="flex items-center justify-between">
               <div>
                 <div className="font-medium">{c.title}</div>
-                <div className="text-xs text-gray-500">{c.code} • Sem {c.semester} • {c.tutorName ?? "Tutor"}</div>
+                <div className="text-xs text-gray-500">
+                  {c.code} • Sem {c.semester} • {c.tutorName ?? 'Tutor'}
+                </div>
               </div>
-              <span className="text-xs text-gray-400">{new Date(c.createdAt).toLocaleDateString()}</span>
+              <span className="text-xs text-gray-400">
+                {new Date(c.createdAt).toLocaleDateString()}
+              </span>
             </li>
           ))}
-          {pendingCourses.length === 0 && <div className="text-sm text-gray-500">No pending courses</div>}
+          {pendingCourses.length === 0 && (
+            <div className="text-sm text-gray-500">No pending courses</div>
+          )}
         </ul>
       </div>
 
@@ -157,12 +172,18 @@ function ApprovalQueues({
             <li key={t.tutorId} className="flex items-center justify-between">
               <div>
                 <div className="font-medium">{t.name}</div>
-                <div className="text-xs text-gray-500">{t.email} • {t.status}</div>
+                <div className="text-xs text-gray-500">
+                  {t.email} • {t.status}
+                </div>
               </div>
-              <span className="text-xs text-gray-400">{new Date(t.createdAt).toLocaleDateString()}</span>
+              <span className="text-xs text-gray-400">
+                {new Date(t.createdAt).toLocaleDateString()}
+              </span>
             </li>
           ))}
-          {pendingTutors.length === 0 && <div className="text-sm text-gray-500">No pending tutors</div>}
+          {pendingTutors.length === 0 && (
+            <div className="text-sm text-gray-500">No pending tutors</div>
+          )}
         </ul>
       </div>
     </div>
@@ -171,8 +192,8 @@ function ApprovalQueues({
 
 // ----- Main page -----
 export default function AdminDashboardPage() {
-  const [preset, setPreset] = useState<PresetRange>("30d");
-  const [granularity, setGranularity] = useState<TimeGranularity>("daily");
+  const [preset, setPreset] = useState<PresetRange>('30d');
+  const [granularity, setGranularity] = useState<TimeGranularity>('daily');
 
   const range = useMemo(() => computeRange(preset), [preset]);
 
@@ -180,7 +201,10 @@ export default function AdminDashboardPage() {
   const [rev, setRev] = useState<TrendPoint[]>([]);
   const [enr, setEnr] = useState<TrendPoint[]>([]);
   const [top, setTop] = useState<TopCourseRow[]>([]);
-  const [queues, setQueues] = useState<{ pendingCourses: PendingCourseListItem[]; pendingTutors: PendingTutorListItem[] }>({
+  const [queues, setQueues] = useState<{
+    pendingCourses: PendingCourseListItem[];
+    pendingTutors: PendingTutorListItem[];
+  }>({
     pendingCourses: [],
     pendingTutors: [],
   });
@@ -193,7 +217,7 @@ export default function AdminDashboardPage() {
     Promise.all([
       fetchKpis(range),
       fetchRevenueTrend(range, granularity),
-      fetchEnrollmentTrend(range, "monthly"),
+      fetchEnrollmentTrend(range, 'monthly'),
       fetchTopCourses(range, 5),
       fetchApprovalQueues(6),
     ])
@@ -241,9 +265,9 @@ export default function AdminDashboardPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
-        <KpiCard label="Total Students" value={kpis?.totalStudents ?? (loading ? "…" : 0)} />
-        <KpiCard label="Verified Students" value={kpis?.verifiedStudents ?? (loading ? "…" : 0)} />
-        <KpiCard label="Active Students" value={kpis?.activeStudents ?? (loading ? "…" : 0)} />
+        <KpiCard label="Total Students" value={kpis?.totalStudents ?? (loading ? '…' : 0)} />
+        <KpiCard label="Verified Students" value={kpis?.verifiedStudents ?? (loading ? '…' : 0)} />
+        <KpiCard label="Active Students" value={kpis?.activeStudents ?? (loading ? '…' : 0)} />
         <KpiCard
           label="Revenue"
           value={`₹${(kpis?.revenue.mtd ?? 0).toLocaleString()}`}
@@ -256,18 +280,39 @@ export default function AdminDashboardPage() {
         <div className="rounded-2xl border bg-white p-4 shadow-sm">
           <div className="mb-2 text-sm font-medium text-gray-600">Courses by status</div>
           <ul className="text-sm text-gray-800">
-            <li className="flex justify-between"><span>Approved</span><span>{kpis?.courses.approved ?? 0}</span></li>
-            <li className="flex justify-between"><span>Pending</span><span>{kpis?.courses.pending ?? 0}</span></li>
-            <li className="flex justify-between"><span>Rejected</span><span>{kpis?.courses.rejected ?? 0}</span></li>
+            <li className="flex justify-between">
+              <span>Approved</span>
+              <span>{kpis?.courses.approved ?? 0}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Pending</span>
+              <span>{kpis?.courses.pending ?? 0}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Rejected</span>
+              <span>{kpis?.courses.rejected ?? 0}</span>
+            </li>
           </ul>
         </div>
         <div className="rounded-2xl border bg-white p-4 shadow-sm">
           <div className="mb-2 text-sm font-medium text-gray-600">Tutors by status</div>
           <ul className="text-sm text-gray-800">
-            <li className="flex justify-between"><span>Approved</span><span>{kpis?.tutors.approved ?? 0}</span></li>
-            <li className="flex justify-between"><span>Verification submitted</span><span>{kpis?.tutors["verification-submitted"] ?? 0}</span></li>
-            <li className="flex justify-between"><span>Pending</span><span>{kpis?.tutors.pending ?? 0}</span></li>
-            <li className="flex justify-between"><span>Rejected</span><span>{kpis?.tutors.rejected ?? 0}</span></li>
+            <li className="flex justify-between">
+              <span>Approved</span>
+              <span>{kpis?.tutors.approved ?? 0}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Verification submitted</span>
+              <span>{kpis?.tutors['verification-submitted'] ?? 0}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Pending</span>
+              <span>{kpis?.tutors.pending ?? 0}</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Rejected</span>
+              <span>{kpis?.tutors.rejected ?? 0}</span>
+            </li>
           </ul>
         </div>
         <div className="rounded-2xl border bg-white p-4 shadow-sm">
@@ -288,4 +333,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

@@ -1,9 +1,9 @@
-import { getAxios } from "../../../api/Axios";
-const api = getAxios("admin");
+import { getAxios } from '../../../api/Axios';
+const api = getAxios('admin');
 
-export type TimeGranularity = "daily" | "monthly";
-export type CourseStatus = "pending" | "approved" | "rejected";
-export type TutorStatus = "pending" | "verification-submitted" | "approved" | "rejected";
+export type TimeGranularity = 'daily' | 'monthly';
+export type CourseStatus = 'pending' | 'approved' | 'rejected';
+export type TutorStatus = 'pending' | 'verification-submitted' | 'approved' | 'rejected';
 
 export type DateRange = { from: Date; to: Date };
 export type TrendPoint = { period: string; value: number };
@@ -44,7 +44,7 @@ export type PendingTutorListItem = {
   tutorId: string;
   name: string;
   email: string;
-  status: Extract<TutorStatus, "pending" | "verification-submitted">;
+  status: Extract<TutorStatus, 'pending' | 'verification-submitted'>;
   createdAt: string;
 };
 
@@ -53,9 +53,11 @@ const toISO = (d: Date) => new Date(d).toISOString();
 // API
 export async function fetchKpis(range?: Partial<DateRange>) {
   const params = new URLSearchParams();
-  if (range?.from) params.set("from", toISO(range.from));
-  if (range?.to) params.set("to", toISO(range.to));
-  const { data } = await api.get<AdminKpis>(`/admin/dashboard/kpis${params.toString() ? `?${params}` : ""}`);
+  if (range?.from) params.set('from', toISO(range.from));
+  if (range?.to) params.set('to', toISO(range.to));
+  const { data } = await api.get<AdminKpis>(
+    `/admin/dashboard/kpis${params.toString() ? `?${params}` : ''}`,
+  );
   return data;
 }
 
@@ -66,7 +68,7 @@ export async function fetchRevenueTrend(range: DateRange, granularity: TimeGranu
     granularity,
   });
   const { data } = await api.get<{ granularity: TimeGranularity; points: TrendPoint[] }>(
-    `/admin/dashboard/revenue?${params.toString()}`
+    `/admin/dashboard/revenue?${params.toString()}`,
   );
   return data.points;
 }
@@ -78,7 +80,7 @@ export async function fetchEnrollmentTrend(range: DateRange, granularity: TimeGr
     granularity,
   });
   const { data } = await api.get<{ granularity: TimeGranularity; points: TrendPoint[] }>(
-    `/admin/dashboard/enrollments?${params.toString()}`
+    `/admin/dashboard/enrollments?${params.toString()}`,
   );
   return data.points;
 }
@@ -90,7 +92,7 @@ export async function fetchTopCourses(range: DateRange, limit = 5) {
     limit: String(limit),
   });
   const { data } = await api.get<{ limit: number; rows: TopCourseRow[] }>(
-    `/admin/dashboard/top-courses?${params.toString()}`
+    `/admin/dashboard/top-courses?${params.toString()}`,
   );
   return data.rows;
 }

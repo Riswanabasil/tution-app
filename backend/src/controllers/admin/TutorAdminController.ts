@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { ITutorAdminService } from "../../services/admin/ITutorAdminService";
+import { Request, Response } from 'express';
+import { ITutorAdminService } from '../../services/admin/ITutorAdminService';
 
 export class TutorAdminController {
   constructor(private service: ITutorAdminService) {}
@@ -22,7 +22,7 @@ export class TutorAdminController {
     try {
       const id = req.params.id;
       console.log(id);
-      
+
       const tutor = await this.service.getTutorById(id);
       res.status(200).json(tutor);
     } catch (err: any) {

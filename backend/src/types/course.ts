@@ -1,19 +1,19 @@
 export type CourseDetails = {
-  _id: string
-  title: string
-  code: string
-  semester: number
-  thumbnail?: string
-  demoVideoUrl?: string
-  price: number
-  offer?: number
-  actualPrice?: number
-  details?: string
-  tutorName: string
-  tutorProfilePic:string
-  tutorEducation:string
-  tutorExperience:string
-  tutorSummary:string
+  _id: string;
+  title: string;
+  code: string;
+  semester: number;
+  thumbnail?: string;
+  demoVideoUrl?: string;
+  price: number;
+  offer?: number;
+  actualPrice?: number;
+  details?: string;
+  tutorName: string;
+  tutorProfilePic: string;
+  tutorEducation: string;
+  tutorExperience: string;
+  tutorSummary: string;
   modules: {
     _id: string;
     name: string;
@@ -25,5 +25,5 @@ export type CourseDetails = {
       order: number;
     }[];
   }[];
-  reviews?: Array<{ author: string; rating: number; when: string; comment: string }>
-}
+  reviews?: Array<{ author: string; rating: number; when: string; comment: string }>;
+};

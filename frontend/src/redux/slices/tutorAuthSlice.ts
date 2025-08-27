@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import type { AxiosError } from "axios";
-import { loginTutor, logoutTutor } from "../../features/tutor/services/TutorApi";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { AxiosError } from 'axios';
+import { loginTutor, logoutTutor } from '../../features/tutor/services/TutorApi';
 
 interface TutorAuthState {
   accessToken: string | null;
@@ -9,7 +9,7 @@ interface TutorAuthState {
   error: string | null;
 }
 
-const LS_KEY = "tutorAccessToken";
+const LS_KEY = 'tutorAccessToken';
 const saved = localStorage.getItem(LS_KEY);
 
 const initialState: TutorAuthState = {
@@ -20,37 +20,34 @@ const initialState: TutorAuthState = {
 };
 
 export const loginTutorThunk = createAsyncThunk<
-  string, 
+  string,
   { email: string; password: string },
   { rejectValue: string }
->("tutor/login", async (payload, thunkAPI) => {
+>('tutor/login', async (payload, thunkAPI) => {
   try {
-    const res = await loginTutor(payload); 
+    const res = await loginTutor(payload);
     localStorage.setItem(LS_KEY, res.accessToken);
     return res.accessToken;
   } catch (err) {
     const e = err as AxiosError<{ message?: string }>;
-    const msg = e.response?.data?.message || "Login failed";
+    const msg = e.response?.data?.message || 'Login failed';
     return thunkAPI.rejectWithValue(msg);
   }
 });
 
-export const logoutTutorThunk = createAsyncThunk(
-  "tutor/logout",
-  async (_, thunkAPI) => {
-    try {
-      await logoutTutor();
-      localStorage.removeItem(LS_KEY);
-      return;
-    } catch (err) {
-      const e = err as AxiosError<{ message?: string }>;
-      return thunkAPI.rejectWithValue(e.response?.data?.message || "Logout failed");
-    }
+export const logoutTutorThunk = createAsyncThunk('tutor/logout', async (_, thunkAPI) => {
+  try {
+    await logoutTutor();
+    localStorage.removeItem(LS_KEY);
+    return;
+  } catch (err) {
+    const e = err as AxiosError<{ message?: string }>;
+    return thunkAPI.rejectWithValue(e.response?.data?.message || 'Logout failed');
   }
-);
+});
 
 const tutorAuthSlice = createSlice({
-  name: "tutorAuth",
+  name: 'tutorAuth',
   initialState,
   reducers: {
     hardLogout(state) {
@@ -62,19 +59,28 @@ const tutorAuthSlice = createSlice({
     },
   },
   extraReducers: (b) => {
-    b.addCase(loginTutorThunk.pending, (s) => { s.loading = true; s.error = null; });
+    b.addCase(loginTutorThunk.pending, (s) => {
+      s.loading = true;
+      s.error = null;
+    });
     b.addCase(loginTutorThunk.fulfilled, (s, a) => {
-      s.loading = false; s.isAuthenticated = true; s.accessToken = a.payload;
+      s.loading = false;
+      s.isAuthenticated = true;
+      s.accessToken = a.payload;
     });
     b.addCase(loginTutorThunk.rejected, (s, a) => {
-      s.loading = false; s.error = (a.payload as string) ?? "Login failed";
+      s.loading = false;
+      s.error = (a.payload as string) ?? 'Login failed';
     });
 
     b.addCase(logoutTutorThunk.fulfilled, (s) => {
-      s.isAuthenticated = false; s.accessToken = null; s.loading = false;
+      s.isAuthenticated = false;
+      s.accessToken = null;
+      s.loading = false;
     });
     b.addCase(logoutTutorThunk.rejected, (s, a) => {
-      s.loading = false; s.error = (a.payload as string) ?? "Logout failed";
+      s.loading = false;
+      s.error = (a.payload as string) ?? 'Logout failed';
     });
   },
 });

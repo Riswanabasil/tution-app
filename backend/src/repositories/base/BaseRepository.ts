@@ -1,5 +1,5 @@
-import { Model, Types } from "mongoose";
-import { IBaseRepository } from "./IBaseRepository";
+import { Model, Types } from 'mongoose';
+import { IBaseRepository } from './IBaseRepository';
 
 export class BaseRepository<T> implements IBaseRepository<T> {
   private model: Model<any>;
@@ -12,7 +12,7 @@ export class BaseRepository<T> implements IBaseRepository<T> {
     return created.toObject();
   }
 
-  async findById(id: Types.ObjectId |string): Promise<T | null> {
+  async findById(id: Types.ObjectId | string): Promise<T | null> {
     return this.model.findById(id);
   }
 
@@ -26,7 +26,7 @@ export class BaseRepository<T> implements IBaseRepository<T> {
 
   async delete(id: string): Promise<boolean> {
     const result = await this.model.findByIdAndDelete(id);
-    
+
     return !!result;
   }
 }

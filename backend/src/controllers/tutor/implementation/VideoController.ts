@@ -1,9 +1,9 @@
-import type { Response, NextFunction } from "express";
-import type { AuthenticatedRequest } from "../../../types/Index";
-import type { IVideoController } from "../IVideoController";
-import type { IVideoService } from "../../../services/tutor/IVideoService";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import type { Response, NextFunction } from 'express';
+import type { AuthenticatedRequest } from '../../../types/Index';
+import type { IVideoController } from '../IVideoController';
+import type { IVideoService } from '../../../services/tutor/IVideoService';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export class VideoController implements IVideoController {
   private s3: S3Client;
@@ -27,12 +27,14 @@ export class VideoController implements IVideoController {
         Bucket: process.env.S3_BUCKET_NAME!,
         Key: key,
         ContentType: contentType,
-        ACL: "private",            
+        ACL: 'private',
       });
       const uploadUrl = await getSignedUrl(this.s3, cmd, { expiresIn: 900 });
 
       res.json({ uploadUrl, key });
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 
   async createVideo(req: AuthenticatedRequest, res: Response, next: NextFunction) {
@@ -54,14 +56,18 @@ export class VideoController implements IVideoController {
       });
 
       res.status(201).json(video);
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
   async listByTopic(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { topicId } = req.params;
       const videos = await this.service.listByTopic(topicId);
       res.json(videos);
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 
   async update(req: AuthenticatedRequest, res: Response, next: NextFunction) {
@@ -69,7 +75,9 @@ export class VideoController implements IVideoController {
       const { id } = req.params;
       const updated = await this.service.update(id, req.body);
       res.json(updated);
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 
   async remove(req: AuthenticatedRequest, res: Response, next: NextFunction) {
@@ -77,6 +85,8 @@ export class VideoController implements IVideoController {
       const { id } = req.params;
       await this.service.softDelete(id);
       res.status(204).end();
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 }

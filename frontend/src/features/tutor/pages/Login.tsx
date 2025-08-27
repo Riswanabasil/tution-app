@@ -26,10 +26,9 @@
 //   const onSubmit = async (data: LoginFormData) => {
 //     setErrorMsg("");
 //     try {
-//       const res = await loginTutor(data); 
+//       const res = await loginTutor(data);
 
 //       localStorage.setItem("tutorAccessToken", res.accessToken);
-     
 
 //       navigate("/tutor/courses");
 //     } catch (err: unknown) {
@@ -114,18 +113,18 @@
 // };
 
 // export default TutorLogin;
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../../redux/store";
-import { loginTutorThunk } from "../../../redux/slices/tutorAuthSlice";
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../../../redux/store';
+import { loginTutorThunk } from '../../../redux/slices/tutorAuthSlice';
 
 const schema = yup.object().shape({
-  email: yup.string().email("Invalid email").required("Email is required"),
-  password: yup.string().required("Password is required"),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  password: yup.string().required('Password is required'),
 });
 
 type LoginFormData = yup.InferType<typeof schema>;
@@ -134,77 +133,84 @@ const TutorLogin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, isAuthenticated } = useSelector((s: RootState) => s.tutorAuth);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const { register, handleSubmit, formState: { errors } } =
-    useForm<LoginFormData>({ resolver: yupResolver(schema) });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({ resolver: yupResolver(schema) });
 
-  useEffect(() => { if (error) setErrorMsg(error); }, [error]);
-  useEffect(() => { if (isAuthenticated) navigate("/tutor/dashboard"); }, [isAuthenticated, navigate]);
+  useEffect(() => {
+    if (error) setErrorMsg(error);
+  }, [error]);
+  useEffect(() => {
+    if (isAuthenticated) navigate('/tutor/dashboard');
+  }, [isAuthenticated, navigate]);
 
   const onSubmit = async (data: LoginFormData) => {
-    setErrorMsg("");
+    setErrorMsg('');
     const result = await dispatch(loginTutorThunk(data));
     if (loginTutorThunk.rejected.match(result)) {
       const msg = result.payload as string;
-      if (msg === "VERIFICATION_PENDING") {
-        navigate("/tutor/verification-status");
+      if (msg === 'VERIFICATION_PENDING') {
+        navigate('/tutor/verification-status');
         return;
       }
-      setErrorMsg(msg || "Login failed");
+      setErrorMsg(msg || 'Login failed');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-sky-100 to-indigo-100">
-      <div className="bg-white shadow-xl rounded-lg flex w-full max-w-4xl overflow-hidden">
-        <div className="hidden md:flex flex-col justify-center items-center bg-indigo-600 text-white w-1/2 p-8">
-          <h1 className="text-4xl font-bold mb-4">Tech Tute</h1>
-          <p className="text-lg text-center">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-sky-100 to-indigo-100">
+      <div className="flex w-full max-w-4xl overflow-hidden rounded-lg bg-white shadow-xl">
+        <div className="hidden w-1/2 flex-col items-center justify-center bg-indigo-600 p-8 text-white md:flex">
+          <h1 className="mb-4 text-4xl font-bold">Tech Tute</h1>
+          <p className="text-center text-lg">
             Tutor Login — Empower learners, one session at a time.
           </p>
         </div>
-        <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-2xl font-semibold text-indigo-700 mb-6 text-center">
-            Tutor Login
-          </h2>
+        <div className="w-full p-8 md:w-1/2">
+          <h2 className="mb-6 text-center text-2xl font-semibold text-indigo-700">Tutor Login</h2>
 
-          {errorMsg && <p className="text-red-500 text-sm mb-4 text-center">{errorMsg}</p>}
+          {errorMsg && <p className="mb-4 text-center text-sm text-red-500">{errorMsg}</p>}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <input
-                {...register("email")}
+                {...register('email')}
                 placeholder="Email Address"
                 type="email"
-                className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full rounded border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+              {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>}
             </div>
 
             <div>
               <input
-                {...register("password")}
+                {...register('password')}
                 type="password"
                 placeholder="Password"
-                className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full rounded border px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+              )}
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition duration-300 disabled:opacity-70"
+              className="w-full rounded bg-indigo-600 py-2 text-white transition duration-300 hover:bg-indigo-700 disabled:opacity-70"
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
           <div className="mt-4 text-center">
             <p className="text-sm">
-              Don't have an account?{" "}
-              <Link to="/tutor/register" className="text-indigo-600 hover:underline font-medium">
+              Don't have an account?{' '}
+              <Link to="/tutor/register" className="font-medium text-indigo-600 hover:underline">
                 Sign up
               </Link>
             </p>

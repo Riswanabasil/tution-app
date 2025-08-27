@@ -1,13 +1,13 @@
-import { OAuth2Client } from "google-auth-library";
-import { IStudentRepository } from "../../../repositories/student/IStudentRepository";
-import { IStudent } from "../../../models/student/studentSchema";
-import { IHasher } from "../../../interfaces/common/IHasher";
-import { OtpService } from "../../common/OtpService";
-import { TokenService } from "../../common/TokenService";
-import { IStudentService } from "../IStudentService";
-import { generateAccessToken, generateRefreshToken } from "../../../utils/GenerateToken";
-import { IEnrollmentRepository } from "../../../repositories/payment/IEnrollmentRepository";
-import bcrypt from "bcrypt"
+import { OAuth2Client } from 'google-auth-library';
+import { IStudentRepository } from '../../../repositories/student/IStudentRepository';
+import { IStudent } from '../../../models/student/studentSchema';
+import { IHasher } from '../../../interfaces/common/IHasher';
+import { OtpService } from '../../common/OtpService';
+import { TokenService } from '../../common/TokenService';
+import { IStudentService } from '../IStudentService';
+import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
+import { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
+import bcrypt from 'bcrypt';
 
 export class StudentService implements IStudentService {
   constructor(
@@ -15,19 +15,19 @@ export class StudentService implements IStudentService {
     private hasher: IHasher,
     private otpService: OtpService,
     private tokenService: TokenService,
-     private enrollRepo: IEnrollmentRepository
+    private enrollRepo: IEnrollmentRepository,
   ) {}
 
   async registerStudentService(
     name: string,
     email: string,
     phone: string,
-    password: string
+    password: string,
   ): Promise<{ student: IStudent; token: string }> {
     const existing = await this.studentRepo.findByEmail(email);
     if (existing) {
-      throw new Error("Student already exists")
-    };
+      throw new Error('Student already exists');
+    }
 
     const hashedPassword = await this.hasher.hash(password);
 
@@ -49,107 +49,98 @@ export class StudentService implements IStudentService {
     return { student: newStudent, token };
   }
 
-async loginStudentService (email:string,password:string){
-    const student =await this.studentRepo.findByEmail(email)
-    if(!student){
-        throw new Error('Student not found');
+  async loginStudentService(email: string, password: string) {
+    const student = await this.studentRepo.findByEmail(email);
+    if (!student) {
+      throw new Error('Student not found');
     }
 
     if (!student.isVerified) {
-    throw new Error('Please verify your email before logging in');
-  }
-  if(student.isBlocked){
-    throw new Error('Your account blocked');
-  }
-  const isMatch = await this.hasher.compare(password, student.password);
-
-   if (!isMatch) {
-    throw new Error('Invalid password');
-  }
-
-  const accessToken = generateAccessToken(student._id.toString(), student.email, student.role);
-
-  const refreshToken=generateRefreshToken(student._id.toString(),student.email,student.role)
-
-  return {
-    accessToken,
-    refreshToken,
-    student: {
-      id: student._id,
-      email: student.email,
-      name: student.name
+      throw new Error('Please verify your email before logging in');
     }
-  };
-}
+    if (student.isBlocked) {
+      throw new Error('Your account blocked');
+    }
+    const isMatch = await this.hasher.compare(password, student.password);
 
-async refreshAccessToken(refreshToken: string): Promise<string> {
-  return this.tokenService.verifyRefreshTokenAndGenerateAccess(refreshToken);
-}
+    if (!isMatch) {
+      throw new Error('Invalid password');
+    }
 
+    const accessToken = generateAccessToken(student._id.toString(), student.email, student.role);
 
-async googleLoginStudentService(idToken: string): Promise<{
-  accessToken: string;
-  refreshToken: string;
-  student: {
-    id: string;
-    email: string;
-    name: string;
-  };
-}> {
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
-  const ticket = await client.verifyIdToken({
-    idToken,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  });
+    const refreshToken = generateRefreshToken(student._id.toString(), student.email, student.role);
 
-  const payload = ticket.getPayload();
-
-  if (!payload || !payload.email || !payload.name) {
-    throw new Error("Invalid Google token");
+    return {
+      accessToken,
+      refreshToken,
+      student: {
+        id: student._id,
+        email: student.email,
+        name: student.name,
+      },
+    };
   }
 
-  const { email, name } = payload;
-
-  let student = await this.studentRepo.findByEmail(email);
-
-  if (!student) {
-    student = await this.studentRepo.create({
-      name,
-      email,
-      password: "", 
-      phone: "",
-      isGoogleSignup: true,
-      isVerified: true,
-      role: "student",
-    });
+  async refreshAccessToken(refreshToken: string): Promise<string> {
+    return this.tokenService.verifyRefreshTokenAndGenerateAccess(refreshToken);
   }
 
-  const accessToken = generateAccessToken(
-    student._id.toString(),
-    student.email,
-    student.role
-  );
-
-  const refreshToken = generateRefreshToken(
-    student._id.toString(),
-    student.email,
-    student.role
-  );
-
-  return {
-    accessToken,
-    refreshToken,
+  async googleLoginStudentService(idToken: string): Promise<{
+    accessToken: string;
+    refreshToken: string;
     student: {
-      id: student._id,
-      email: student.email,
-      name: student.name,
-    },
-  };
-}
+      id: string;
+      email: string;
+      name: string;
+    };
+  }> {
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
 
- async getProfile(userId: string) {
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email || !payload.name) {
+      throw new Error('Invalid Google token');
+    }
+
+    const { email, name } = payload;
+
+    let student = await this.studentRepo.findByEmail(email);
+
+    if (!student) {
+      student = await this.studentRepo.create({
+        name,
+        email,
+        password: '',
+        phone: '',
+        isGoogleSignup: true,
+        isVerified: true,
+        role: 'student',
+      });
+    }
+
+    const accessToken = generateAccessToken(student._id.toString(), student.email, student.role);
+
+    const refreshToken = generateRefreshToken(student._id.toString(), student.email, student.role);
+
+    return {
+      accessToken,
+      refreshToken,
+      student: {
+        id: student._id,
+        email: student.email,
+        name: student.name,
+      },
+    };
+  }
+
+  async getProfile(userId: string) {
     const student = await this.studentRepo.findById(userId);
-    if (!student) throw new Error("Student not found");
+    if (!student) throw new Error('Student not found');
     return student;
   }
 
@@ -164,34 +155,29 @@ async googleLoginStudentService(idToken: string): Promise<{
   // }
 
   /** Verify currentPassword, then change to newPassword */
-  async changePassword(
-    userId: string,
-    currentPassword: string,
-    newPassword: string
-  ) {
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
     const student = await this.studentRepo.findById(userId);
-    if (!student) throw new Error("Student not found");
+    if (!student) throw new Error('Student not found');
 
     const match = await bcrypt.compare(currentPassword, (student as any).password);
-    if (!match) throw new Error("Current password is incorrect");
+    if (!match) throw new Error('Current password is incorrect');
 
     const hash = await bcrypt.hash(newPassword, 10);
     await this.studentRepo.changePassword(userId, hash);
   }
 
- async updateProfile(
-    userId: string,
-    updates: { phone?: string; profilePicKey?: string }
-  ) {
+  async updateProfile(userId: string, updates: { phone?: string; profilePicKey?: string }) {
     let finalPic: string | undefined;
     if (updates.profilePicKey) {
-      finalPic = `https://${process.env.S3_BUCKET_NAME!}.s3.amazonaws.com/`+encodeURIComponent(updates.profilePicKey);
+      finalPic =
+        `https://${process.env.S3_BUCKET_NAME!}.s3.amazonaws.com/` +
+        encodeURIComponent(updates.profilePicKey);
     }
     const toSave: any = { ...(updates.phone && { phone: updates.phone }) };
     if (finalPic) toSave.profilePic = finalPic;
 
     const updated = await this.studentRepo.updateById(userId, toSave);
-    if (!updated) throw new Error("Failed to update profile");
+    if (!updated) throw new Error('Failed to update profile');
     return updated;
   }
 }

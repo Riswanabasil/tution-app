@@ -1,7 +1,6 @@
-import { Component } from "react";
-import type { ReactNode, ErrorInfo } from "react";
-import { Link } from "react-router-dom";
-
+import { Component } from 'react';
+import type { ReactNode, ErrorInfo } from 'react';
+import { Link } from 'react-router-dom';
 
 interface Props {
   children: ReactNode;
@@ -19,26 +18,24 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   static getDerivedStateFromError(): State {
-    // Switch state so fallback UI is displayed
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("Uncaught error:", error, errorInfo);
-    // Here you can log errors to your backend
+    console.error('Uncaught error:', error, errorInfo);
   }
 
   render() {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
-            <div className="bg-red-100 text-red-700 p-6 rounded-lg shadow-lg text-center">
-              <h2 className="text-2xl font-bold mb-2">Something went wrong.</h2>
+          <div className="flex h-screen flex-col items-center justify-center bg-gray-50">
+            <div className="rounded-lg bg-red-100 p-6 text-center text-red-700 shadow-lg">
+              <h2 className="mb-2 text-2xl font-bold">Something went wrong.</h2>
               <p className="mb-4">Please try refreshing the page or go back home.</p>
               <Link
                 to="/"
-                className="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+                className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-white shadow transition hover:bg-blue-700"
               >
                 Go to Home
               </Link>

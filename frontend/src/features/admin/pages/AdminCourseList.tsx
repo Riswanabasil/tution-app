@@ -1,14 +1,11 @@
-import  { useEffect, useState } from 'react';
-import {fetchCourses,updateCourseStatus,} from '../services/CourseApi';
-import type { IPaginatedCourses} from "../services/CourseApi"
+import { useEffect, useState } from 'react';
+import { fetchCourses, updateCourseStatus } from '../services/CourseApi';
+import type { IPaginatedCourses } from '../services/CourseApi';
 import type { ICourse } from '../../../types/course';
 import { AxiosError } from 'axios';
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
-type Course = Pick<
-  ICourse,
-  '_id' | 'title' | 'code' | 'price' | 'details' | 'status'
->;
+type Course = Pick<ICourse, '_id' | 'title' | 'code' | 'price' | 'details' | 'status'>;
 
 export type CourseStatus = 'pending' | 'approved' | 'rejected';
 export default function CourseListPage() {
@@ -29,7 +26,7 @@ export default function CourseListPage() {
         page,
         limit,
         statusFilter || undefined,
-        searchTerm || undefined
+        searchTerm || undefined,
       );
       setCourses(result.courses);
       setTotalPages(result.totalPages);
@@ -48,20 +45,17 @@ export default function CourseListPage() {
   const onStatusChange = async (id: string, status: ICourse['status']) => {
     try {
       const updated = await updateCourseStatus(id, status);
-      setCourses(cs =>
-        cs.map(c => (c._id === id ? updated : c))
-      );
-      toast.success(`Status updated to ${status.toUpperCase()}!`)
+      setCourses((cs) => cs.map((c) => (c._id === id ? updated : c)));
+      toast.success(`Status updated to ${status.toUpperCase()}!`);
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{ message: string }>;
       setError(axiosError.message ?? 'Failed to update status');
-      toast.error("Failed to update status");
+      toast.error('Failed to update status');
     }
   };
 
- 
   return (
-    <div className="p-6 space-y-4">
+    <div className="space-y-4 p-6">
       <h1 className="text-2xl font-semibold">Admin: Course Management</h1>
 
       {/* filters */}
@@ -70,13 +64,13 @@ export default function CourseListPage() {
           type="text"
           placeholder="Search by title or code…"
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="px-3 py-2 border rounded flex-1"
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-1 rounded border px-3 py-2"
         />
         <select
           value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value as CourseStatus | '')}
-          className="px-3 py-2 border rounded"
+          onChange={(e) => setStatusFilter(e.target.value as CourseStatus | '')}
+          className="rounded border px-3 py-2"
         >
           <option value="">All Statuses</option>
           <option value="pending">Pending</option>
@@ -91,7 +85,7 @@ export default function CourseListPage() {
 
       {/* courses table */}
       {!loading && !error && (
-        <table className="min-w-full bg-white shadow rounded overflow-hidden">
+        <table className="min-w-full overflow-hidden rounded bg-white shadow">
           <thead>
             <tr className="bg-gray-100 text-left">
               <th className="px-4 py-2">Title</th>
@@ -102,7 +96,7 @@ export default function CourseListPage() {
             </tr>
           </thead>
           <tbody>
-            {courses.map(c => (
+            {courses.map((c) => (
               <tr key={c._id} className="border-b">
                 <td className="px-4 py-2">{c.title}</td>
                 <td className="px-4 py-2">{c.code}</td>
@@ -111,10 +105,8 @@ export default function CourseListPage() {
                 <td className="px-4 py-2">
                   <select
                     value={c.status}
-                    onChange={e =>
-                      onStatusChange(c._id, e.target.value )
-                    }
-                    className="px-2 py-1 border rounded"
+                    onChange={(e) => onStatusChange(c._id, e.target.value)}
+                    className="rounded border px-2 py-1"
                   >
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
@@ -130,9 +122,9 @@ export default function CourseListPage() {
       {/* pagination */}
       <div className="flex items-center justify-between">
         <button
-          onClick={() => setPage(p => Math.max(1, p - 1))}
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page <= 1}
-          className="px-3 py-1 border rounded disabled:opacity-50"
+          className="rounded border px-3 py-1 disabled:opacity-50"
         >
           Prev
         </button>
@@ -140,9 +132,9 @@ export default function CourseListPage() {
           Page {page} of {totalPages}
         </span>
         <button
-          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page >= totalPages}
-          className="px-3 py-1 border rounded disabled:opacity-50"
+          className="rounded border px-3 py-1 disabled:opacity-50"
         >
           Next
         </button>

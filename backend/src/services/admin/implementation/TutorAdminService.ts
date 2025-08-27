@@ -1,6 +1,6 @@
-import { ITutorAdminService, PagedTutors, TutorDetails } from "../ITutorAdminService";
-import { ITutorRepository } from "../../../repositories/tutor/ITutorRepository";
-import { ITutor } from "../../../models/tutor/TutorSchema";
+import { ITutorAdminService, PagedTutors, TutorDetails } from '../ITutorAdminService';
+import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
+import { ITutor } from '../../../models/tutor/TutorSchema';
 
 export class TutorAdminService implements ITutorAdminService {
   constructor(private tutorRepo: ITutorRepository) {}
@@ -9,7 +9,7 @@ export class TutorAdminService implements ITutorAdminService {
     page: number,
     limit: number,
     status?: string,
-    search?: string
+    search?: string,
   ): Promise<PagedTutors> {
     const skip = (page - 1) * limit;
     const query: any = {};
@@ -17,14 +17,14 @@ export class TutorAdminService implements ITutorAdminService {
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { email: { $regex: search, $options: 'i' } },
       ];
     }
 
     const total = await this.tutorRepo.countAllWithFilters(query);
     const tutorsRaw: ITutor[] = await this.tutorRepo.getAllWithFilters(query, skip, limit);
 
-    const tutors = tutorsRaw.map(t => ({
+    const tutors = tutorsRaw.map((t) => ({
       _id: t._id.toString(),
       id: t._id.toString(),
       name: t.name,
@@ -37,7 +37,7 @@ export class TutorAdminService implements ITutorAdminService {
       tutors,
       total,
       currentPage: page,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
     };
   }
 
@@ -53,7 +53,7 @@ export class TutorAdminService implements ITutorAdminService {
       isGoogleSignup: t.isGoogleSignup,
       status: t.status,
       // assignedCourses: t.assignedCourses.map(id => id.toString()),
-      verificationDetails: t.verificationDetails
+      verificationDetails: t.verificationDetails,
     };
   }
 
@@ -65,4 +65,3 @@ export class TutorAdminService implements ITutorAdminService {
     if (!success) throw new Error('Tutor not found');
   }
 }
-

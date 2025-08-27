@@ -1,7 +1,5 @@
-
-
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ currentPath }: { currentPath: string }) => {
   const location = useLocation();
@@ -9,7 +7,7 @@ const Sidebar = ({ currentPath }: { currentPath: string }) => {
   const [moduleItems, setModuleItems] = useState(null);
 
   useEffect(() => {
-    if (currentPath.includes("/tutor/module")) {
+    if (currentPath.includes('/tutor/module')) {
       // In future: fetch module topics and setModuleItems(topics);
     } else {
       setModuleItems(null);
@@ -17,10 +15,8 @@ const Sidebar = ({ currentPath }: { currentPath: string }) => {
   }, [currentPath]);
 
   return (
-    <aside className="w-64 min-h-screen bg-gradient-to-b from-white to-gray-100 border-r shadow-sm p-4">
-      <div className="text-2xl font-bold text-indigo-600 mb-6 tracking-tight">
-        TechTute
-      </div>
+    <aside className="min-h-screen w-64 border-r bg-gradient-to-b from-white to-gray-100 p-4 shadow-sm">
+      <div className="mb-6 text-2xl font-bold tracking-tight text-indigo-600">TechTute</div>
 
       {moduleItems ? (
         <>
@@ -37,16 +33,16 @@ const Sidebar = ({ currentPath }: { currentPath: string }) => {
         <nav className="flex flex-col space-y-4 text-gray-700">
           <Link
             to="/tutor/dashboard"
-            className={`hover:text-indigo-600 transition ${
-              location.pathname === "/tutor/dashboard" ? "text-indigo-600 font-semibold" : ""
+            className={`transition hover:text-indigo-600 ${
+              location.pathname === '/tutor/dashboard' ? 'font-semibold text-indigo-600' : ''
             }`}
           >
             Dashboard
           </Link>
           <Link
             to="/tutor/assignments"
-            className={`hover:text-indigo-600 transition ${
-              location.pathname === "/tutor/assignments" ? "text-indigo-600 font-semibold" : ""
+            className={`transition hover:text-indigo-600 ${
+              location.pathname === '/tutor/assignments' ? 'font-semibold text-indigo-600' : ''
             }`}
           >
             Assignments

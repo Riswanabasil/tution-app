@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import { generateAccessToken } from "../../utils/GenerateToken";
+import jwt from 'jsonwebtoken';
+import { generateAccessToken } from '../../utils/GenerateToken';
 
 interface Payload {
   id: string;
@@ -10,7 +10,7 @@ const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
 export class TokenService {
   generateToken(payload: Payload): string {
     return jwt.sign(payload, process.env.JWT_SECRET as string, {
-      expiresIn: "1d",
+      expiresIn: '1d',
     });
   }
 

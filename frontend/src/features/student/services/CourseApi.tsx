@@ -1,6 +1,5 @@
-
-import { getAxios } from "../../../api/Axios";
-const axios = getAxios("student");
+import { getAxios } from '../../../api/Axios';
+const axios = getAxios('student');
 import type { CourseDetails, ICourse, Module } from '../../../types/course';
 import type { Note } from '../../../types/note';
 
@@ -30,58 +29,48 @@ export type StudentVideoItem = {
   };
 };
 
-
 export const getApprovedCourses = async (
   page = 1,
   limit = 10,
-  search = "",
+  search = '',
   semester?: number,
-  sortBy?: string
+  sortBy?: string,
 ): Promise<PaginatedCourses> => {
   const params = new URLSearchParams();
-  params.append("page", String(page));
-  params.append("limit", String(limit));
-  params.append("search", search);
+  params.append('page', String(page));
+  params.append('limit', String(limit));
+  params.append('search', search);
 
-  if (semester !== undefined) params.append("semester", String(semester));
-  if (sortBy) params.append("sortBy", sortBy);
+  if (semester !== undefined) params.append('semester', String(semester));
+  if (sortBy) params.append('sortBy', sortBy);
 
   const res = await axios.get<PaginatedCourses>(`/student/courses?${params.toString()}`);
   return res.data;
 };
 
 export const fetchCourseDetails = async (id: string): Promise<CourseDetails> => {
-  const res = await axios.get<CourseDetails>(`/student/courses/${id}`)
-  return res.data
-}
+  const res = await axios.get<CourseDetails>(`/student/courses/${id}`);
+  return res.data;
+};
 
 export const getMyCourses = async (): Promise<MyCourseDTO[]> => {
-  const res = await axios.get<{ data: MyCourseDTO[] }>(
-    "/student/mycourses"
-  );
+  const res = await axios.get<{ data: MyCourseDTO[] }>('/student/mycourses');
   return res.data.data;
 };
 
 export const fetchModulesByCourseId = async (courseId: string): Promise<Module[]> => {
   const res = await axios.get(`/student/modules/${courseId}`);
   console.log(res);
-  
+
   return res.data;
 };
 
-
-export const fetchTopicsByModuleId = async (
-  moduleId: string,
-  search = '',
-  page = 1,
-  limit = 5
-) => {
+export const fetchTopicsByModuleId = async (moduleId: string, search = '', page = 1, limit = 5) => {
   const res = await axios.get(`/student/topics/${moduleId}`, {
     params: { search, page, limit },
   });
   return res.data;
 };
-
 
 export const fetchNotesByTopicId = async (topicId: string): Promise<Note[]> => {
   const res = await axios.get(`/student/notes/${topicId}`);
@@ -90,16 +79,21 @@ export const fetchNotesByTopicId = async (topicId: string): Promise<Note[]> => {
 
 export const fetchStudentAssignments = async (topicId: string) => {
   const response = await axios.get(`/student/assignments/${topicId}`);
-  console.log(response.data)
+  console.log(response.data);
   return response.data;
 };
-export const getSubmissionUploadUrl = async (fileName: string,contentType:string) => {
-  const res = await axios.get("/student/submissions/presigned-url", { params: { fileName, contentType } });
+export const getSubmissionUploadUrl = async (fileName: string, contentType: string) => {
+  const res = await axios.get('/student/submissions/presigned-url', {
+    params: { fileName, contentType },
+  });
   return res.data;
 };
-export const submitAssignmentResponse = async (assignmentId: string, payload: { response: string }) => {
+export const submitAssignmentResponse = async (
+  assignmentId: string,
+  payload: { response: string },
+) => {
   console.log(assignmentId);
-  
+
   const res = await axios.post(`/student/submissions/${assignmentId}`, payload);
   return res.data;
 };
@@ -109,7 +103,10 @@ export const fetchSubmissionByAssignment = async (assignmentId: string) => {
   return response.data;
 };
 
-export const updateAssignmentResponse = async (assignmentId: string, payload: { response: string }) => {
+export const updateAssignmentResponse = async (
+  assignmentId: string,
+  payload: { response: string },
+) => {
   const res = await axios.put(`/student/submission/${assignmentId}`, payload);
   return res.data;
 };
@@ -132,7 +129,7 @@ export async function upsertVideoProgress(
     ranges: { startSec: number; endSec: number }[];
     lastPositionSec: number;
     durationSec?: number;
-  }
+  },
 ) {
   const { data } = await axios.post(`/student/videos/${videoId}/progress`, payload);
   return data as {
@@ -144,4 +141,3 @@ export async function upsertVideoProgress(
     updatedAt: string;
   };
 }
-

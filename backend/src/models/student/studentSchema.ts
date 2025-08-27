@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IStudent extends Document {
   _id: string;
@@ -8,7 +8,7 @@ export interface IStudent extends Document {
   phone: string;
   isGoogleSignup: boolean;
   isBlocked: boolean;
-  role: "student";
+  role: 'student';
   isVerified: boolean;
   profilePic: string;
 }
@@ -21,19 +21,18 @@ const studentSchema = new Schema<IStudent>(
     password: { type: String, required: false },
     isGoogleSignup: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
-    role: { type: String, default: "student" },
+    role: { type: String, default: 'student' },
     isVerified: { type: Boolean, default: false },
     profilePic: {
       type: String,
-      default:
-        "https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg",
+      default: 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg',
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
-const Student = mongoose.model<IStudent>("Student", studentSchema);
+const Student = mongoose.model<IStudent>('Student', studentSchema);
 studentSchema.index({ isVerified: 1 });
 studentSchema.index({ isBlocked: 1 });
 studentSchema.index({ createdAt: -1 });

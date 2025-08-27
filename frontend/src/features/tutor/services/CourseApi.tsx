@@ -1,27 +1,32 @@
-import { getAxios } from "../../../api/Axios";
-const axios = getAxios("tutor");
+import { getAxios } from '../../../api/Axios';
+const axios = getAxios('tutor');
 import type { Module } from '../../../types/module';
 import type { Topic, TopicForm } from '../../../types/topic';
 
 // Modules
 export const fetchModules = async (courseId: string): Promise<Module[]> => {
   const res = await axios.get<Module[]>(`/tutor/courses/${courseId}/modules`);
-  console.log(res.data)
+  console.log(res.data);
   return res.data;
 };
 
-export const fetchModuleById = async (
+export const fetchModuleById = async (courseId: string, moduleId: string): Promise<Module> => {
+  const res = await axios.get<Module>(`/tutor/courses/${courseId}/modules/${moduleId}`);
+  return res.data;
+};
+export const createModule = async (
   courseId: string,
-  moduleId: string
+  name: string,
+  order: number,
 ): Promise<Module> => {
-  const res = await axios.get<Module>(`/tutor/courses/${courseId}/modules/${moduleId}`)
-  return res.data
-}
-export const createModule = async (courseId: string, name: string, order: number): Promise<Module> => {
   const res = await axios.post<Module>(`/tutor/courses/${courseId}/modules`, { name, order });
   return res.data;
 };
-export const updateModule = async (courseId: string, moduleId: string, data: Partial<Module>): Promise<Module> => {
+export const updateModule = async (
+  courseId: string,
+  moduleId: string,
+  data: Partial<Module>,
+): Promise<Module> => {
   const res = await axios.put<Module>(`/tutor/courses/${courseId}/modules/${moduleId}`, data);
   return res.data;
 };
@@ -31,9 +36,11 @@ export const deleteModule = async (courseId: string, moduleId: string): Promise<
 
 // Topics
 export const fetchTopics = async (moduleId: string): Promise<Topic[]> => {
-  const res = await axios.get<{ topics: Topic[] }>(`/tutor/modules/${moduleId}/topics?page=1&limit=20`);
+  const res = await axios.get<{ topics: Topic[] }>(
+    `/tutor/modules/${moduleId}/topics?page=1&limit=20`,
+  );
   console.log(res);
-  
+
   return res.data.topics;
 };
 

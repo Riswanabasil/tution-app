@@ -1,6 +1,6 @@
-import { getAxios } from "../../../api/Axios";
-const axios = getAxios("tutor");
-import type { ICourse } from "../../../types/course";
+import { getAxios } from '../../../api/Axios';
+const axios = getAxios('tutor');
+import type { ICourse } from '../../../types/course';
 interface LoginPayload {
   email: string;
   password: string;
@@ -41,42 +41,34 @@ export interface CoursePayload {
 }
 
 export const registerTutor = async (data: TutorSignupData) => {
-  const res = await axios.post("/tutor/register", data);
+  const res = await axios.post('/tutor/register', data);
   return res.data;
 };
 
-export const submitTutorVerification = async (
-  payload: TutorVerificationPayload
-) => {
+export const submitTutorVerification = async (payload: TutorVerificationPayload) => {
   const formData = new FormData();
-  formData.append("tutorId", payload.tutorId);
-  formData.append("summary", payload.summary);
-  formData.append("education", payload.education);
-  formData.append("experience", payload.experience);
-  formData.append("idProof", payload.idProof);
-  formData.append("resume", payload.resume);
+  formData.append('tutorId', payload.tutorId);
+  formData.append('summary', payload.summary);
+  formData.append('education', payload.education);
+  formData.append('experience', payload.experience);
+  formData.append('idProof', payload.idProof);
+  formData.append('resume', payload.resume);
 
-  const response = await axios.post("/tutor/submit-verification", formData);
+  const response = await axios.post('/tutor/submit-verification', formData);
   return response.data;
 };
 
 export const loginTutor = async (data: LoginPayload) => {
-  const res = await axios.post("/tutor/login", data);
+  const res = await axios.post('/tutor/login', data);
 
   return res.data;
 };
 export const logoutTutor = async () => {
-  await axios.post("/tutor/logout");
+  await axios.post('/tutor/logout');
 };
-export const getCourses = async (
-  page = 1,
-  limit = 10,
-  search = ""
-): Promise<PaginatedCourses> => {
+export const getCourses = async (page = 1, limit = 10, search = ''): Promise<PaginatedCourses> => {
   const res = await axios.get<PaginatedCourses>(
-    `/tutor/courses?page=${page}&limit=${limit}&search=${encodeURIComponent(
-      search
-    )}`
+    `/tutor/courses?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`,
   );
   return res.data;
 };
@@ -89,39 +81,33 @@ export const getCourseById = async (id: string): Promise<ICourse> => {
 // presigned S3 URL + key
 export const getUploadUrl = async (
   filename: string,
-  contentType: string
+  contentType: string,
 ): Promise<{ uploadUrl: string; key: string }> => {
-  const res = await axios.get<{ uploadUrl: string; key: string }>(
-    `/tutor/courses/upload-url`,
-    { params: { filename, contentType } }
-  );
+  const res = await axios.get<{ uploadUrl: string; key: string }>(`/tutor/courses/upload-url`, {
+    params: { filename, contentType },
+  });
   return res.data;
 };
 
 export const getDemoUploadUrl = async (
   filename: string,
-  contentType: string
+  contentType: string,
 ): Promise<{ uploadUrl: string; key: string }> => {
   const res = await axios.get<{ uploadUrl: string; key: string }>(
     `/tutor/courses/demo-upload-url`,
-    { params: { filename, contentType } }
+    { params: { filename, contentType } },
   );
   return res.data;
 };
 
 // create new course
-export const createCourse = async (
-  payload: CoursePayload
-): Promise<ICourse> => {
-  const res = await axios.post<ICourse>("/tutor/course", payload);
+export const createCourse = async (payload: CoursePayload): Promise<ICourse> => {
+  const res = await axios.post<ICourse>('/tutor/course', payload);
   return res.data;
 };
 
 // update course
-export const updateCourse = async (
-  id: string,
-  payload: CoursePayload
-): Promise<ICourse> => {
+export const updateCourse = async (id: string, payload: CoursePayload): Promise<ICourse> => {
   const res = await axios.put<ICourse>(`/tutor/course/${id}`, payload);
   return res.data;
 };
@@ -138,11 +124,11 @@ export const deleteCourse = async (id: string): Promise<void> => {
 //profile
 
 export interface VerificationDetails {
-  summary:    string;
-  education:  string;
+  summary: string;
+  education: string;
   experience: string;
-  idProof:    string;
-  resume:     string;
+  idProof: string;
+  resume: string;
 }
 
 export interface TutorProfileDTO {
@@ -151,8 +137,8 @@ export interface TutorProfileDTO {
   phone?: string;
   profilePic: string;
   createdAt: string;
-  verificationDetails?: VerificationDetails
-  walletBalance:number
+  verificationDetails?: VerificationDetails;
+  walletBalance: number;
 }
 
 export interface TutorStatsDTO {
@@ -168,38 +154,29 @@ export interface TutorCourseDTO {
 }
 
 export const getTutorProfile = () =>
-  axios
-    .get<{ data: TutorProfileDTO }>("/tutor/profile")
-    .then((r) => r.data.data);
+  axios.get<{ data: TutorProfileDTO }>('/tutor/profile').then((r) => r.data.data);
 
 export const updateTutorProfile = (payload: Partial<TutorProfileDTO>) =>
-  axios
-    .put<{ data: TutorProfileDTO }>("/tutor/profile", payload)
-    .then((r) => r.data.data);
+  axios.put<{ data: TutorProfileDTO }>('/tutor/profile', payload).then((r) => r.data.data);
 
 export const changeTutorPassword = (current: string, next: string) =>
-  axios.put("/tutor/profile/password", {
+  axios.put('/tutor/profile/password', {
     currentPassword: current,
     newPassword: next,
   });
 
 export const getTutorStats = () =>
-  axios
-    .get<{ data: TutorStatsDTO }>("/tutor/profile/stats")
-    .then((r) => r.data.data);
+  axios.get<{ data: TutorStatsDTO }>('/tutor/profile/stats').then((r) => r.data.data);
 
 export const getTutorCourses = () =>
-  axios
-    .get<{ data: TutorCourseDTO[] }>("/tutor/profile/courses")
-    .then((r) => r.data.data);
+  axios.get<{ data: TutorCourseDTO[] }>('/tutor/profile/courses').then((r) => r.data.data);
 
 export const getAvatarUploadUrl = async (
   filename: string,
-  contentType: string
+  contentType: string,
 ): Promise<{ uploadUrl: string; key: string }> => {
-  const res = await axios.get<{ uploadUrl: string; key: string }>(
-    `/tutor/profile/upload-url`,
-    { params: { filename, contentType } }
-  );
+  const res = await axios.get<{ uploadUrl: string; key: string }>(`/tutor/profile/upload-url`, {
+    params: { filename, contentType },
+  });
   return res.data;
 };

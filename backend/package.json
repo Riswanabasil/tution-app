@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "keywords": [],
   "author": "",
@@ -36,6 +38,8 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^22.15.21",
     "@types/nodemailer": "^6.4.17",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   }

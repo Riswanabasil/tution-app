@@ -1,9 +1,8 @@
-import type { Assignment, AssignmentId } from "../../types/assignment";
+import type { Assignment, AssignmentId } from '../../types/assignment';
 
 export interface IAssignmentRepository {
-
   create(
-    data: Omit<Assignment, "_id" | "isDeleted" | "createdAt" | "updatedAt">
+    data: Omit<Assignment, '_id' | 'isDeleted' | 'createdAt' | 'updatedAt'>,
   ): Promise<Assignment>;
 
   findByTopic(topicId: string): Promise<Assignment[]>;
@@ -18,7 +17,7 @@ export interface IAssignmentRepository {
    */
   update(
     id: AssignmentId,
-    update: Partial<Omit<Assignment, "_id" | "createdAt" | "updatedAt">>
+    update: Partial<Omit<Assignment, '_id' | 'createdAt' | 'updatedAt'>>,
   ): Promise<Assignment | null>;
 
   /**

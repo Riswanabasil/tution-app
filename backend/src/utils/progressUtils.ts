@@ -1,21 +1,24 @@
-import type { IWatchedRange } from "../models/video/VideoProgress";
+import type { IWatchedRange } from '../models/video/VideoProgress';
 
 export function mergeRanges(
   existing: IWatchedRange[],
   incoming: IWatchedRange[],
-  clampTo?: number
+  clampTo?: number,
 ): IWatchedRange[] {
   const all = [...existing, ...incoming]
-    .map(r => ({
+    .map((r) => ({
       startSec: Math.max(0, clampTo != null ? Math.min(r.startSec, clampTo) : r.startSec),
-      endSec:   Math.max(0, clampTo != null ? Math.min(r.endSec,   clampTo) : r.endSec),
+      endSec: Math.max(0, clampTo != null ? Math.min(r.endSec, clampTo) : r.endSec),
     }))
-    .filter(r => r.endSec > r.startSec)
-    .sort((a,b) => a.startSec - b.startSec);
+    .filter((r) => r.endSec > r.startSec)
+    .sort((a, b) => a.startSec - b.startSec);
 
   const merged: IWatchedRange[] = [];
   for (const r of all) {
-    if (!merged.length) { merged.push({ ...r }); continue; }
+    if (!merged.length) {
+      merged.push({ ...r });
+      continue;
+    }
     const last = merged[merged.length - 1];
     if (r.startSec <= last.endSec + 0.01) {
       last.endSec = Math.max(last.endSec, r.endSec);

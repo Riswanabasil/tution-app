@@ -1,4 +1,4 @@
-import { ITutor } from "../../models/tutor/TutorSchema";
+import { ITutor } from '../../models/tutor/TutorSchema';
 
 export interface PagedTutors {
   tutors: Array<{
@@ -30,12 +30,7 @@ export interface TutorDetails {
   };
 }
 export interface ITutorAdminService {
-  getAllTutors(
-    page: number,
-    limit: number,
-    status?: string,
-    search?: string
-  ): Promise<PagedTutors>;
+  getAllTutors(page: number, limit: number, status?: string, search?: string): Promise<PagedTutors>;
 
   getTutorById(id: string): Promise<TutorDetails>;
   updateTutorStatus(id: string, status: 'approved' | 'rejected'): Promise<void>;

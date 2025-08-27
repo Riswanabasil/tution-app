@@ -4,11 +4,10 @@ export interface Topic {
   title: string;
   description?: string;
   order: number;
-  isDeleted: boolean
+  isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
-
 
 export interface TopicPayload {
   moduleId: string;

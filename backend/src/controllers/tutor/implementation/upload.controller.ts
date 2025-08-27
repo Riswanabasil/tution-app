@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3 } from "../../../utils/s3Client";
+import { Request, Response, NextFunction } from 'express';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { s3 } from '../../../utils/s3Client';
 
-export async function getUploadUrl(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function getUploadUrl(req: Request, res: Response, next: NextFunction) {
   try {
     const { filename, contentType } = req.query as {
       filename: string;
@@ -19,7 +15,7 @@ export async function getUploadUrl(
       Bucket: process.env.S3_BUCKET_NAME!,
       Key: key,
       ContentType: contentType,
-      ACL: "private",
+      ACL: 'private',
     });
     const uploadUrl = await getSignedUrl(s3, cmd, { expiresIn: 900 });
 
@@ -29,11 +25,7 @@ export async function getUploadUrl(
   }
 }
 
-export async function getDemoUploadUrl(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function getDemoUploadUrl(req: Request, res: Response, next: NextFunction) {
   try {
     const { filename, contentType } = req.query as {
       filename: string;
@@ -45,7 +37,7 @@ export async function getDemoUploadUrl(
       Bucket: process.env.S3_BUCKET_NAME!,
       Key: key,
       ContentType: contentType,
-      ACL: "private",
+      ACL: 'private',
     });
     const uploadUrl = await getSignedUrl(s3, cmd, { expiresIn: 900 });
 
@@ -55,11 +47,7 @@ export async function getDemoUploadUrl(
   }
 }
 
-export async function getProfileUploadUrl(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export async function getProfileUploadUrl(req: Request, res: Response, next: NextFunction) {
   try {
     const { filename, contentType } = req.query as {
       filename: string;
@@ -71,7 +59,7 @@ export async function getProfileUploadUrl(
       Bucket: process.env.S3_BUCKET_NAME!,
       Key: key,
       ContentType: contentType,
-      ACL: "private",
+      ACL: 'private',
     });
     const uploadUrl = await getSignedUrl(s3, cmd, { expiresIn: 900 });
 
@@ -79,26 +67,24 @@ export async function getProfileUploadUrl(
   } catch (err) {
     next(err);
   }
-
-  
 }
 
 export async function getNoteUploadUrls(
   req: Request,
   res: Response,
-  next: NextFunction
-) :Promise<void>{
+  next: NextFunction,
+): Promise<void> {
   try {
     const { count } = req.body as {
       count: number;
     };
 
     if (!count || count <= 0) {
-      res.status(400).json({ message: "Invalid count value" });
-       return
+      res.status(400).json({ message: 'Invalid count value' });
+      return;
     }
 
-    const prefix = "note";
+    const prefix = 'note';
 
     const uploadData = await Promise.all(
       Array.from({ length: count }).map(async (_, i) => {
@@ -108,13 +94,13 @@ export async function getNoteUploadUrls(
         const cmd = new PutObjectCommand({
           Bucket: process.env.S3_BUCKET_NAME!,
           Key: key,
-          ContentType: "application/pdf",
-          ACL: "private"
+          ContentType: 'application/pdf',
+          ACL: 'private',
         });
 
         const uploadUrl = await getSignedUrl(s3, cmd, { expiresIn: 900 });
         return { uploadUrl, key };
-      })
+      }),
     );
 
     res.json(uploadData);
