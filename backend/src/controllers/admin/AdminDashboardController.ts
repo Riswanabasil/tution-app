@@ -1,27 +1,9 @@
 import type { Request, Response } from 'express';
 import type {
   IAdminDashboardService,
-  DateRange,
-  TimeGranularity,
-} from '../../services/admin/IAdminDashboardService.js';
+} from '../../services/admin/IAdminDashboardService';
 
-function parseDateRange(q: Request['query']): DateRange {
-  const to = q.to ? new Date(String(q.to)) : new Date();
-  const from = q.from
-    ? new Date(String(q.from))
-    : new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
-  return { from, to };
-}
-
-function parseGranularity(v: unknown, fallback: TimeGranularity): TimeGranularity {
-  return v === 'monthly' || v === 'daily' ? v : fallback;
-}
-
-function parseLimit(v: unknown, fallback: number): number {
-  const n = Number(v);
-  return Number.isFinite(n) && n > 0 ? Math.min(n, 100) : fallback;
-}
-
+import { parseDateRange, parseGranularity, parseLimit } from '../../utils/dashboard';
 export default class AdminDashboardController {
   constructor(private readonly svc: IAdminDashboardService) {}
 

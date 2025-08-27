@@ -15,18 +15,8 @@ import type { IStudentRepository } from '../../../repositories/student/IStudentR
 import type { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import type { ICourseRepository } from '../../../repositories/course/ICourseRepository';
 import type { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
+import { resolveRange, startOfToday } from '../../../utils/dashboard';
 
-function resolveRange(partial?: Partial<DateRange>): DateRange {
-  const to = partial?.to ?? new Date();
-  const from = partial?.from ?? new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
-  return { from, to };
-}
-function startOfToday(d = new Date()) {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-}
-function startOfMonth(d = new Date()) {
-  return new Date(d.getFullYear(), d.getMonth(), 1);
-}
 
 export class AdminDashboardService implements IAdminDashboardService {
   constructor(
