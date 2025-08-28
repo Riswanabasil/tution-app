@@ -4,21 +4,16 @@ import type { IStudentVideoService } from '../../../services/student/IVideoServi
 
 export class StudentVideoController {
   constructor(private svc: IStudentVideoService) {}
-
-  // GET /student/topics/:topicId/videos
   async listByTopic(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const topicId = req.params.topicId;
       const studentId = req.user!.id;
-      // TODO: enforce enrollment if needed
       const data = await this.svc.listByTopicForStudent(topicId, studentId);
       res.json(data);
     } catch (e) {
       next(e);
     }
   }
-
-  // POST /student/videos/:videoId/progress
   async upsertProgress(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const videoId = req.params.videoId;

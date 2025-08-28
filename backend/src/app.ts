@@ -26,7 +26,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Tuition backend is running');
 });
-app.use('/api/student', studentRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/tutor', tutorRoutes);
+app.use('/api/v1/student', studentRoutes);
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/tutor', tutorRoutes);
 export default app;

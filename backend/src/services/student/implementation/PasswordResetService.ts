@@ -2,12 +2,15 @@ import { StudentOtpRepository } from '../../../repositories/student/implementati
 import { StudentRepository } from '../../../repositories/student/implementation/studentRepository';
 import bcrypt from 'bcrypt';
 import { OtpService } from '../../common/OtpService';
+import { IStudentOtpRepository } from '../../../repositories/student/IStudentOtpRepository';
+import { IStudentRepository } from '../../../repositories/student/IStudentRepository';
+import { IOtpService } from '../IOtpService';
 
 export class PasswordResetService {
   constructor(
-    private otpRepo = new StudentOtpRepository(),
-    private studentRepo = new StudentRepository(),
-    private otpSvc = new OtpService(),
+    private otpRepo:IStudentOtpRepository,
+    private studentRepo :IStudentRepository,
+    private otpSvc:OtpService,
   ) {}
 
   async requestReset(email: string): Promise<void> {
