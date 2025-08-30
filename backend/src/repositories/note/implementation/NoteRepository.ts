@@ -1,6 +1,7 @@
 import { INote, NoteModel } from '../../../models/note/NoteSchema';
+import { INoteRepository } from '../INoteRepository';
 
-export class NoteRepository {
+export class NoteRepository implements INoteRepository {
   create(data: Partial<INote>) {
     return NoteModel.create(data);
   }

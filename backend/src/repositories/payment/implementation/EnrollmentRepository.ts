@@ -1,7 +1,8 @@
 import { Types } from 'mongoose';
 import { EnrollmentModel, IEnrollment } from '../../../models/payment/Enrollment';
 import { BaseRepository } from '../../base/BaseRepository';
-import { DateRange, IEnrollmentRepository, TimeGranularity } from '../IEnrollmentRepository';
+import { IEnrollmentRepository } from '../IEnrollmentRepository';
+import { DateRange, TimeGranularity } from '../../../types/Enrollment';
 // helper
 function toObjectIds(ids: string[]) {
   return ids.map((id) => new Types.ObjectId(id));

@@ -1,39 +1,7 @@
 import { Types } from 'mongoose';
 import { ICourse } from '../../models/course/CourseSchema';
+import { CourseListItem, CourseStatus, IPaginateOptions, TutorCourseListItem, TutorPendingCourseItem } from '../../types/course';
 
-export interface IPaginateOptions {
-  skip: number;
-  limit: number;
-  sort?: Record<string, 1 | -1>;
-}
-export type CourseListItem = {
-  _id: string;
-  title: string;
-  code: string;
-  semester: number;
-  tutor: string;
-  status: CourseStatus;
-  createdAt: Date;
-};
-export type TutorPendingCourseItem = {
-  _id: string;
-  title: string;
-  code: string;
-  semester: number;
-  createdAt: Date;
-};
-
-export type TutorCourseListItem = {
-  _id: string;
-  title: string;
-  code: string;
-  semester: number;
-  status: CourseStatus;
-  price: number;
-  createdAt: Date;
-};
-
-export type CourseStatus = 'pending' | 'approved' | 'rejected';
 export interface ICourseRepository {
   create(data: Partial<ICourse>): Promise<ICourse>;
   findById(id: Types.ObjectId | string): Promise<ICourse | null>;

@@ -2,27 +2,14 @@ import { Types } from 'mongoose';
 import Review, { IReview as IReviewDoc } from '../../../models/review/review';
 import type {
   IReviewRepository,
-  ReviewDTO,
-  CreateReviewInput,
-  UpdateReviewInput,
-  Paginated,
 } from '../IReviewRepository';
+import type { CreateReviewInput, Paginated, Reviews, UpdateReviewInput } from '../../../types/Review';
+import { toDTO } from '../../../utils/review';
 
-function toDTO(doc: IReviewDoc): ReviewDTO {
-  return {
-    _id: String(doc._id),
-    courseId: String(doc.courseId),
-    studentId: String(doc.studentId),
-    rating: doc.rating,
-    comment: doc.comment,
-    isDeleted: !!doc.isDeleted,
-    createdAt: doc.createdAt as Date,
-    updatedAt: doc.updatedAt as Date,
-  };
-}
+
 
 export class ReviewRepository implements IReviewRepository {
-  async create(payload: CreateReviewInput): Promise<ReviewDTO> {
+  async create(payload: CreateReviewInput): Promise<Reviews> {
     const doc = await Review.create({
       courseId: payload.courseId,
       studentId: payload.studentId,
@@ -32,7 +19,7 @@ export class ReviewRepository implements IReviewRepository {
     return toDTO(doc);
   }
 
-  async findById(id: string): Promise<ReviewDTO | null> {
+  async findById(id: string): Promise<Reviews | null> {
     const doc = await Review.findOne({ _id: id, isDeleted: false });
     return doc ? toDTO(doc) : null;
   }
@@ -41,7 +28,7 @@ export class ReviewRepository implements IReviewRepository {
     courseId: string,
     page: number,
     limit: number,
-  ): Promise<Paginated<ReviewDTO>> {
+  ): Promise<Paginated<Reviews>> {
     const p = Math.max(1, Number(page) || 1);
     const l = Math.max(1, Number(limit) || 10);
     const skip = (p - 1) * l;
@@ -61,7 +48,7 @@ export class ReviewRepository implements IReviewRepository {
     };
   }
 
-  async update(id: string, updates: UpdateReviewInput): Promise<ReviewDTO | null> {
+  async update(id: string, updates: UpdateReviewInput): Promise<Reviews | null> {
     const $set: Partial<Record<keyof UpdateReviewInput, any>> = {};
     if (typeof updates.rating !== 'undefined') $set.rating = updates.rating;
     if (typeof updates.comment !== 'undefined') $set.comment = updates.comment;

@@ -1,10 +1,5 @@
 import { IEnrollment } from '../../models/payment/Enrollment';
-export type TimeGranularity = 'daily' | 'monthly';
-export interface DateRange {
-  from: Date;
-  to: Date;
-}
-
+import { DateRange, TimeGranularity } from '../../types/Enrollment';
 export interface IEnrollmentRepository {
   create(data: Partial<IEnrollment>): Promise<IEnrollment>;
   updateStatus(orderId: string, status: IEnrollment['status']): Promise<IEnrollment | null>;

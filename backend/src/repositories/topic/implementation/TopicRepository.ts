@@ -1,6 +1,7 @@
 import { ITopic, TopicModel } from '../../../models/topic/TopicSchema';
+import { ITopicRepository } from '../ITopicRepository';
 
-export class TopicRepository {
+export class TopicRepository implements ITopicRepository {
   async create(data: Partial<ITopic>): Promise<ITopic> {
     return await TopicModel.create(data);
   }

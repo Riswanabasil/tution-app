@@ -1,6 +1,5 @@
 import {
   ICourseRepository,
-  IPaginateOptions,
 } from '../../../repositories/course/ICourseRepository';
 import { IModuleRepository } from '../../../repositories/module/IModuleRepository';
 import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';

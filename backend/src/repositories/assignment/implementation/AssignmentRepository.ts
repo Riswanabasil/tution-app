@@ -1,7 +1,8 @@
 import { AssignmentModel, IAssignment } from '../../../models/assignment/AssignmentModel';
 import { Types } from 'mongoose';
+import { IAssignmentRepository } from '../IAssgnmentRepository';
 
-export class AssignmentRepository {
+export class AssignmentRepository implements IAssignmentRepository{
   async create(data: Partial<IAssignment>): Promise<IAssignment> {
     return await AssignmentModel.create(data);
   }

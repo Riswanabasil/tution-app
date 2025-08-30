@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { ISubmission } from '../../../models/submission/SubmissionSchema';
 import { AssignmentRepository } from '../../../repositories/assignment/implementation/AssignmentRepository';
-import { SubmissionRepository } from '../../../repositories/submission/SubmissionRepository';
+import { SubmissionRepository } from '../../../repositories/submission/implementation/SubmissionRepository';
 
 export class StudentAssignmentService {
   constructor(
