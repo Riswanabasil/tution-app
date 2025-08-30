@@ -1,3 +1,5 @@
+import { ICourse } from "../models/course/CourseSchema";
+
 export type CourseDetails = {
   _id: string;
   title: string;
@@ -60,4 +62,12 @@ export type TutorCourseListItem = {
   price: number;
   createdAt: Date;
 };
+
+export interface PaginatedCourses {
+  courses: ICourse[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
 

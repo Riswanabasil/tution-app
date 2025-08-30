@@ -25,7 +25,7 @@ import { PaidCourseService } from '../services/student/implementation/PaidCourse
 import { PaidCourseController } from '../controllers/student/implementation/PaidCourseController';
 import { NoteRepository } from '../repositories/note/implementation/NoteRepository';
 import { AssignmentRepository } from '../repositories/assignment/implementation/AssignmentRepository';
-import { SubmissionRepository } from '../repositories/submission/SubmissionRepository';
+import { SubmissionRepository } from '../repositories/submission/implementation/SubmissionRepository';
 import { StudentAssignmentService } from '../services/student/implementation/StudentAssignmentService';
 import { AssignmentController } from '../controllers/student/implementation/AssignmentController';
 import { PasswordResetService } from '../services/student/implementation/PasswordResetService';

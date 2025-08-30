@@ -2,16 +2,10 @@ import { ICourseRepository } from '../../../repositories/course/ICourseRepositor
 import { ICourse } from '../../../models/course/CourseSchema';
 import { TutorRepository } from '../../../repositories/tutor/implementation/TutorRepository';
 import { sendCourseStatusEmail } from '../../../utils/SendEmail';
+import { PaginatedCourses } from '../../../types/course';
+import { IAdminCourseService } from '../ICourseService';
 
-export interface PaginatedCourses {
-  courses: ICourse[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export class AdminCourseService {
+export class AdminCourseService implements IAdminCourseService {
   constructor(
     private courseRepo: ICourseRepository,
     private tutorRepo: TutorRepository,

@@ -1,5 +1,5 @@
 import { ICourse } from '../../models/course/CourseSchema';
-import { PaginatedCourses } from './implementation/CourseService';
+import { PaginatedCourses } from '../../types/course';
 
 export interface IAdminCourseService {
   listPaginated(page: number, limit: number): Promise<PaginatedCourses>;
