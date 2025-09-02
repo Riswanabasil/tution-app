@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import {
   TutorService,
   RegisterTutorResponse,
@@ -7,6 +7,7 @@ import {
 } from '../../../services/tutor/implementation/TutorService';
 import { ITutorController } from '../ITutorController';
 import { AuthenticatedRequest } from '../../../types/Index';
+import { presignPutObject } from '../../../utils/s3Presign';
 
 export class TutorController implements ITutorController {
   constructor(private tutorService: TutorService) {}
@@ -102,6 +103,15 @@ export class TutorController implements ITutorController {
   }
 
   //profile
+  async getProfileUploadUrl(req: Request, res: Response, next: NextFunction) {
+      try {
+        const { filename, contentType } = req.query as { filename: string; contentType: string };
+        const data = await presignPutObject({ keyPrefix: 'TutorPic', filename, contentType });
+        res.json(data);
+      } catch (err) {
+        next(err);
+      }
+    }
 
   async getProfile(req: AuthenticatedRequest, res: Response) {
     const tutorId = req.user!.id;

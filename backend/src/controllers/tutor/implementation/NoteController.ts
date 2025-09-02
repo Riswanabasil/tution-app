@@ -1,9 +1,20 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { NoteService } from '../../../services/tutor/implementation/NoteService';
 import mongoose from 'mongoose';
+import { presignPutObject } from '../../../utils/s3Presign';
 
 export class NoteController {
   constructor(private readonly service: NoteService) {}
+
+    async getNoteUploadUrls(req: Request, res: Response, next: NextFunction) {
+        try {
+          const { filename, contentType } = req.query as { filename: string; contentType: string };
+          const data = await presignPutObject({ keyPrefix: 'notes', filename, contentType });
+          res.json(data);
+        } catch (err) {
+          next(err);
+        }
+      }
   create = async (req: Request, res: Response): Promise<void> => {
     try {
       const topicId = new mongoose.Types.ObjectId(req.params.topicId);

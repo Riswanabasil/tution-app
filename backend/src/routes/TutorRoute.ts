@@ -9,11 +9,6 @@ import { CourseRepository } from '../repositories/course/implementation/CourseRe
 import { TutorCourseService } from '../services/tutor/implementation/TutorCourseService';
 import { TutorCourseController } from '../controllers/tutor/implementation/TutorCourseController';
 import { authMiddleware } from '../middlewares/authMiddleware';
-import {
-  getDemoUploadUrl,
-  getNoteUploadUrls,
-  getProfileUploadUrl,
-} from '../controllers/tutor/implementation/upload.controller';
 import { ModuleRepository } from '../repositories/module/implementation/ModuleRepository';
 import { TutorModuleService } from '../services/tutor/implementation/ModuleService';
 import { ModuleController } from '../controllers/tutor/implementation/ModuleController';
@@ -36,6 +31,7 @@ import { EnrollmentRepository } from '../repositories/payment/implementation/Enr
 import { AdminDashboardService } from '../services/admin/implementation/AdminDashboardService';
 import { TutorDashboardService } from '../services/tutor/implementation/DashboardService';
 import { TutorDashboardController } from '../controllers/tutor/implementation/DashboardController';
+import { getNoteUploadUrls } from '../controllers/tutor/implementation/upload.controller';
 
 const router = express.Router();
 
@@ -94,7 +90,7 @@ router.put(
 );
 router.get('/profile/stats', authMiddleware, tutorController.getStats.bind(tutorController));
 router.get('/profile/courses', authMiddleware, tutorController.getMyCourses.bind(tutorController));
-router.get('/profile/upload-url', getProfileUploadUrl);
+router.get('/profile/upload-url', tutorController.getProfileUploadUrl);
 
 //course
 
