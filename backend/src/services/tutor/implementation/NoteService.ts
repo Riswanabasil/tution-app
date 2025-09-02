@@ -1,7 +1,8 @@
 import { NoteRepository } from '../../../repositories/note/implementation/NoteRepository';
 import { INote } from '../../../models/note/NoteSchema';
+import { INoteService } from '../INoteService';
 
-export class NoteService {
+export class NoteService implements INoteService{
   constructor(private readonly repo: NoteRepository) {}
 
   create(data: Partial<INote>) {

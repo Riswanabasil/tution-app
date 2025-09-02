@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 import type { IModule } from '../../../models/module/ModuleSchema';
 import type { IModuleRepository } from '../../../repositories/module/IModuleRepository';
+import { ITutorModuleService } from '../ITutorModuleService';
 
-export class TutorModuleService {
+export class TutorModuleService implements ITutorModuleService {
   constructor(private moduleRepo: IModuleRepository) {}
 
   async listByCourse(courseId: string): Promise<IModule[]> {

@@ -6,8 +6,9 @@ import { TopicRepository } from '../../../repositories/topic/implementation/Topi
 import { ModuleRepository } from '../../../repositories/module/implementation/ModuleRepository';
 import mongoose from 'mongoose';
 import { CourseRepository } from '../../../repositories/course/implementation/CourseRepository';
+import { IAssignmentService } from '../IAssignmentService';
 
-export class AssignmentService {
+export class AssignmentService implements IAssignmentService {
   constructor(
     private assignmentRepo: AssignmentRepository,
     private topicRepo: TopicRepository,
