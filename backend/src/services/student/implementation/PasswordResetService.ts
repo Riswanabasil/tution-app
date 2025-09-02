@@ -5,8 +5,9 @@ import { OtpService } from '../../common/OtpService';
 import { IStudentOtpRepository } from '../../../repositories/student/IStudentOtpRepository';
 import { IStudentRepository } from '../../../repositories/student/IStudentRepository';
 import { IOtpService } from '../IOtpService';
+import { IPasswordResetService } from '../IPasswordResetService';
 
-export class PasswordResetService {
+export class PasswordResetService implements IPasswordResetService{
   constructor(
     private otpRepo:IStudentOtpRepository,
     private studentRepo :IStudentRepository,

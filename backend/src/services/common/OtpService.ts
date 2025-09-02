@@ -1,8 +1,9 @@
+import { IOtpService } from '../../interfaces/common/IOtpService';
 import StudentOtpSchema from '../../models/student/StudentOtpSchema';
 import { generateOtp } from '../../utils/GenerateOtp';
 import { sendOtpEmail } from '../../utils/SendEmail';
 
-export class OtpService {
+export class OtpService implements IOtpService {
   async generateAndSendOtp(email: string): Promise<string> {
     const otp = generateOtp();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000);

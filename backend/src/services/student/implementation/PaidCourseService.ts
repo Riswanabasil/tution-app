@@ -1,8 +1,9 @@
 import { ModuleRepository } from '../../../repositories/module/implementation/ModuleRepository';
 import { NoteRepository } from '../../../repositories/note/implementation/NoteRepository';
 import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
+import { IPaidCourseService } from '../IPaidCourseService';
 
-export class PaidCourseService {
+export class PaidCourseService implements IPaidCourseService{
   constructor(
     private moduleRepository: ModuleRepository,
     private topicRepository: TopicRepository,

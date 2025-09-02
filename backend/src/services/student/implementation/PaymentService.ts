@@ -4,6 +4,7 @@ import { IEnrollment } from '../../../models/payment/Enrollment';
 import { EnrollmentRepository } from '../../../repositories/payment/implementation/EnrollmentRepository';
 import { TutorRepository } from '../../../repositories/tutor/implementation/TutorRepository';
 import { CourseRepository } from '../../../repositories/course/implementation/CourseRepository';
+import { IPaymentService } from '../IPaymentService';
 
 interface RazorpayOrder {
   id: string;
@@ -11,7 +12,7 @@ interface RazorpayOrder {
   currency: string;
 }
 
-export class PaymentService {
+export class PaymentService implements IPaymentService{
   constructor(
     private repo: EnrollmentRepository,
     private tutorRepo: TutorRepository,
@@ -89,7 +90,7 @@ export class PaymentService {
     const enrollments = await this.repo.findPaidByUser(userId);
     return enrollments.map((e) => ({
       enrollmentId: e._id.toString(),
-      course: e.courseId,
+      course: e.courseId.toString(),
       enrolledAt: e.createdAt,
     }));
   }

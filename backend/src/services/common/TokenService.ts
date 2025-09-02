@@ -1,11 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { generateAccessToken } from '../../utils/GenerateToken';
 
-interface Payload {
-  id: string;
-  role: string;
-  email: string;
-}
+import type {Payload} from '../../interfaces/common/ITokenService'
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
 export class TokenService {
   generateToken(payload: Payload): string {
@@ -13,7 +9,6 @@ export class TokenService {
       expiresIn: '1d',
     });
   }
-
   verifyRefreshTokenAndGenerateAccess(refreshToken: string): string {
     try {
       const decoded = jwt.verify(refreshToken, REFRESH_SECRET) as {
