@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StudentService } from '../../../services/student/implementation/StudentService';
 import { IStudentController } from '../IStudentController';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { IOtpService } from '../../../services/student/IOtpService';
 import { OtpService } from '../../../services/common/OtpService';
+import { presignPutObject } from '../../../utils/s3Presign';
 
 export class StudentController implements IStudentController {
   constructor(
@@ -151,6 +152,16 @@ export class StudentController implements IStudentController {
       res.status(400).json({ message: err.message });
     }
   }
+
+  async getUploadUrl(req: Request, res: Response, next: NextFunction) {
+      try {
+        const { filename, contentType } = req.query as { filename: string; contentType: string };
+        const data = await presignPutObject({ keyPrefix: 'studentPic', filename, contentType });
+        res.json(data);
+      } catch (err) {
+        next(err);
+      }
+    }
 
   async updateProfile(req: AuthenticatedRequest, res: Response) {
     try {

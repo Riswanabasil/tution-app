@@ -16,10 +16,6 @@ import { TutorRepository } from '../repositories/tutor/implementation/TutorRepos
 import { EnrollmentRepository } from '../repositories/payment/implementation/EnrollmentRepository';
 import { PaymentService } from '../services/student/implementation/PaymentService';
 import { PaymentController } from '../controllers/student/implementation/PaymentController';
-import {
-  generatePresignedUrl,
-  getUploadUrl,
-} from '../controllers/student/implementation/Upload.controller';
 import { TopicRepository } from '../repositories/topic/implementation/TopicRepository';
 import { PaidCourseService } from '../services/student/implementation/PaidCourseService';
 import { PaidCourseController } from '../controllers/student/implementation/PaidCourseController';
@@ -105,7 +101,7 @@ router.put(
   authMiddleware,
   studentController.changePassword.bind(studentController),
 );
-router.get('/profile/upload-url', getUploadUrl);
+router.get('/profile/upload-url',studentController.getUploadUrl);
 //course
 
 router.get('/courses', authMiddleware, courseController.list.bind(courseController));
@@ -159,7 +155,7 @@ router.get(
   authMiddleware,
   assignmentController.getAssignmentsForStudent.bind(assignmentController),
 );
-router.get('/submissions/presigned-url', generatePresignedUrl);
+router.get('/submissions/presigned-url', assignmentController.generatePresignedUrl);
 router.post(
   '/submissions/:assignmentId',
   authMiddleware,

@@ -1,6 +1,7 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { StudentAssignmentService } from '../../../services/student/implementation/StudentAssignmentService';
+import { presignPutObject } from '../../../utils/s3Presign';
 
 export class AssignmentController {
   constructor(private assgnService: StudentAssignmentService) {}
@@ -17,7 +18,15 @@ export class AssignmentController {
       res.status(500).json({ error: err.message });
     }
   }
-
+  async generatePresignedUrl(req: Request, res: Response, next: NextFunction) {
+      try {
+        const { filename, contentType } = req.query as { filename: string; contentType: string };
+        const data = await presignPutObject({ keyPrefix: 'submission', filename, contentType });
+        res.json(data);
+      } catch (err) {
+        next(err);
+      }
+    }
   async createSubmissionController(req: AuthenticatedRequest, res: Response) {
     try {
       const assignmentId = req.params.assignmentId;

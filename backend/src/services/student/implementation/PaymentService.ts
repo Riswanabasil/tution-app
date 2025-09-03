@@ -88,11 +88,24 @@ export class PaymentService implements IPaymentService{
 
   async getMyCourses(userId: string) {
     const enrollments = await this.repo.findPaidByUser(userId);
-    return enrollments.map((e) => ({
+    // return enrollments.map((e) => ({
+    //   enrollmentId: e._id.toString(),
+    //   course: e.courseId,
+    //   enrolledAt: e.createdAt,
+    // }));
+     return enrollments.map((e: any) => {
+    const c = e.courseId; // plain object from .lean().populate()
+    return {
       enrollmentId: e._id.toString(),
-      course: e.courseId.toString(),
+      course: {
+        _id: c._id.toString(),
+        title: c.title,
+        thumbnail: c.thumbnail,
+        price: c.price,
+      },
       enrolledAt: e.createdAt,
-    }));
+    };
+  });
   }
 
   async getStats(userId: string) {

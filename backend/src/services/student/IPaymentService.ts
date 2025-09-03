@@ -27,7 +27,7 @@ export interface IPaymentService {
   ): Promise<
     Array<{
       enrollmentId: string;
-      course: string;          
+      course: { _id: string; title: string; thumbnail?: string; price?: number };     
       enrolledAt: Date;
     }>
   >;
