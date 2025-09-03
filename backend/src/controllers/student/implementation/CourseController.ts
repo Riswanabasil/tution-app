@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { StudentCourseService } from '../../../services/student/implementation/CourseService';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class StudentCourseController {
   constructor(private courseService: StudentCourseService) {}
@@ -15,7 +16,7 @@ export class StudentCourseController {
       res.json(result);
     } catch (err: any) {
       console.error('Student course list error:', err);
-      res.status(500).json({ message: err.message || 'Internal Server Error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message || 'Internal Server Error' });
     }
   }
   async getCourseDetails(req: Request, res: Response): Promise<void> {
@@ -46,7 +47,7 @@ export class StudentCourseController {
       res.json(details);
     } catch (err: any) {
       console.error(err);
-      res.status(404).json({ message: err.message || 'Course not found' });
+      res.status(HttpStatus.NOT_FOUND).json({ message: err.message || 'Course not found' });
     }
   }
 }

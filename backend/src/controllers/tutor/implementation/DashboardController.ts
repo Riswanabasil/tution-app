@@ -1,28 +1,11 @@
 import type { Request, Response } from 'express';
 import type {
   ITutorDashboardService,
-  DateRange,
-  TimeGranularity,
-  CourseStatus,
 } from '../../../services/tutor/IDashboardService';
 import { AuthenticatedRequest } from '../../../types/Index';
-
-function parseDateRange(q: Request['query']): DateRange {
-  const to = q.to ? new Date(String(q.to)) : new Date();
-  const from = q.from
-    ? new Date(String(q.from))
-    : new Date(to.getTime() - 30 * 24 * 60 * 60 * 1000);
-  return { from, to };
-}
-
-function parseGranularity(v: unknown, fallback: TimeGranularity): TimeGranularity {
-  return v === 'monthly' || v === 'daily' ? v : fallback;
-}
-
-function parseLimit(v: unknown, fallback: number): number {
-  const n = Number(v);
-  return Number.isFinite(n) && n > 0 ? Math.min(n, 100) : fallback;
-}
+import { parseDateRange, parseGranularity, parseLimit } from '../../../utils/dashboard';
+import { CourseStatus } from '../../../utils/dashboardTutor';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class TutorDashboardController {
   constructor(private readonly svc: ITutorDashboardService) {}
@@ -35,7 +18,7 @@ export class TutorDashboardController {
       res.json(data);
     } catch (err) {
       console.error('tutor.getKpis', err);
-      res.status(500).json({ message: 'Failed to fetch tutor KPIs' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch tutor KPIs' });
     }
   };
 
@@ -48,7 +31,7 @@ export class TutorDashboardController {
       res.json({ granularity, points });
     } catch (err) {
       console.error('tutor.getRevenueTrend', err);
-      res.status(500).json({ message: 'Failed to fetch revenue trend' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch revenue trend' });
     }
   };
 
@@ -61,7 +44,7 @@ export class TutorDashboardController {
       res.json({ granularity, points });
     } catch (err) {
       console.error('tutor.getEnrollmentTrend', err);
-      res.status(500).json({ message: 'Failed to fetch enrollment trend' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch enrollment trend' });
     }
   };
 
@@ -74,7 +57,7 @@ export class TutorDashboardController {
       res.json({ limit, rows });
     } catch (err) {
       console.error('tutor.getTopCourses', err);
-      res.status(500).json({ message: 'Failed to fetch top courses' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch top courses' });
     }
   };
 
@@ -87,7 +70,7 @@ export class TutorDashboardController {
       res.json({ limit, rows });
     } catch (err) {
       console.error('tutor.getRecentEnrollments', err);
-      res.status(500).json({ message: 'Failed to fetch recent enrollments' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch recent enrollments' });
     }
   };
 
@@ -108,7 +91,7 @@ export class TutorDashboardController {
       res.json(result);
     } catch (err) {
       console.error('tutor.getMyCoursesOverview', err);
-      res.status(500).json({ message: 'Failed to fetch courses overview' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch courses overview' });
     }
   };
 
@@ -120,7 +103,7 @@ export class TutorDashboardController {
       res.json({ limit, rows });
     } catch (err) {
       console.error('tutor.getPendingApprovalsPreview', err);
-      res.status(500).json({ message: 'Failed to fetch pending approvals' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch pending approvals' });
     }
   };
 }

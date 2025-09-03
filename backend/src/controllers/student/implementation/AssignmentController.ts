@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { StudentAssignmentService } from '../../../services/student/implementation/StudentAssignmentService';
 import { presignPutObject } from '../../../utils/s3Presign';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class AssignmentController {
   constructor(private assgnService: StudentAssignmentService) {}
@@ -13,9 +14,9 @@ export class AssignmentController {
       const topicId = req.params.topicId;
 
       const data = await this.assgnService.listAssignmentsWithStatus(topicId, studentId);
-      res.status(200).json(data);
+      res.status(HttpStatus.OK).json(data);
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: err.message });
     }
   }
   async generatePresignedUrl(req: Request, res: Response, next: NextFunction) {
@@ -45,7 +46,7 @@ export class AssignmentController {
     } catch (error: any) {
       console.log(error);
 
-      res.status(500).json({ error: error.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
     }
   }
 
@@ -55,9 +56,9 @@ export class AssignmentController {
       const studentId = req.user!.id;
 
       const submission = await this.assgnService.getSubmission(assignmentId, studentId);
-      res.status(200).json(submission);
+      res.status(HttpStatus.OK).json(submission);
     } catch (err: any) {
-      res.status(404).json({ error: err.message || 'Submission not found' });
+      res.status(HttpStatus.NOT_FOUND).json({ error: err.message || 'Submission not found' });
     }
   }
 
@@ -73,9 +74,9 @@ export class AssignmentController {
         { response, fileKey },
       );
 
-      res.status(200).json(updated);
+      res.status(HttpStatus.OK).json(updated);
     } catch (err: any) {
-      res.status(400).json({ error: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ error: err.message });
     }
   }
 }

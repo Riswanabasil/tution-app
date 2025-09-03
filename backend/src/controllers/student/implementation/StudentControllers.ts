@@ -5,6 +5,7 @@ import { AuthenticatedRequest } from '../../../types/Index';
 import { IOtpService } from '../../../services/student/IOtpService';
 import { OtpService } from '../../../services/common/OtpService';
 import { presignPutObject } from '../../../utils/s3Presign';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class StudentController implements IStudentController {
   constructor(
@@ -24,7 +25,7 @@ export class StudentController implements IStudentController {
         password,
       );
 
-      res.status(201).json({
+      res.status(HttpStatus.CREATED).json({
         message: 'Student registered successfully',
         student: {
           id: student._id,
@@ -37,7 +38,7 @@ export class StudentController implements IStudentController {
       });
     } catch (error: any) {
       console.error('Register Error:', error);
-      res.status(500).json({ message: error.message || 'Internal server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal server error' });
     }
   }
 
@@ -47,9 +48,9 @@ export class StudentController implements IStudentController {
       if (!email) throw new Error('Unauthorized');
       const { otp } = req.body;
       const result = await this.otpService.verifyOtp(email, otp);
-      res.status(200).json({ message: result });
+      res.status(HttpStatus.OK).json({ message: result });
     } catch (error: any) {
-      res.status(400).json({ message: error.message || 'OTP verification failed' });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message || 'OTP verification failed' });
     }
   }
 
@@ -59,9 +60,9 @@ export class StudentController implements IStudentController {
       if (!email) throw new Error('Unauthorized');
 
       const result = await this.otpService.resendOtp(email);
-      res.status(200).json({ message: result });
+      res.status(HttpStatus.OK).json({ message: result });
     } catch (error: any) {
-      res.status(400).json({ message: error.message || 'Resend OTP failed' });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message || 'Resend OTP failed' });
     }
   }
   async loginStudent(req: Request, res: Response): Promise<void> {
@@ -79,13 +80,13 @@ export class StudentController implements IStudentController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res.status(200).json({
+      res.status(HttpStatus.OK).json({
         message: 'Login successful',
         accessToken,
         student,
       });
     } catch (error: any) {
-      res.status(401).json({ message: error.message || 'Login failed' });
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || 'Login failed' });
     }
   }
   async logoutStudent(req: Request, res: Response): Promise<void> {
@@ -94,7 +95,7 @@ export class StudentController implements IStudentController {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
-    res.status(200).json({ message: 'Student logged out successfully' });
+    res.status(HttpStatus.OK).json({ message: 'Student logged out successfully' });
   }
 
   async refreshAccessToken(req: Request, res: Response): Promise<void> {
@@ -102,15 +103,15 @@ export class StudentController implements IStudentController {
       const refreshToken = req.cookies.refreshToken;
 
       if (!refreshToken) {
-        res.status(401).json({ message: 'No refresh token provided' });
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'No refresh token provided' });
         return;
       }
 
       const newAccessToken = await this.studentService.refreshAccessToken(refreshToken);
 
-      res.status(200).json({ accessToken: newAccessToken });
+      res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
     } catch (error: any) {
-      res.status(403).json({ message: error.message || 'Invalid refresh token' });
+      res.status(HttpStatus.FORBIDDEN).json({ message: error.message || 'Invalid refresh token' });
     }
   }
 
@@ -119,7 +120,7 @@ export class StudentController implements IStudentController {
       const { idToken } = req.body;
 
       if (!idToken) {
-        res.status(400).json({ message: 'Google ID token missing' });
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Google ID token missing' });
         return;
       }
 
@@ -139,7 +140,7 @@ export class StudentController implements IStudentController {
         student,
       });
     } catch (error: any) {
-      res.status(401).json({ message: error.message || 'Google login failed' });
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || 'Google login failed' });
     }
   }
 
@@ -149,7 +150,7 @@ export class StudentController implements IStudentController {
       const data = await this.studentService.getProfile(userId);
       res.json({ data });
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -169,7 +170,7 @@ export class StudentController implements IStudentController {
       const data = await this.studentService.updateProfile(userId, req.body);
       res.json({ data });
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -180,7 +181,7 @@ export class StudentController implements IStudentController {
       await this.studentService.changePassword(userId, currentPassword, newPassword);
       res.json({ message: 'Password updated' });
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 }

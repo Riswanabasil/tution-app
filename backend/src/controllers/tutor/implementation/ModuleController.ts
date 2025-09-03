@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import type { TutorModuleService } from '../../../services/tutor/implementation/ModuleService';
 import { promises } from 'dns';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class ModuleController {
   constructor(private service: TutorModuleService) {}
@@ -11,7 +12,7 @@ export class ModuleController {
       const modules = await this.service.listByCourse(courseId);
       res.json(modules);
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -20,9 +21,9 @@ export class ModuleController {
       const { courseId } = req.params;
       const { name, order } = req.body;
       const mod = await this.service.createModule(courseId, name, order);
-      res.status(201).json(mod);
+      res.status(HttpStatus.CREATED).json(mod);
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -31,12 +32,12 @@ export class ModuleController {
       const { id } = req.params;
       const mod = await this.service.updateModule(id, req.body);
       if (!mod) {
-        res.status(404).end();
+        res.status(HttpStatus.NOT_FOUND).end();
         return;
       }
       res.json(mod);
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -44,9 +45,9 @@ export class ModuleController {
     try {
       const { id } = req.params;
       await this.service.deleteModule(id);
-      res.status(204).end();
+      res.status(HttpStatus.NO_CONTENT).end();
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -58,12 +59,12 @@ export class ModuleController {
 
       const mod = await this.service.getById(courseId, id);
       if (!mod) {
-        res.status(404).json({ message: 'Module not found' });
+        res.status(HttpStatus.NOT_FOUND).json({ message: 'Module not found' });
         return;
       }
       res.json(mod);
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 }

@@ -4,6 +4,7 @@ import type {
 } from '../../services/admin/IAdminDashboardService';
 
 import { parseDateRange, parseGranularity, parseLimit } from '../../utils/dashboard';
+import { HttpStatus } from '../../constants/statusCode';
 export default class AdminDashboardController {
   constructor(private readonly svc: IAdminDashboardService) {}
 
@@ -14,7 +15,7 @@ export default class AdminDashboardController {
       res.json(data);
     } catch (err: any) {
       console.error('getKpis error:', err);
-      res.status(500).json({ message: 'Failed to fetch KPIs' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch KPIs' });
     }
   };
 
@@ -26,7 +27,7 @@ export default class AdminDashboardController {
       res.json({ granularity, points: data });
     } catch (err: any) {
       console.error('getRevenueTrend error:', err);
-      res.status(500).json({ message: 'Failed to fetch revenue trend' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch revenue trend' });
     }
   };
 
@@ -38,7 +39,7 @@ export default class AdminDashboardController {
       res.json({ granularity, points: data });
     } catch (err: any) {
       console.error('getEnrollmentTrend error:', err);
-      res.status(500).json({ message: 'Failed to fetch enrollment trend' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch enrollment trend' });
     }
   };
 
@@ -50,7 +51,7 @@ export default class AdminDashboardController {
       res.json({ limit, rows });
     } catch (err: any) {
       console.error('getTopCourses error:', err);
-      res.status(500).json({ message: 'Failed to fetch top courses' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch top courses' });
     }
   };
 
@@ -61,7 +62,7 @@ export default class AdminDashboardController {
       res.json({ limit, ...data });
     } catch (err: any) {
       console.error('getApprovalQueues error:', err);
-      res.status(500).json({ message: 'Failed to fetch approval queues' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch approval queues' });
     }
   };
 }

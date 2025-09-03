@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import { PaymentService } from '../../../services/student/implementation/PaymentService';
 import { AuthenticatedRequest } from '../../../types/Index';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class PaymentController {
   constructor(private paymentService: PaymentService) {}
@@ -15,7 +16,7 @@ export class PaymentController {
         amount,
       );
 
-      res.status(201).json({
+      res.status(HttpStatus.CREATED).json({
         message: 'Order created successfully',
         data: {
           razorpayOrderId,
@@ -26,7 +27,7 @@ export class PaymentController {
       });
     } catch (error: any) {
       console.error('Create Order Error:', error);
-      res.status(500).json({ message: error.message || 'Internal server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal server error' });
     }
   }
 
@@ -40,12 +41,12 @@ export class PaymentController {
         razorpay_signature,
       );
 
-      res.status(200).json({
+      res.status(HttpStatus.OK).json({
         message: 'Payment verified and enrollment updated',
       });
     } catch (error: any) {
       console.error('Verify Payment Error:', error);
-      res.status(400).json({ message: error.message || 'Payment verification failed' });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message || 'Payment verification failed' });
     }
   }
 
@@ -53,10 +54,10 @@ export class PaymentController {
     try {
       const { enrollmentId } = req.body;
       await this.paymentService.cancelEnrollment(enrollmentId);
-      res.status(200).json({ status: 'cancelled' });
+      res.status(HttpStatus.OK).json({ status: 'cancelled' });
     } catch (err: any) {
       console.error('Cancel Payment Error:', err);
-      res.status(500).json({ message: err.message || 'Internal server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message || 'Internal server error' });
     }
   }
 
@@ -68,7 +69,7 @@ export class PaymentController {
       res.json({ data: list });
     } catch (err: any) {
       console.error(err);
-      res.status(500).json({ message: err.message || 'Server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message || 'Server error' });
     }
   }
 
@@ -84,14 +85,14 @@ export class PaymentController {
       const list = await this.paymentService.getPaymentHistory(userId);
       res.json({ data: list });
     } catch (err: any) {
-      res.status(500).json({ message: err.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
     }
   }
   async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { enrollmentId } = req.body;
       if (!enrollmentId) {
-        res.status(400).json({ message: 'Missing enrollmentId' });
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing enrollmentId' });
         return;
       }
 
@@ -100,7 +101,7 @@ export class PaymentController {
       return;
     } catch (err: any) {
       console.error(' retryOrder error:', err);
-      res.status(400).json({ message: err.message || 'Unknown error in retryOrder' });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message || 'Unknown error in retryOrder' });
       return;
     }
   }

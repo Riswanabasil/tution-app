@@ -3,6 +3,7 @@ import { ITutorCourseService } from '../../../services/tutor/ITutorCourseService
 import { AuthenticatedRequest } from '../../../types/Index';
 import { ICourse } from '../../../models/course/CourseSchema';
 import { presignPutObject } from '../../../utils/s3Presign';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class TutorCourseController {
   constructor(private courseService: ITutorCourseService) {}
@@ -52,9 +53,9 @@ export class TutorCourseController {
       const course = await this.courseService.createCourse(data);
       console.log(course);
 
-      res.status(201).json(course);
+      res.status(HttpStatus.CREATED).json(course);
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -65,9 +66,9 @@ export class TutorCourseController {
       const limit = parseInt(req.query.limit as string) || 10;
       const search = (req.query.search as string) || '';
       const result = await this.courseService.getAllCourses(tutorId, page, limit, search);
-      res.status(200).json(result);
+      res.status(HttpStatus.OK).json(result);
     } catch (err: any) {
-      res.status(500).json({ message: err.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
     }
   }
 
@@ -75,12 +76,12 @@ export class TutorCourseController {
     try {
       const course = await this.courseService.getCourseById(req.params.id);
       if (!course) {
-        res.status(404).json({ message: 'Course not found' });
+        res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found' });
         return;
       }
-      res.status(200).json(course);
+      res.status(HttpStatus.OK).json(course);
     } catch (err: any) {
-      res.status(500).json({ message: err.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
     }
   }
 
@@ -90,12 +91,12 @@ export class TutorCourseController {
       const data = { ...req.body, ...(thumbnail && { thumbnail }) };
       const updated = await this.courseService.updateCourse(req.params.id, data);
       if (!updated) {
-        res.status(404).json({ message: 'Course not found' });
+        res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found' });
         return;
       }
-      res.status(200).json(updated);
+      res.status(HttpStatus.OK).json(updated);
     } catch (err: any) {
-      res.status(400).json({ message: err.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -104,14 +105,14 @@ export class TutorCourseController {
       const courseId = req.params.id;
       const tutorId = req.user!.id;
       const updated = await this.courseService.reapply(courseId, tutorId);
-      res.status(200).json(updated);
+      res.status(HttpStatus.OK).json(updated);
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
     }
   }
   async softDeleteCourse(req: AuthenticatedRequest, res: Response) {
     const { id } = req.params;
     await this.courseService.softDeleteCourse(id);
-    res.status(204).end();
+    res.status(HttpStatus.NO_CONTENT).end();
   }
 }

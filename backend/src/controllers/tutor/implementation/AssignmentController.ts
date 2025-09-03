@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { AssignmentService } from '../../../services/tutor/implementation/AssignmentService';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class AssignmentController {
   constructor(private assignmentService: AssignmentService) {}
@@ -8,10 +9,10 @@ export class AssignmentController {
     try {
       const { topicId } = req.params;
       const assignment = await this.assignmentService.createAssignment(topicId, req.body);
-      res.status(201).json(assignment);
+      res.status(HttpStatus.CREATED).json(assignment);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Failed to create assignment' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create assignment' });
     }
   };
 
@@ -36,7 +37,7 @@ export class AssignmentController {
       const startIndex = (Number(page) - 1) * Number(limit);
       const paginated = filtered.slice(startIndex, startIndex + Number(limit));
 
-      res.status(200).json({
+      res.status(HttpStatus.OK).json({
         total: filtered.length,
         page: Number(page),
         limit: Number(limit),
@@ -44,7 +45,7 @@ export class AssignmentController {
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Failed to fetch assignments' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch assignments' });
     }
   };
 
@@ -53,13 +54,13 @@ export class AssignmentController {
       const { id } = req.params;
       const assignment = await this.assignmentService.getAssignmentById(id);
       if (!assignment) {
-        res.status(404).json({ message: 'Assignment not found' });
+        res.status(HttpStatus.NOT_FOUND).json({ message: 'Assignment not found' });
         return;
       }
-      res.status(200).json(assignment);
+      res.status(HttpStatus.OK).json(assignment);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Failed to fetch assignment' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch assignment' });
     }
   };
 
@@ -68,13 +69,13 @@ export class AssignmentController {
       const { id } = req.params;
       const updated = await this.assignmentService.updateAssignment(id, req.body);
       if (!updated) {
-        res.status(404).json({ message: 'Assignment not found' });
+        res.status(HttpStatus.NOT_FOUND).json({ message: 'Assignment not found' });
         return;
       }
-      res.status(200).json({ message: 'Assignment updated successfully', updated });
+      res.status(HttpStatus.OK).json({ message: 'Assignment updated successfully', updated });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Failed to update assignment' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to update assignment' });
     }
   };
 
@@ -82,9 +83,9 @@ export class AssignmentController {
     try {
       const { id } = req.params;
       await this.assignmentService.deleteAssignment(id);
-      res.status(200).json({ message: 'Assignment deleted (soft)' });
+      res.status(HttpStatus.OK).json({ message: 'Assignment deleted (soft)' });
     } catch (error) {
-      res.status(500).json({ message: 'Failed to delete assignment' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to delete assignment' });
     }
   };
 }

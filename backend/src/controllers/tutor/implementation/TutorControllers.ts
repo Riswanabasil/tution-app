@@ -8,6 +8,7 @@ import {
 import { ITutorController } from '../ITutorController';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { presignPutObject } from '../../../utils/s3Presign';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class TutorController implements ITutorController {
   constructor(private tutorService: TutorService) {}
@@ -22,12 +23,12 @@ export class TutorController implements ITutorController {
         password,
       );
 
-      res.status(201).json({
+      res.status(HttpStatus.CREATED).json({
         message: 'Tutor registered successfully',
         tutor,
       });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
     }
   }
 
@@ -39,20 +40,20 @@ export class TutorController implements ITutorController {
       const resume = files['resume']?.[0].filename;
 
       if (!tutorId || !idProof || !resume || !summary || !education || !experience) {
-        res.status(400).json({ message: 'Missing required fields' });
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
         return;
       }
 
       const input: TutorVerificationInput = { summary, education, experience, idProof, resume };
       const updatedTutor = await this.tutorService.submitTutorVerification(tutorId, input);
 
-      res.status(200).json({
+      res.status(HttpStatus.OK).json({
         message: 'Tutor verification submitted successfully',
         tutor: updatedTutor,
       });
     } catch (error: any) {
       console.error(error);
-      res.status(500).json({ message: error.message || 'Internal server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal server error' });
     }
   }
 
@@ -67,13 +68,13 @@ export class TutorController implements ITutorController {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      res.status(200).json({
+      res.status(HttpStatus.OK).json({
         message: 'Login successful',
         accessToken: result.accessToken,
         tutor: result.tutor,
       });
     } catch (error: any) {
-      res.status(401).json({ message: error.message || 'Login failed' });
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || 'Login failed' });
     }
   }
   async logoutTutor(req: Request, res: Response): Promise<void> {
@@ -82,7 +83,7 @@ export class TutorController implements ITutorController {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
     });
-    res.status(200).json({ message: 'Tutor logged out successfully' });
+    res.status(HttpStatus.OK).json({ message: 'Tutor logged out successfully' });
   }
 
   async refreshAccessToken(req: Request, res: Response): Promise<void> {
@@ -90,15 +91,15 @@ export class TutorController implements ITutorController {
       const refreshToken = req.cookies.refreshToken;
 
       if (!refreshToken) {
-        res.status(401).json({ message: 'No refresh token provided' });
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'No refresh token provided' });
         return;
       }
 
       const newAccessToken = await this.tutorService.refreshAccessToken(refreshToken);
 
-      res.status(200).json({ accessToken: newAccessToken });
+      res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
     } catch (error: any) {
-      res.status(403).json({ message: error.message || 'Invalid refresh token' });
+      res.status(HttpStatus.FORBIDDEN).json({ message: error.message || 'Invalid refresh token' });
     }
   }
 

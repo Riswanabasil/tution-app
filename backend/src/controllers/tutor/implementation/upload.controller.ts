@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3 } from '../../../utils/s3Client';
+import { HttpStatus } from '../../../constants/statusCode';
 
 
 export async function getNoteUploadUrls(
@@ -15,7 +16,7 @@ export async function getNoteUploadUrls(
     };
 
     if (!count || count <= 0) {
-      res.status(400).json({ message: 'Invalid count value' });
+      res.status(HttpStatus.OK).json({ message: 'Invalid count value' });
       return;
     }
 

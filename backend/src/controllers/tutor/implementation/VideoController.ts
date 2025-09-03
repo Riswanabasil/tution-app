@@ -4,6 +4,7 @@ import type { IVideoController } from '../IVideoController';
 import type { IVideoService } from '../../../services/tutor/IVideoService';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class VideoController implements IVideoController {
   private s3: S3Client;
@@ -55,7 +56,7 @@ export class VideoController implements IVideoController {
         url,
       });
 
-      res.status(201).json(video);
+      res.status(HttpStatus.CREATED).json(video);
     } catch (err) {
       next(err);
     }
@@ -84,7 +85,7 @@ export class VideoController implements IVideoController {
     try {
       const { id } = req.params;
       await this.service.softDelete(id);
-      res.status(204).end();
+      res.status(HttpStatus.NO_CONTENT).end();
     } catch (err) {
       next(err);
     }

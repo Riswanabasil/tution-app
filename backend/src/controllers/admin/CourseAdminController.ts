@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import {
   AdminCourseService,
-  PaginatedCourses,
 } from '../../services/admin/implementation/CourseService';
 import { CourseStatus, ICourse } from '../../models/course/CourseSchema';
+import { PaginatedCourses } from '../../types/course';
 
 export class AdminCourseController {
   constructor(private service: AdminCourseService) {}

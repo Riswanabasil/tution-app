@@ -1,55 +1,5 @@
-export type TimeGranularity = 'daily' | 'monthly';
-export interface DateRange {
-  from: Date;
-  to: Date;
-}
+import { CourseStatus, DateRange, MyCourseRow, RecentEnrollmentRow, TimeGranularity, TopCourseRow, TrendPoint, TutorKpis } from "../../utils/dashboardTutor";
 
-export type CourseStatus = 'pending' | 'approved' | 'rejected';
-
-export interface TutorKpis {
-  courses: Record<CourseStatus, number>;
-  newEnrollments: number;
-  activeStudents: number;
-  revenue: { today: number; mtd: number; inRange: number };
-  walletBalance: number;
-  paymentIssues24h: number;
-}
-
-export interface TrendPoint {
-  period: string;
-  value: number;
-}
-
-export interface TopCourseRow {
-  courseId: string;
-  title: string;
-  code: string;
-  semester: number;
-  enrollments: number;
-  revenue: number;
-}
-
-export interface RecentEnrollmentRow {
-  date: string;
-  studentName: string;
-  studentEmail: string;
-  courseId: string;
-  courseTitle: string;
-  courseCode: string;
-  amount: number;
-}
-
-export interface MyCourseRow {
-  courseId: string;
-  title: string;
-  code: string;
-  semester: number;
-  status: CourseStatus;
-  price: number;
-  createdAt: Date;
-  enrollmentsInRange: number;
-  revenueInRange: number;
-}
 
 export interface ITutorDashboardService {
   getKpis(tutorId: string, range?: Partial<DateRange>): Promise<TutorKpis>;

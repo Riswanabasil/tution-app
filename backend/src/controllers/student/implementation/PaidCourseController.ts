@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { PaidCourseService } from '../../../services/student/implementation/PaidCourseService';
+import { HttpStatus } from '../../../constants/statusCode';
 
 export class PaidCourseController {
   constructor(private paidCourseService: PaidCourseService) {}
@@ -8,9 +9,9 @@ export class PaidCourseController {
     try {
       const { courseId } = req.params;
       const modules = await this.paidCourseService.getModulesByCourseId(courseId);
-      res.status(200).json(modules);
+      res.status(HttpStatus.OK).json(modules);
     } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch modules', error });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch modules', error });
     }
   };
 
@@ -28,7 +29,7 @@ export class PaidCourseController {
 
       res.json(result);
     } catch (err) {
-      res.status(500).json({ message: 'Failed to fetch topics', err });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch topics', err });
     }
   }
 
@@ -38,7 +39,7 @@ export class PaidCourseController {
       const notes = await this.paidCourseService.getNotesByTopic(topicId);
       res.json(notes);
     } catch (err) {
-      res.status(500).json({ message: 'Failed to fetch notes' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch notes' });
     }
   }
 }
