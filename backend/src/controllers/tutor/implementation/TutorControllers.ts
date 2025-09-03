@@ -9,6 +9,7 @@ import { ITutorController } from '../ITutorController';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 
 export class TutorController implements ITutorController {
   constructor(private tutorService: TutorService) {}
@@ -27,8 +28,8 @@ export class TutorController implements ITutorController {
         message: 'Tutor registered successfully',
         tutor,
       });
-    } catch (error: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -51,9 +52,9 @@ export class TutorController implements ITutorController {
         message: 'Tutor verification submitted successfully',
         tutor: updatedTutor,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -73,8 +74,8 @@ export class TutorController implements ITutorController {
         accessToken: result.accessToken,
         tutor: result.tutor,
       });
-    } catch (error: any) {
-      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || 'Login failed' });
+    } catch (error) {
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
     }
   }
   async logoutTutor(req: Request, res: Response): Promise<void> {
@@ -98,8 +99,8 @@ export class TutorController implements ITutorController {
       const newAccessToken = await this.tutorService.refreshAccessToken(refreshToken);
 
       res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
-    } catch (error: any) {
-      res.status(HttpStatus.FORBIDDEN).json({ message: error.message || 'Invalid refresh token' });
+    } catch (error) {
+      res.status(HttpStatus.FORBIDDEN).json({ message: ERROR_MESSAGES.FORBIDDEN });
     }
   }
 

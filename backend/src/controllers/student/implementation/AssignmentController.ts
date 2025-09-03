@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from '../../../types/Index';
 import { StudentAssignmentService } from '../../../services/student/implementation/StudentAssignmentService';
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 
 export class AssignmentController {
   constructor(private assgnService: StudentAssignmentService) {}
@@ -15,8 +16,8 @@ export class AssignmentController {
 
       const data = await this.assgnService.listAssignmentsWithStatus(topicId, studentId);
       res.status(HttpStatus.OK).json(data);
-    } catch (err: any) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: err.message });
+    } catch (err) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
   async generatePresignedUrl(req: Request, res: Response, next: NextFunction) {
@@ -43,10 +44,10 @@ export class AssignmentController {
       );
 
       res.status(201).json({ message: 'Submission created successfully', submission });
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
 
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: error.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -57,8 +58,8 @@ export class AssignmentController {
 
       const submission = await this.assgnService.getSubmission(assignmentId, studentId);
       res.status(HttpStatus.OK).json(submission);
-    } catch (err: any) {
-      res.status(HttpStatus.NOT_FOUND).json({ error: err.message || 'Submission not found' });
+    } catch (err) {
+      res.status(HttpStatus.NOT_FOUND).json({ error: 'Submission not found' });
     }
   }
 
@@ -75,8 +76,8 @@ export class AssignmentController {
       );
 
       res.status(HttpStatus.OK).json(updated);
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ error: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ error: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 }

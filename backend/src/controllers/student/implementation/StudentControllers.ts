@@ -6,6 +6,7 @@ import { IOtpService } from '../../../services/student/IOtpService';
 import { OtpService } from '../../../services/common/OtpService';
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 
 export class StudentController implements IStudentController {
   constructor(
@@ -36,9 +37,9 @@ export class StudentController implements IStudentController {
         },
         token,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Register Error:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: error.message || 'Internal server error' });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -49,8 +50,8 @@ export class StudentController implements IStudentController {
       const { otp } = req.body;
       const result = await this.otpService.verifyOtp(email, otp);
       res.status(HttpStatus.OK).json({ message: result });
-    } catch (error: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message || 'OTP verification failed' });
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -61,8 +62,8 @@ export class StudentController implements IStudentController {
 
       const result = await this.otpService.resendOtp(email);
       res.status(HttpStatus.OK).json({ message: result });
-    } catch (error: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message || 'Resend OTP failed' });
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST});
     }
   }
   async loginStudent(req: Request, res: Response): Promise<void> {
@@ -85,8 +86,8 @@ export class StudentController implements IStudentController {
         accessToken,
         student,
       });
-    } catch (error: any) {
-      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || 'Login failed' });
+    } catch (error) {
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
     }
   }
   async logoutStudent(req: Request, res: Response): Promise<void> {
@@ -110,8 +111,8 @@ export class StudentController implements IStudentController {
       const newAccessToken = await this.studentService.refreshAccessToken(refreshToken);
 
       res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
-    } catch (error: any) {
-      res.status(HttpStatus.FORBIDDEN).json({ message: error.message || 'Invalid refresh token' });
+    } catch (error) {
+      res.status(HttpStatus.FORBIDDEN).json({ message: ERROR_MESSAGES.FORBIDDEN });
     }
   }
 
@@ -139,8 +140,8 @@ export class StudentController implements IStudentController {
         accessToken,
         student,
       });
-    } catch (error: any) {
-      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || 'Google login failed' });
+    } catch (error) {
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: ERROR_MESSAGES.UNAUTHORIZED });
     }
   }
 
@@ -149,8 +150,8 @@ export class StudentController implements IStudentController {
       const userId = req.user!.id;
       const data = await this.studentService.getProfile(userId);
       res.json({ data });
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -169,8 +170,8 @@ export class StudentController implements IStudentController {
       const userId = req.user!.id;
       const data = await this.studentService.updateProfile(userId, req.body);
       res.json({ data });
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -180,8 +181,8 @@ export class StudentController implements IStudentController {
       const { currentPassword, newPassword } = req.body;
       await this.studentService.changePassword(userId, currentPassword, newPassword);
       res.json({ message: 'Password updated' });
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { PasswordResetService } from '../../../services/student/implementation/PasswordResetService';
 import { HttpStatus } from '../../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 
 export class PasswordResetController {
   constructor(private svc: PasswordResetService) {}
@@ -14,8 +15,8 @@ export class PasswordResetController {
     try {
       await this.svc.verifyResetOtp(email, otp);
       res.status(HttpStatus.OK).json({ message: 'OTP verified. You can reset your password now.' });
-    } catch (e: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: e.message || 'Invalid OTP' });
+    } catch (e) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message:  'Invalid OTP' });
     }
   }
   async resetPassword(req: Request, res: Response): Promise<void> {
@@ -23,8 +24,8 @@ export class PasswordResetController {
     try {
       await this.svc.resetWithOtp(email, newPassword, confirmPassword);
       res.status(HttpStatus.OK).json({ message: 'Password updated successfully' });
-    } catch (e: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: e.message || 'Reset failed' });
+    } catch (e) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { ITutorAdminService } from '../../services/admin/ITutorAdminService';
 import { HttpStatus } from '../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../constants/errorMessages';
 
 export class TutorAdminController {
   constructor(private service: ITutorAdminService) {}
@@ -14,8 +15,8 @@ export class TutorAdminController {
 
       const result = await this.service.getAllTutors(page, limit, status, search);
       res.status(HttpStatus.OK).json(result);
-    } catch (err: any) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message || 'Failed to fetch tutors' });
+    } catch (err) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -26,8 +27,8 @@ export class TutorAdminController {
 
       const tutor = await this.service.getTutorById(id);
       res.status(HttpStatus.OK).json(tutor);
-    } catch (err: any) {
-      res.status(HttpStatus.NOT_FOUND).json({ message: err.message || 'Tutor not found' });
+    } catch (err) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Tutor not found' });
     }
   }
 
@@ -38,8 +39,8 @@ export class TutorAdminController {
 
       await this.service.updateTutorStatus(id, status);
       res.status(HttpStatus.OK).json({ message: 'Tutor status updated' });
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 }

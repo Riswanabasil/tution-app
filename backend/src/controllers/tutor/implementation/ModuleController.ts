@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import type { TutorModuleService } from '../../../services/tutor/implementation/ModuleService';
 import { promises } from 'dns';
 import { HttpStatus } from '../../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 
 export class ModuleController {
   constructor(private service: TutorModuleService) {}
@@ -11,8 +12,8 @@ export class ModuleController {
       const { courseId } = req.params;
       const modules = await this.service.listByCourse(courseId);
       res.json(modules);
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -22,8 +23,8 @@ export class ModuleController {
       const { name, order } = req.body;
       const mod = await this.service.createModule(courseId, name, order);
       res.status(HttpStatus.CREATED).json(mod);
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -36,8 +37,8 @@ export class ModuleController {
         return;
       }
       res.json(mod);
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -46,8 +47,8 @@ export class ModuleController {
       const { id } = req.params;
       await this.service.deleteModule(id);
       res.status(HttpStatus.NO_CONTENT).end();
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -63,8 +64,8 @@ export class ModuleController {
         return;
       }
       res.json(mod);
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message:ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 }

@@ -4,6 +4,7 @@ import { AuthenticatedRequest } from '../../../types/Index';
 import { ICourse } from '../../../models/course/CourseSchema';
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 
 export class TutorCourseController {
   constructor(private courseService: ITutorCourseService) {}
@@ -54,8 +55,8 @@ export class TutorCourseController {
       console.log(course);
 
       res.status(HttpStatus.CREATED).json(course);
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -67,8 +68,8 @@ export class TutorCourseController {
       const search = (req.query.search as string) || '';
       const result = await this.courseService.getAllCourses(tutorId, page, limit, search);
       res.status(HttpStatus.OK).json(result);
-    } catch (err: any) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -80,8 +81,8 @@ export class TutorCourseController {
         return;
       }
       res.status(HttpStatus.OK).json(course);
-    } catch (err: any) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -95,8 +96,8 @@ export class TutorCourseController {
         return;
       }
       res.status(HttpStatus.OK).json(updated);
-    } catch (err: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+    } catch (err) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 
@@ -106,8 +107,8 @@ export class TutorCourseController {
       const tutorId = req.user!.id;
       const updated = await this.courseService.reapply(courseId, tutorId);
       res.status(HttpStatus.OK).json(updated);
-    } catch (error: any) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: error.message });
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
   async softDeleteCourse(req: AuthenticatedRequest, res: Response) {

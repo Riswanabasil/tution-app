@@ -24,15 +24,8 @@ export default class ReviewController {
       const created = await this.svc.create({ courseId, studentId, rating: r, comment });
       res.status(HttpStatus.CREATED).json(created);
       return;
-    } catch (err: any) {
-      if (err?.code === 11000) {
-        res.status(HttpStatus.CONFLICT).json({ message: 'You have already reviewed this course.' });
-        return;
-      }
-      if (err?.name === 'CastError') {
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Invalid id provided' });
-        return;
-      }
+    } catch (err) {
+      
       console.error('createReview error:', err);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create review' });
       return;
@@ -48,11 +41,7 @@ export default class ReviewController {
       }
       res.json(review);
       return;
-    } catch (err: any) {
-      if (err?.name === 'CastError') {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid id provided' });
-        return;
-      }
+    } catch (err) {
       console.error('getReviewById error:', err);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch review' });
       return;
@@ -65,8 +54,7 @@ export default class ReviewController {
       const limit = Math.max(1, Number(req.query.limit || 10));
       const data = await this.svc.listByCourse(req.params.courseId, page, limit);
       res.json(data);
-    } catch (err: any) {
-      if (err?.name === 'CastError') res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid course id' });
+    } catch (err) {
       console.error('listCourseReviews error:', err);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch reviews' });
     }
@@ -91,8 +79,7 @@ export default class ReviewController {
       const updated = await this.svc.update(req.params.id, updates);
       if (!updated) res.status(HttpStatus.NOT_FOUND).json({ message: 'Review not found' });
       res.json(updated);
-    } catch (err: any) {
-      if (err?.name === 'CastError') res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid id provided' });
+    } catch (err) {
       console.error('updateReview error:', err);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to update review' });
     }
@@ -103,8 +90,7 @@ export default class ReviewController {
       const ok = await this.svc.remove(req.params.id);
       if (!ok) res.status(HttpStatus.NOT_FOUND).json({ message: 'Review not found' });
       res.status(HttpStatus.NO_CONTENT).send();
-    } catch (err: any) {
-      if (err?.name === 'CastError') res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid id provided' });
+    } catch (err) {
       console.error('deleteReview error:', err);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to delete review' });
     }
@@ -114,8 +100,7 @@ export default class ReviewController {
     try {
       const stats = await this.svc.stats(req.params.courseId);
       res.json(stats);
-    } catch (err: any) {
-      if (err?.name === 'CastError') res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid course id' });
+    } catch (err) {
       console.error('getCourseReviewStats error:', err);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch stats' });
     }

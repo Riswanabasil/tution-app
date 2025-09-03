@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { IAdminController } from './IAdminController';
 import { IAdminService } from '../../services/admin/IAdminService';
 import { HttpStatus } from '../../constants/statusCode';
+import { ERROR_MESSAGES } from '../../constants/errorMessages';
 // import { LoginAdminResponseDTO } from "../../dto/admin/adminAuth";
 
 export class AdminController implements IAdminController {
@@ -23,8 +24,9 @@ export class AdminController implements IAdminController {
         message: 'Admin login successful',
         accessToken: result.accessToken,
       });
-    } catch (error: any) {
-      res.status(HttpStatus.UNAUTHORIZED).json({ message: error.message || 'Login failed' });
+    } catch (error) {
+      console.error(error)
+      res.status(HttpStatus.UNAUTHORIZED).json({ message:'Login failed' });
     }
   }
 
@@ -42,15 +44,15 @@ export class AdminController implements IAdminController {
       const refreshToken = req.cookies.adminRefreshToken;
 
       if (!refreshToken) {
-        res.status(HttpStatus.UNAUTHORIZED).json({ message: 'No refresh token provided' });
+        res.status(HttpStatus.UNAUTHORIZED).json({ message: ERROR_MESSAGES.UNAUTHORIZED});
         return;
       }
 
       const newAccessToken = await this.adminService.refreshAccessToken(refreshToken);
 
       res.status(HttpStatus.OK).json({ accessToken: newAccessToken });
-    } catch (error: any) {
-      res.status(HttpStatus.FORBIDDEN).json({ message: error.message || 'Invalid refresh token' });
+    } catch (error) {
+      res.status(HttpStatus.FORBIDDEN).json({ message: ERROR_MESSAGES.FORBIDDEN });
     }
   }
 }
