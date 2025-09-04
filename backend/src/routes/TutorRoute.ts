@@ -77,6 +77,7 @@ router.post(
 );
 router.post('/login', tutorController.loginTutor.bind(tutorController));
 router.post('/logout', tutorController.logoutTutor.bind(tutorController));
+router.post('/google-login',tutorController.googleLoginTutor.bind(tutorController))
 router.get('/refresh-token', tutorController.refreshAccessToken.bind(tutorController));
 
 //profile

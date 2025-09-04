@@ -5,6 +5,7 @@ import { ITutorService } from '../ITutorService';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
 import { TokenService } from '../../common/TokenService';
 import bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 
 export interface RegisterTutorResponse {
   id: string;
@@ -108,6 +109,56 @@ export class TutorService implements ITutorService {
 
   async refreshAccessToken(refreshToken: string): Promise<string> {
     return this.tokenService.verifyRefreshTokenAndGenerateAccess(refreshToken);
+  }
+
+  async googleLoginTutorService(idToken: string): Promise<{
+    accessToken: string;
+    refreshToken: string;
+    tutor: { id: string; name: string; email: string; status: 'pending' | 'verification-submitted' | 'approved' | 'rejected' };
+  }> {
+    const google= new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+    const ticket = await google.verifyIdToken({
+      idToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload?.email || !payload?.name) {
+      throw new Error('Invalid Google token');
+    }
+
+    const { email, name } = payload;
+
+    let tutor = await this.tutorRepo.findByEmail(email);
+
+    if (!tutor) {
+      tutor = await this.tutorRepo.create({
+        name,
+        email,
+        phone: '',
+        password: '',
+        isGoogleSignup: true,
+        status: 'pending',        
+        role: 'tutor',
+      });
+    } else if (!tutor.isGoogleSignup) {
+      tutor.isGoogleSignup = true;
+      await tutor.save();
+    }
+
+    const accessToken = generateAccessToken(tutor._id.toString(), tutor.email, tutor.role);
+    const refreshToken = generateRefreshToken(tutor._id.toString(), tutor.email, tutor.role);
+
+    return {
+      accessToken,
+      refreshToken,
+      tutor: {
+        id: tutor._id.toString(),
+        name: tutor.name,
+        email: tutor.email,
+        status: tutor.status,
+      },
+    };
   }
 
   //profile

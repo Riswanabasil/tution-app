@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { AxiosError } from 'axios';
-import { loginTutor, logoutTutor } from '../../features/tutor/services/TutorApi';
+import { loginTutor, logoutTutor, tutorGoogleLogin } from '../../features/tutor/services/TutorApi';
 
 interface TutorAuthState {
   accessToken: string | null;
@@ -34,6 +34,20 @@ export const loginTutorThunk = createAsyncThunk<
     return thunkAPI.rejectWithValue(msg);
   }
 });
+
+export const googleLoginTutorThunk = createAsyncThunk(
+  'tutor/googleLogin',
+  async (idToken: string, { rejectWithValue }) => {
+    try {
+      const res = await tutorGoogleLogin(idToken);
+      localStorage.setItem('tutorAccessToken', res.accessToken);
+      return res; 
+    } catch (err) {
+      const e = err as AxiosError<{ message?: string }>;
+      return rejectWithValue(e.response?.data?.message || 'Google login failed');
+    }
+  }
+);
 
 export const logoutTutorThunk = createAsyncThunk('tutor/logout', async (_, thunkAPI) => {
   try {

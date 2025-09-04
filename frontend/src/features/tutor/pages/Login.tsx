@@ -1,118 +1,3 @@
-// import { useForm } from "react-hook-form";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import * as yup from "yup";
-// import { Link, useNavigate } from "react-router-dom";
-// import { useState } from "react";
-// import { loginTutor } from "../services/TutorApi";
-// import type { AxiosError } from "axios";
-
-// const schema = yup.object().shape({
-//   email: yup.string().email("Invalid email").required("Email is required"),
-//   password: yup.string().required("Password is required"),
-// });
-
-// type LoginFormData = yup.InferType<typeof schema>;
-
-// const TutorLogin = () => {
-//   const navigate = useNavigate();
-//   const [errorMsg, setErrorMsg] = useState("");
-
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm<LoginFormData>({ resolver: yupResolver(schema) });
-
-//   const onSubmit = async (data: LoginFormData) => {
-//     setErrorMsg("");
-//     try {
-//       const res = await loginTutor(data);
-
-//       localStorage.setItem("tutorAccessToken", res.accessToken);
-
-//       navigate("/tutor/courses");
-//     } catch (err: unknown) {
-//   const axiosError = err as AxiosError<{ message: string }>;
-//   const message = axiosError.response?.data?.message || "Login failed";
-
-//   if (message === "VERIFICATION_PENDING") {
-//     navigate("/tutor/verification-status");
-//   } else {
-//     setErrorMsg(message);
-//   }
-// }
-
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-sky-100 to-indigo-100">
-//       <div className="bg-white shadow-xl rounded-lg flex w-full max-w-4xl overflow-hidden">
-//         <div className="hidden md:flex flex-col justify-center items-center bg-indigo-600 text-white w-1/2 p-8">
-//           <h1 className="text-4xl font-bold mb-4">Tech Tute</h1>
-//           <p className="text-lg text-center">
-//             Tutor Login — Empower learners, one session at a time.
-//           </p>
-//         </div>
-//         <div className="w-full md:w-1/2 p-8">
-//           <h2 className="text-2xl font-semibold text-indigo-700 mb-6 text-center">
-//             Tutor Login
-//           </h2>
-
-//           {errorMsg && (
-//             <p className="text-red-500 text-sm mb-4 text-center">{errorMsg}</p>
-//           )}
-
-//           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-//             <div>
-//               <input
-//                 {...register("email")}
-//                 placeholder="Email Address"
-//                 type="email"
-//                 className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-//               />
-//               {errors.email && (
-//                 <p className="text-red-500 text-sm mt-1">
-//                   {errors.email.message}
-//                 </p>
-//               )}
-//             </div>
-
-//             <div>
-//               <input
-//                 {...register("password")}
-//                 type="password"
-//                 placeholder="Password"
-//                 className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-//               />
-//               {errors.password && (
-//                 <p className="text-red-500 text-sm mt-1">
-//                   {errors.password.message}
-//                 </p>
-//               )}
-//             </div>
-
-//             <button
-//               type="submit"
-//               className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition duration-300"
-//             >
-//               Login
-//             </button>
-//           </form>
-//           <div className="mt-4 text-center">
-//   <p className="text-sm">
-//     Don't have an account?{" "}
-//     <Link to="/tutor/register" className="text-indigo-600 hover:underline font-medium">
-//       Sign up
-//     </Link>
-//   </p>
-// </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default TutorLogin;
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -120,8 +5,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../../../redux/store';
-import { loginTutorThunk } from '../../../redux/slices/tutorAuthSlice';
-
+import { googleLoginTutorThunk, loginTutorThunk } from '../../../redux/slices/tutorAuthSlice';
+import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 const schema = yup.object().shape({
   email: yup.string().email('Invalid email').required('Email is required'),
   password: yup.string().required('Password is required'),
@@ -158,6 +43,27 @@ const TutorLogin = () => {
         return;
       }
       setErrorMsg(msg || 'Login failed');
+    }
+  };
+
+  const handleGoogleSuccess = async (cr: CredentialResponse) => {
+    const idToken = cr.credential;
+    if (!idToken) return setErrorMsg('Google login failed');
+
+    const action = await dispatch(googleLoginTutorThunk(idToken));
+    if (googleLoginTutorThunk.fulfilled.match(action)) {
+      const { tutor } = action.payload;
+      console.log(tutor);
+      
+      if (tutor.status === 'approved') navigate('/tutor/dashboard');
+      else {
+        localStorage.setItem('pendingTutorId', tutor.id);
+    localStorage.setItem('pendingTutorEmail', tutor.email);
+    localStorage.setItem('pendingTutorName', tutor.name);
+        navigate('/tutor/verification'); 
+      }
+    } else {
+      setErrorMsg(action.payload as string);
     }
   };
 
@@ -206,7 +112,10 @@ const TutorLogin = () => {
               {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
-
+          <div className="mt-6 text-center">
+      <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setErrorMsg('Google login failed')} />
+      {errorMsg && <p className="text-red-600 mt-2">{errorMsg}</p>}
+    </div>
           <div className="mt-4 text-center">
             <p className="text-sm">
               Don't have an account?{' '}

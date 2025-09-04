@@ -39,7 +39,11 @@ export interface CoursePayload {
   imageKey?: string;
   demoKey?: string;
 }
-
+type TutorLoginResp = {
+  message: string;
+  accessToken: string;
+  tutor: { id: string; name: string; email: string; status: 'pending'|'verification-submitted'|'approved'|'rejected' };
+};
 export const registerTutor = async (data: TutorSignupData) => {
   const res = await axios.post('/tutor/register', data);
   return res.data;
@@ -62,6 +66,12 @@ export const loginTutor = async (data: LoginPayload) => {
   const res = await axios.post('/tutor/login', data);
 
   return res.data;
+};
+
+export const tutorGoogleLogin = async (idToken: string): Promise<TutorLoginResp> => {
+  const api = getAxios('tutor'); // uses your role-aware axios
+  const { data } = await api.post('/tutor/google-login', { idToken });
+  return data;
 };
 export const logoutTutor = async () => {
   await axios.post('/tutor/logout');

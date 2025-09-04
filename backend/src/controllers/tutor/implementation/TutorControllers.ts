@@ -67,7 +67,7 @@ export class TutorController implements ITutorController {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: REFRESH_COOKIE
+        maxAge: 7 * 24 * 60 * 60 * 1000
       });
 
       res.status(HttpStatus.OK).json({
@@ -87,6 +87,38 @@ export class TutorController implements ITutorController {
     });
     res.status(HttpStatus.OK).json({ message: 'Tutor logged out successfully' });
   }
+
+  async googleLoginTutor(req: Request, res: Response): Promise<void> {
+    try {
+      const { idToken } = req.body as { idToken?: string };
+      if (!idToken) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Google ID token missing' });
+        return;
+      }
+
+      const { accessToken, refreshToken, tutor } =
+        await this.tutorService.googleLoginTutorService(idToken);
+
+  const REFRESH_COOKIE=Number(process.env.MAX_AGE)
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      });
+
+      res.status(HttpStatus.OK).json({
+        message: 'Google login successful',
+        accessToken,
+        tutor,
+      });
+    } catch (err: any) {
+      res
+        .status(HttpStatus.UNAUTHORIZED)
+        .json({ message: err.message || 'Unauthorized' });
+    }
+  }
+
 
   async refreshAccessToken(req: Request, res: Response): Promise<void> {
     try {
