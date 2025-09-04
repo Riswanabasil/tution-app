@@ -108,9 +108,7 @@ export class StudentService implements IStudentService {
     }
 
     const { email, name } = payload;
-
     let student = await this.studentRepo.findByEmail(email);
-
     if (!student) {
       student = await this.studentRepo.create({
         name,
@@ -122,11 +120,8 @@ export class StudentService implements IStudentService {
         role: 'student',
       });
     }
-
     const accessToken = generateAccessToken(student._id.toString(), student.email, student.role);
-
     const refreshToken = generateRefreshToken(student._id.toString(), student.email, student.role);
-
     return {
       accessToken,
       refreshToken,

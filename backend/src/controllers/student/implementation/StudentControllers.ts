@@ -13,7 +13,7 @@ export class StudentController implements IStudentController {
     private studentService: StudentService,
     private otpService: IOtpService,
     private commonOtp: OtpService,
-  ) {}
+  ) { }
 
   async registerStudent(req: Request, res: Response): Promise<void> {
     try {
@@ -63,7 +63,7 @@ export class StudentController implements IStudentController {
       const result = await this.otpService.resendOtp(email);
       res.status(HttpStatus.OK).json({ message: result });
     } catch (error) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST});
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
   async loginStudent(req: Request, res: Response): Promise<void> {
@@ -124,7 +124,7 @@ export class StudentController implements IStudentController {
         res.status(HttpStatus.BAD_REQUEST).json({ message: 'Google ID token missing' });
         return;
       }
-
+      const REFRESH_COOKIE = Number(process.env.MAX_AGE)
       const { accessToken, refreshToken, student } =
         await this.studentService.googleLoginStudentService(idToken);
 
@@ -132,7 +132,7 @@ export class StudentController implements IStudentController {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: REFRESH_COOKIE
       });
 
       res.status(200).json({
@@ -156,14 +156,14 @@ export class StudentController implements IStudentController {
   }
 
   async getUploadUrl(req: Request, res: Response, next: NextFunction) {
-      try {
-        const { filename, contentType } = req.query as { filename: string; contentType: string };
-        const data = await presignPutObject({ keyPrefix: 'studentPic', filename, contentType });
-        res.json(data);
-      } catch (err) {
-        next(err);
-      }
+    try {
+      const { filename, contentType } = req.query as { filename: string; contentType: string };
+      const data = await presignPutObject({ keyPrefix: 'studentPic', filename, contentType });
+      res.json(data);
+    } catch (err) {
+      next(err);
     }
+  }
 
   async updateProfile(req: AuthenticatedRequest, res: Response) {
     try {

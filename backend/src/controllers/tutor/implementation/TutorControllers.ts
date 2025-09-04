@@ -62,11 +62,12 @@ export class TutorController implements ITutorController {
     try {
       const { email, password } = req.body;
       const result: LoginTutorResponse = await this.tutorService.loginTutor(email, password);
+      const REFRESH_COOKIE=Number(process.env.MAX_AGE)
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: REFRESH_COOKIE
       });
 
       res.status(HttpStatus.OK).json({
