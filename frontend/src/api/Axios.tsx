@@ -35,7 +35,7 @@ const roleCfg: Record<Role, RoleCfg> = {
     refreshUrl: '/tutor/refresh-token',
     redirectTo: '/tutor/login',
     passThroughMessage: 'VERIFICATION_PENDING',
-    loginIgnore: ['/tutor/login', '/tutor/google-login']
+    loginIgnore: ['/tutor/login', '/tutor/google-login'],
   },
 };
 

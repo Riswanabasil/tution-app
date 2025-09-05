@@ -1,13 +1,13 @@
 import { Types } from 'mongoose';
 import { Course, ICourse } from '../../../models/course/CourseSchema';
+import { ICourseRepository } from '../ICourseRepository';
 import {
-
-
-  ICourseRepository,
-
-
-} from '../ICourseRepository';
-import { CourseListItem, CourseStatus, IPaginateOptions, TutorCourseListItem, TutorPendingCourseItem } from '../../../types/course';
+  CourseListItem,
+  CourseStatus,
+  IPaginateOptions,
+  TutorCourseListItem,
+  TutorPendingCourseItem,
+} from '../../../types/course';
 
 export class CourseRepository implements ICourseRepository {
   async create(data: Partial<ICourse>): Promise<ICourse> {

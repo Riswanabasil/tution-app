@@ -1,7 +1,5 @@
 import type { Request, Response } from 'express';
-import type {
-  IAdminDashboardService,
-} from '../../services/admin/IAdminDashboardService';
+import type { IAdminDashboardService } from '../../services/admin/IAdminDashboardService';
 
 import { parseDateRange, parseGranularity, parseLimit } from '../../utils/dashboard';
 import { HttpStatus } from '../../constants/statusCode';
@@ -16,7 +14,9 @@ export default class AdminDashboardController {
       res.json(data);
     } catch (err) {
       console.error('getKpis error:', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   };
 
@@ -28,7 +28,9 @@ export default class AdminDashboardController {
       res.json({ granularity, points: data });
     } catch (err) {
       console.error('getRevenueTrend error:', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   };
 
@@ -40,7 +42,9 @@ export default class AdminDashboardController {
       res.json({ granularity, points: data });
     } catch (err) {
       console.error('getEnrollmentTrend error:', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   };
 
@@ -63,7 +67,9 @@ export default class AdminDashboardController {
       res.json({ limit, ...data });
     } catch (err) {
       console.error('getApprovalQueues error:', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch approval queues' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to fetch approval queues' });
     }
   };
 }

@@ -1,5 +1,5 @@
-import { IReview } from "../models/review/review";
-import { Reviews } from "../types/Review";
+import { IReview } from '../models/review/review';
+import { Reviews } from '../types/Review';
 
 export function toDTO(doc: IReview): Reviews {
   return {

@@ -240,20 +240,22 @@ import * as yup from 'yup';
 const asNum = (msg: string) =>
   yup
     .number()
-    .transform(( o) => (o === '' || o === null || typeof o === 'undefined' ? undefined : Number(o)))
+    .transform((o) => (o === '' || o === null || typeof o === 'undefined' ? undefined : Number(o)))
     .typeError(msg);
 
 const imageFileSchema = yup
-  .mixed<File>()         
-  .nullable()  
-  .test('type', 'Thumbnail must be JPEG/PNG/WebP', (f) =>
-    !f || ['image/jpeg', 'image/png', 'image/webp'].includes(f.type),
+  .mixed<File>()
+  .nullable()
+  .test(
+    'type',
+    'Thumbnail must be JPEG/PNG/WebP',
+    (f) => !f || ['image/jpeg', 'image/png', 'image/webp'].includes(f.type),
   )
   .test('size', 'Thumbnail must be ≤ 2MB', (f) => !f || f.size <= 2 * 1024 * 1024);
 
 const videoFileSchema = yup
-  .mixed<File>()         
-  .nullable()  
+  .mixed<File>()
+  .nullable()
   .test('type', 'Demo must be MP4/WebM', (f) => !f || ['video/mp4', 'video/webm'].includes(f.type))
   .test('size', 'Demo must be ≤ 50MB', (f) => !f || f.size <= 50 * 1024 * 1024);
 
@@ -276,7 +278,9 @@ const courseSchema = yup.object({
     .min(1, 'Minimum semester is 1')
     .max(8, 'Maximum semester is 8')
     .required('Semester is required'),
-  price: asNum('Price must be a number').min(0, 'Price cannot be negative').required('Price is required'),
+  price: asNum('Price must be a number')
+    .min(0, 'Price cannot be negative')
+    .required('Price is required'),
   offer: asNum('Offer must be a number')
     .min(0, 'Offer cannot be negative')
     .max(500, 'Offer looks too high')
@@ -294,7 +298,7 @@ const courseSchema = yup.object({
     is: false,
     then: (s) => s.test('required', 'Thumbnail is required', (f) => !!f),
   }),
-  demoFile: videoFileSchema, 
+  demoFile: videoFileSchema,
 });
 
 export default function AddEditCoursePage() {
@@ -421,7 +425,9 @@ export default function AddEditCoursePage() {
         setFieldErrors(fe);
       } else {
         const axiosError = err as AxiosError<{ message: string }>;
-        setError(axiosError?.response?.data?.message || axiosError?.message || 'Something went wrong');
+        setError(
+          axiosError?.response?.data?.message || axiosError?.message || 'Something went wrong',
+        );
       }
     } finally {
       setLoading(false);
@@ -468,7 +474,9 @@ export default function AddEditCoursePage() {
             placeholder="Semester (1-8)"
             className="w-full rounded-lg border px-4 py-2"
           />
-          {fieldErrors.semester && <p className="mt-1 text-sm text-red-600">{fieldErrors.semester}</p>}
+          {fieldErrors.semester && (
+            <p className="mt-1 text-sm text-red-600">{fieldErrors.semester}</p>
+          )}
         </div>
 
         <div>
@@ -546,7 +554,9 @@ export default function AddEditCoursePage() {
           }}
         />
         {fieldErrors.file && <p className="mt-1 text-sm text-red-600">{fieldErrors.file}</p>}
-        {previewUrl && <img src={previewUrl} alt="Thumbnail" className="mt-2 w-48 rounded border" />}
+        {previewUrl && (
+          <img src={previewUrl} alt="Thumbnail" className="mt-2 w-48 rounded border" />
+        )}
       </div>
 
       <div>
@@ -565,7 +575,9 @@ export default function AddEditCoursePage() {
             });
           }}
         />
-        {fieldErrors.demoFile && <p className="mt-1 text-sm text-red-600">{fieldErrors.demoFile}</p>}
+        {fieldErrors.demoFile && (
+          <p className="mt-1 text-sm text-red-600">{fieldErrors.demoFile}</p>
+        )}
         {previewDemoUrl && (
           <video src={previewDemoUrl} controls className="mt-2 w-full max-w-md rounded border" />
         )}

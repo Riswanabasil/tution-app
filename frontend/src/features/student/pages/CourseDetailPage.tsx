@@ -308,19 +308,16 @@ export default function CourseDetailPage() {
                     amount={course.price}
                     onSuccess={() => nav('/student/mycourse')}
                     onError={(err) => {
-                       
-    let status: number | undefined;
-    if (axios.isAxiosError(err)) {
-      status = err.response?.status;
-      
-    
-    }
+                      let status: number | undefined;
+                      if (axios.isAxiosError(err)) {
+                        status = err.response?.status;
+                      }
                       if (status === 409) {
-      toast.info('You already purchased this course. Redirecting to My Courses…');
-   
-      setTimeout(() => nav('/student/mycourse'), 800);
-      return;
-    }
+                        toast.info('You already purchased this course. Redirecting to My Courses…');
+
+                        setTimeout(() => nav('/student/mycourse'), 800);
+                        return;
+                      }
                     }}
                   />
                 </div>

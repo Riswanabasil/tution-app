@@ -1,4 +1,4 @@
-import { ICourse } from "../models/course/CourseSchema";
+import { ICourse } from '../models/course/CourseSchema';
 
 export type CourseDetails = {
   _id: string;
@@ -70,4 +70,3 @@ export interface PaginatedCourses {
   limit: number;
   totalPages: number;
 }
-

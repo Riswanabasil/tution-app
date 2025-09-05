@@ -17,18 +17,20 @@ export class AssignmentController {
       const data = await this.assgnService.listAssignmentsWithStatus(topicId, studentId);
       res.status(HttpStatus.OK).json(data);
     } catch (err) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
   async generatePresignedUrl(req: Request, res: Response, next: NextFunction) {
-      try {
-        const { filename, contentType } = req.query as { filename: string; contentType: string };
-        const data = await presignPutObject({ keyPrefix: 'submission', filename, contentType });
-        res.json(data);
-      } catch (err) {
-        next(err);
-      }
+    try {
+      const { filename, contentType } = req.query as { filename: string; contentType: string };
+      const data = await presignPutObject({ keyPrefix: 'submission', filename, contentType });
+      res.json(data);
+    } catch (err) {
+      next(err);
     }
+  }
   async createSubmissionController(req: AuthenticatedRequest, res: Response) {
     try {
       const assignmentId = req.params.assignmentId;
@@ -47,7 +49,9 @@ export class AssignmentController {
     } catch (error) {
       console.log(error);
 
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 

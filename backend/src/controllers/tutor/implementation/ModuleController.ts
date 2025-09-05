@@ -65,7 +65,7 @@ export class ModuleController {
       }
       res.json(mod);
     } catch (err) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message:ERROR_MESSAGES.BAD_REQUEST });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
 }

@@ -17,7 +17,6 @@ import type { ICourseRepository } from '../../../repositories/course/ICourseRepo
 import type { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
 import { resolveRange, startOfToday } from '../../../utils/dashboard';
 
-
 export class AdminDashboardService implements IAdminDashboardService {
   constructor(
     private readonly students: IStudentRepository,

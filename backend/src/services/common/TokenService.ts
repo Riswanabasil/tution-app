@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { generateAccessToken } from '../../utils/GenerateToken';
 
-import type {Payload} from '../../interfaces/common/ITokenService'
+import type { Payload } from '../../interfaces/common/ITokenService';
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
 export class TokenService {
   generateToken(payload: Payload): string {

@@ -30,7 +30,7 @@ EnrollmentSchema.index(
   {
     unique: true,
     partialFilterExpression: { status: { $in: ['pending', 'paid'] } },
-  }
+  },
 );
 
 export const EnrollmentModel = model<IEnrollment>('Enrollment', EnrollmentSchema);

@@ -7,15 +7,15 @@ import { HttpStatus } from '../../../constants/statusCode';
 export class NoteController {
   constructor(private readonly service: NoteService) {}
 
-    async getNoteUploadUrls(req: Request, res: Response, next: NextFunction) {
-        try {
-          const { filename, contentType } = req.query as { filename: string; contentType: string };
-          const data = await presignPutObject({ keyPrefix: 'notes', filename, contentType });
-          res.json(data);
-        } catch (err) {
-          next(err);
-        }
-      }
+  async getNoteUploadUrls(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { filename, contentType } = req.query as { filename: string; contentType: string };
+      const data = await presignPutObject({ keyPrefix: 'notes', filename, contentType });
+      res.json(data);
+    } catch (err) {
+      next(err);
+    }
+  }
   create = async (req: Request, res: Response): Promise<void> => {
     try {
       const topicId = new mongoose.Types.ObjectId(req.params.topicId);

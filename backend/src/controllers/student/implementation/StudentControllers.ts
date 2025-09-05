@@ -13,7 +13,7 @@ export class StudentController implements IStudentController {
     private studentService: StudentService,
     private otpService: IOtpService,
     private commonOtp: OtpService,
-  ) { }
+  ) {}
 
   async registerStudent(req: Request, res: Response): Promise<void> {
     try {
@@ -39,7 +39,9 @@ export class StudentController implements IStudentController {
       });
     } catch (error) {
       console.error('Register Error:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -124,7 +126,7 @@ export class StudentController implements IStudentController {
         res.status(HttpStatus.BAD_REQUEST).json({ message: 'Google ID token missing' });
         return;
       }
-      const REFRESH_COOKIE = Number(process.env.MAX_AGE)
+      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
       const { accessToken, refreshToken, student } =
         await this.studentService.googleLoginStudentService(idToken);
 
@@ -132,7 +134,7 @@ export class StudentController implements IStudentController {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
       res.status(200).json({

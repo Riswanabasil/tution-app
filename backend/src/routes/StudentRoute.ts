@@ -101,7 +101,7 @@ router.put(
   authMiddleware,
   studentController.changePassword.bind(studentController),
 );
-router.get('/profile/upload-url',studentController.getUploadUrl);
+router.get('/profile/upload-url', studentController.getUploadUrl);
 //course
 
 router.get('/courses', authMiddleware, courseController.list.bind(courseController));

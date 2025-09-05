@@ -114,9 +114,14 @@ export class TutorService implements ITutorService {
   async googleLoginTutorService(idToken: string): Promise<{
     accessToken: string;
     refreshToken: string;
-    tutor: { id: string; name: string; email: string; status: 'pending' | 'verification-submitted' | 'approved' | 'rejected' };
+    tutor: {
+      id: string;
+      name: string;
+      email: string;
+      status: 'pending' | 'verification-submitted' | 'approved' | 'rejected';
+    };
   }> {
-    const google= new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+    const google = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     const ticket = await google.verifyIdToken({
       idToken,
       audience: process.env.GOOGLE_CLIENT_ID,
@@ -138,7 +143,7 @@ export class TutorService implements ITutorService {
         phone: '',
         password: '',
         isGoogleSignup: true,
-        status: 'pending',        
+        status: 'pending',
         role: 'tutor',
       });
     } else if (!tutor.isGoogleSignup) {

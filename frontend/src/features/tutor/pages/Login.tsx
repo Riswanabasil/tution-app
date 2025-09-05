@@ -54,13 +54,13 @@ const TutorLogin = () => {
     if (googleLoginTutorThunk.fulfilled.match(action)) {
       const { tutor } = action.payload;
       console.log(tutor);
-      
+
       if (tutor.status === 'approved') navigate('/tutor/dashboard');
       else {
         localStorage.setItem('pendingTutorId', tutor.id);
-    localStorage.setItem('pendingTutorEmail', tutor.email);
-    localStorage.setItem('pendingTutorName', tutor.name);
-        navigate('/tutor/verification'); 
+        localStorage.setItem('pendingTutorEmail', tutor.email);
+        localStorage.setItem('pendingTutorName', tutor.name);
+        navigate('/tutor/verification');
       }
     } else {
       setErrorMsg(action.payload as string);
@@ -113,9 +113,12 @@ const TutorLogin = () => {
             </button>
           </form>
           <div className="mt-6 text-center">
-      <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setErrorMsg('Google login failed')} />
-      {errorMsg && <p className="text-red-600 mt-2">{errorMsg}</p>}
-    </div>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setErrorMsg('Google login failed')}
+            />
+            {errorMsg && <p className="mt-2 text-red-600">{errorMsg}</p>}
+          </div>
           <div className="mt-4 text-center">
             <p className="text-sm">
               Don't have an account?{' '}

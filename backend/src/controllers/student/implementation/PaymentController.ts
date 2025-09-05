@@ -26,16 +26,18 @@ export class PaymentController {
           enrollmentId,
         },
       });
-    } 
-    // catch (error) {
-    //   console.error('Create Order Error:', error);
-    //   res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
-    // }
-    catch (e: any) {
-    const status = e?.status === 409 ? 409 : HttpStatus.INTERNAL_SERVER_ERROR;
-    const message = e?.status === 409 ? 'You already purchased this course' : ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
-    res.status(status).json({ message });
-  }
+    } catch (e: any) {
+      // catch (error) {
+      //   console.error('Create Order Error:', error);
+      //   res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      // }
+      const status = e?.status === 409 ? 409 : HttpStatus.INTERNAL_SERVER_ERROR;
+      const message =
+        e?.status === 409
+          ? 'You already purchased this course'
+          : ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+      res.status(status).json({ message });
+    }
   }
 
   async verifyPayment(req: Request, res: Response): Promise<void> {
@@ -64,7 +66,9 @@ export class PaymentController {
       res.status(HttpStatus.OK).json({ status: 'cancelled' });
     } catch (err) {
       console.error('Cancel Payment Error:', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -76,7 +80,9 @@ export class PaymentController {
       res.json({ data: list });
     } catch (err) {
       console.error(err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -92,7 +98,9 @@ export class PaymentController {
       const list = await this.paymentService.getPaymentHistory(userId);
       res.json({ data: list });
     } catch (err) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
   async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {

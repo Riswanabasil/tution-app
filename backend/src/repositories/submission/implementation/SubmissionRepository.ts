@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { ISubmission, SubmissionModel } from '../../../models/submission/SubmissionSchema';
 import { ISubmissionRepository } from '../ISubmissionRepository';
 
-export class SubmissionRepository implements ISubmissionRepository{
+export class SubmissionRepository implements ISubmissionRepository {
   async findByStudentAndAssignments(studentId: string, assignmentIds: string[]) {
     return SubmissionModel.find({
       studentId,

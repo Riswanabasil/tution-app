@@ -4,7 +4,7 @@ import { AssignmentRepository } from '../../../repositories/assignment/implement
 import { SubmissionRepository } from '../../../repositories/submission/implementation/SubmissionRepository';
 import { IStudentAssignmentService } from '../IStudentAssignmentService';
 
-export class StudentAssignmentService implements IStudentAssignmentService{
+export class StudentAssignmentService implements IStudentAssignmentService {
   constructor(
     private assignmentRepo: AssignmentRepository,
     private submissionRepo: SubmissionRepository,

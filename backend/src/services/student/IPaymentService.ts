@@ -1,10 +1,10 @@
-import { IEnrollment } from "../../models/payment/Enrollment";
+import { IEnrollment } from '../../models/payment/Enrollment';
 
 export interface IPaymentService {
   createOrder(
     userId: string,
     courseId: string,
-    amount: number
+    amount: number,
   ): Promise<{
     razorpayOrderId: string;
     amount: number;
@@ -12,33 +12,21 @@ export interface IPaymentService {
     enrollmentId: string;
   }>;
 
-  verifyAndUpdate(
-    paymentId: string,
-    orderId: string,
-    signature: string
-  ): Promise<void>;
+  verifyAndUpdate(paymentId: string, orderId: string, signature: string): Promise<void>;
 
-  cancelEnrollment(
-    enrollmentId: string
-  ): Promise<IEnrollment|null>; 
+  cancelEnrollment(enrollmentId: string): Promise<IEnrollment | null>;
 
-  getMyCourses(
-    userId: string
-  ): Promise<
+  getMyCourses(userId: string): Promise<
     Array<{
       enrollmentId: string;
-      course: { _id: string; title: string; thumbnail?: string; price?: number };     
+      course: { _id: string; title: string; thumbnail?: string; price?: number };
       enrolledAt: Date;
     }>
   >;
 
-  getStats(
-    userId: string
-  ): Promise<{ totalEnrolled: number }>;
+  getStats(userId: string): Promise<{ totalEnrolled: number }>;
 
-  getPaymentHistory(
-    userId: string
-  ): Promise<
+  getPaymentHistory(userId: string): Promise<
     Array<{
       enrollmentId: string;
       courseId: string;
@@ -50,9 +38,7 @@ export interface IPaymentService {
     }>
   >;
 
-  retryOrder(
-    enrollmentId: string
-  ): Promise<{
+  retryOrder(enrollmentId: string): Promise<{
     razorpayOrderId: string;
     currency: string;
     enrollmentId: string;

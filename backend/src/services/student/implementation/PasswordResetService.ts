@@ -7,11 +7,11 @@ import { IStudentRepository } from '../../../repositories/student/IStudentReposi
 import { IOtpService } from '../IOtpService';
 import { IPasswordResetService } from '../IPasswordResetService';
 
-export class PasswordResetService implements IPasswordResetService{
+export class PasswordResetService implements IPasswordResetService {
   constructor(
-    private otpRepo:IStudentOtpRepository,
-    private studentRepo :IStudentRepository,
-    private otpSvc:OtpService,
+    private otpRepo: IStudentOtpRepository,
+    private studentRepo: IStudentRepository,
+    private otpSvc: OtpService,
   ) {}
 
   async requestReset(email: string): Promise<void> {

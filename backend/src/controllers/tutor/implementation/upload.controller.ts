@@ -4,7 +4,6 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3 } from '../../../utils/s3Client';
 import { HttpStatus } from '../../../constants/statusCode';
 
-
 export async function getNoteUploadUrls(
   req: Request,
   res: Response,

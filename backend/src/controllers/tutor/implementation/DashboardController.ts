@@ -1,7 +1,5 @@
 import type { Request, Response } from 'express';
-import type {
-  ITutorDashboardService,
-} from '../../../services/tutor/IDashboardService';
+import type { ITutorDashboardService } from '../../../services/tutor/IDashboardService';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { parseDateRange, parseGranularity, parseLimit } from '../../../utils/dashboard';
 import { CourseStatus } from '../../../utils/dashboardTutor';
@@ -31,7 +29,9 @@ export class TutorDashboardController {
       res.json({ granularity, points });
     } catch (err) {
       console.error('tutor.getRevenueTrend', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch revenue trend' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to fetch revenue trend' });
     }
   };
 
@@ -44,7 +44,9 @@ export class TutorDashboardController {
       res.json({ granularity, points });
     } catch (err) {
       console.error('tutor.getEnrollmentTrend', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch enrollment trend' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to fetch enrollment trend' });
     }
   };
 
@@ -70,7 +72,9 @@ export class TutorDashboardController {
       res.json({ limit, rows });
     } catch (err) {
       console.error('tutor.getRecentEnrollments', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch recent enrollments' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to fetch recent enrollments' });
     }
   };
 
@@ -91,7 +95,9 @@ export class TutorDashboardController {
       res.json(result);
     } catch (err) {
       console.error('tutor.getMyCoursesOverview', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch courses overview' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to fetch courses overview' });
     }
   };
 
@@ -103,7 +109,9 @@ export class TutorDashboardController {
       res.json({ limit, rows });
     } catch (err) {
       console.error('tutor.getPendingApprovalsPreview', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch pending approvals' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to fetch pending approvals' });
     }
   };
 }

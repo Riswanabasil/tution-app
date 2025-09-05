@@ -12,7 +12,7 @@ interface RazorpayOrder {
   currency: string;
 }
 
-export class PaymentService implements IPaymentService{
+export class PaymentService implements IPaymentService {
   constructor(
     private repo: EnrollmentRepository,
     private tutorRepo: TutorRepository,
@@ -29,15 +29,14 @@ export class PaymentService implements IPaymentService{
     currency: string;
     enrollmentId: string;
   }> {
- const uId = new Types.ObjectId(userId);
-  const cId = new Types.ObjectId(courseId);
+    const uId = new Types.ObjectId(userId);
+    const cId = new Types.ObjectId(courseId);
     if (await this.repo.isPurchased(uId, cId)) {
-      
-    // use your AppError util if you have one
-    const err: any = new Error('You already own this course');
-    err.status = 409; // Conflict
-    throw err;
-  }
+      // use your AppError util if you have one
+      const err: any = new Error('You already own this course');
+      err.status = 409; // Conflict
+      throw err;
+    }
     const options = {
       amount: amount * 100,
       currency: 'INR',
@@ -59,12 +58,12 @@ export class PaymentService implements IPaymentService{
     //   status: 'pending',
     // } as Partial<IEnrollment>);
 
-     const enrollment = await this.repo.upsertPending(
-    new Types.ObjectId(userId),
-    new Types.ObjectId(courseId),
-    amount,
-    order.id
-  );
+    const enrollment = await this.repo.upsertPending(
+      new Types.ObjectId(userId),
+      new Types.ObjectId(courseId),
+      amount,
+      order.id,
+    );
 
     return {
       razorpayOrderId: order.id,
@@ -104,20 +103,20 @@ export class PaymentService implements IPaymentService{
 
   async getMyCourses(userId: string) {
     const enrollments = await this.repo.findPaidByUser(userId);
-   
-     return enrollments.map((e: any) => {
-    const c = e.courseId; 
-    return {
-      enrollmentId: e._id.toString(),
-      course: {
-        _id: c._id.toString(),
-        title: c.title,
-        thumbnail: c.thumbnail,
-        price: c.price,
-      },
-      enrolledAt: e.createdAt,
-    };
-  });
+
+    return enrollments.map((e: any) => {
+      const c = e.courseId;
+      return {
+        enrollmentId: e._id.toString(),
+        course: {
+          _id: c._id.toString(),
+          title: c.title,
+          thumbnail: c.thumbnail,
+          price: c.price,
+        },
+        enrolledAt: e.createdAt,
+      };
+    });
   }
 
   async getStats(userId: string) {

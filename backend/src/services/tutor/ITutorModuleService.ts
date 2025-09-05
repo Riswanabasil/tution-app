@@ -1,4 +1,4 @@
-import { IModule } from "../../models/module/ModuleSchema";
+import { IModule } from '../../models/module/ModuleSchema';
 
 export interface ITutorModuleService {
   listByCourse(courseId: string): Promise<IModule[]>;

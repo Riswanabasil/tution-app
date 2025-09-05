@@ -1,12 +1,13 @@
 import { Types } from 'mongoose';
 import Review, { IReview as IReviewDoc } from '../../../models/review/review';
+import type { IReviewRepository } from '../IReviewRepository';
 import type {
-  IReviewRepository,
-} from '../IReviewRepository';
-import type { CreateReviewInput, Paginated, Reviews, UpdateReviewInput } from '../../../types/Review';
+  CreateReviewInput,
+  Paginated,
+  Reviews,
+  UpdateReviewInput,
+} from '../../../types/Review';
 import { toDTO } from '../../../utils/review';
-
-
 
 export class ReviewRepository implements IReviewRepository {
   async create(payload: CreateReviewInput): Promise<Reviews> {

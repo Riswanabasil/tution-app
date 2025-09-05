@@ -69,7 +69,9 @@ export class TutorCourseController {
       const result = await this.courseService.getAllCourses(tutorId, page, limit, search);
       res.status(HttpStatus.OK).json(result);
     } catch (err) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -82,7 +84,9 @@ export class TutorCourseController {
       }
       res.status(HttpStatus.OK).json(course);
     } catch (err) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 

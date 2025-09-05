@@ -1,6 +1,12 @@
 import { Types } from 'mongoose';
 import { ICourse } from '../../models/course/CourseSchema';
-import { CourseListItem, CourseStatus, IPaginateOptions, TutorCourseListItem, TutorPendingCourseItem } from '../../types/course';
+import {
+  CourseListItem,
+  CourseStatus,
+  IPaginateOptions,
+  TutorCourseListItem,
+  TutorPendingCourseItem,
+} from '../../types/course';
 
 export interface ICourseRepository {
   create(data: Partial<ICourse>): Promise<ICourse>;

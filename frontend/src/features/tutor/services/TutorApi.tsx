@@ -42,7 +42,12 @@ export interface CoursePayload {
 type TutorLoginResp = {
   message: string;
   accessToken: string;
-  tutor: { id: string; name: string; email: string; status: 'pending'|'verification-submitted'|'approved'|'rejected' };
+  tutor: {
+    id: string;
+    name: string;
+    email: string;
+    status: 'pending' | 'verification-submitted' | 'approved' | 'rejected';
+  };
 };
 export const registerTutor = async (data: TutorSignupData) => {
   const res = await axios.post('/tutor/register', data);

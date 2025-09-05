@@ -1,6 +1,4 @@
-import {
-  ICourseRepository,
-} from '../../../repositories/course/ICourseRepository';
+import { ICourseRepository } from '../../../repositories/course/ICourseRepository';
 import { IModuleRepository } from '../../../repositories/module/IModuleRepository';
 import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';

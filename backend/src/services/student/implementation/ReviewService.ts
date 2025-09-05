@@ -1,7 +1,5 @@
 import { ReviewDTO } from '../../../dto/student/review';
-import type {
-  IReviewRepository,
-} from '../../../repositories/review/IReviewRepository';
+import type { IReviewRepository } from '../../../repositories/review/IReviewRepository';
 import { CreateReviewInput, Paginated, UpdateReviewInput } from '../../../types/Review';
 import type { IReviewService } from '../IReviewService';
 

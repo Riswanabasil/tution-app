@@ -1,9 +1,4 @@
-import type {
-  Reviews,
-  CreateReviewInput,
-  UpdateReviewInput,
-  Paginated,
-} from '../../types/Review';
+import type { Reviews, CreateReviewInput, UpdateReviewInput, Paginated } from '../../types/Review';
 
 export interface IReviewService {
   create(payload: CreateReviewInput): Promise<Reviews>;

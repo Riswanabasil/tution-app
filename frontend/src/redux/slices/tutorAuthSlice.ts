@@ -41,12 +41,12 @@ export const googleLoginTutorThunk = createAsyncThunk(
     try {
       const res = await tutorGoogleLogin(idToken);
       localStorage.setItem('tutorAccessToken', res.accessToken);
-      return res; 
+      return res;
     } catch (err) {
       const e = err as AxiosError<{ message?: string }>;
       return rejectWithValue(e.response?.data?.message || 'Google login failed');
     }
-  }
+  },
 );
 
 export const logoutTutorThunk = createAsyncThunk('tutor/logout', async (_, thunkAPI) => {

@@ -17,7 +17,9 @@ export class StudentCourseController {
       res.json(result);
     } catch (err) {
       console.error('Student course list error:', err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
   async getCourseDetails(req: Request, res: Response): Promise<void> {

@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
-import { IAssignment } from "../../models/assignment/AssignmentModel";
+import { Types } from 'mongoose';
+import { IAssignment } from '../../models/assignment/AssignmentModel';
 
 export interface IAssignmentRepository {
   create(data: Partial<IAssignment>): Promise<IAssignment>;

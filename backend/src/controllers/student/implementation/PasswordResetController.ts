@@ -16,7 +16,7 @@ export class PasswordResetController {
       await this.svc.verifyResetOtp(email, otp);
       res.status(HttpStatus.OK).json({ message: 'OTP verified. You can reset your password now.' });
     } catch (e) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message:  'Invalid OTP' });
+      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Invalid OTP' });
     }
   }
   async resetPassword(req: Request, res: Response): Promise<void> {

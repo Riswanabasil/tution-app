@@ -244,30 +244,29 @@ export class EnrollmentRepository
     }));
   }
 
-async upsertPending(
-  userId: Types.ObjectId,
-  courseId: Types.ObjectId,
-  amount: number,
-  razorpayOrderId: string
-) {
-  try {
-    return await EnrollmentModel.findOneAndUpdate(
-      { userId, courseId, status: 'pending' },
-      {
-        $set: { amount, razorpayOrderId, status: 'pending' },
-        $setOnInsert: { userId, courseId },
-      },
-      { new: true, upsert: true }
-    ).exec();
-  } catch (e:any) {
-    if (e?.code === 11000) {
-      
-      throw new Error('You already own this course');
+  async upsertPending(
+    userId: Types.ObjectId,
+    courseId: Types.ObjectId,
+    amount: number,
+    razorpayOrderId: string,
+  ) {
+    try {
+      return await EnrollmentModel.findOneAndUpdate(
+        { userId, courseId, status: 'pending' },
+        {
+          $set: { amount, razorpayOrderId, status: 'pending' },
+          $setOnInsert: { userId, courseId },
+        },
+        { new: true, upsert: true },
+      ).exec();
+    } catch (e: any) {
+      if (e?.code === 11000) {
+        throw new Error('You already own this course');
+      }
+      throw e;
     }
-    throw e;
   }
-}
-async isPurchased(userId: Types.ObjectId, courseId: Types.ObjectId): Promise<boolean> {
-  return !!(await EnrollmentModel.exists({ userId, courseId, status: 'paid' }).lean());
-}
+  async isPurchased(userId: Types.ObjectId, courseId: Types.ObjectId): Promise<boolean> {
+    return !!(await EnrollmentModel.exists({ userId, courseId, status: 'paid' }).lean());
+  }
 }

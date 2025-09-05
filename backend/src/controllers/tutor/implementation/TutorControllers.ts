@@ -54,7 +54,9 @@ export class TutorController implements ITutorController {
       });
     } catch (error) {
       console.error(error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -62,12 +64,12 @@ export class TutorController implements ITutorController {
     try {
       const { email, password } = req.body;
       const result: LoginTutorResponse = await this.tutorService.loginTutor(email, password);
-      const REFRESH_COOKIE=Number(process.env.MAX_AGE)
+      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
       res.status(HttpStatus.OK).json({
@@ -99,12 +101,12 @@ export class TutorController implements ITutorController {
       const { accessToken, refreshToken, tutor } =
         await this.tutorService.googleLoginTutorService(idToken);
 
-  const REFRESH_COOKIE=Number(process.env.MAX_AGE)
+      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
       res.status(HttpStatus.OK).json({
@@ -113,12 +115,9 @@ export class TutorController implements ITutorController {
         tutor,
       });
     } catch (err: any) {
-      res
-        .status(HttpStatus.UNAUTHORIZED)
-        .json({ message: err.message || 'Unauthorized' });
+      res.status(HttpStatus.UNAUTHORIZED).json({ message: err.message || 'Unauthorized' });
     }
   }
-
 
   async refreshAccessToken(req: Request, res: Response): Promise<void> {
     try {
@@ -139,14 +138,14 @@ export class TutorController implements ITutorController {
 
   //profile
   async getProfileUploadUrl(req: Request, res: Response, next: NextFunction) {
-      try {
-        const { filename, contentType } = req.query as { filename: string; contentType: string };
-        const data = await presignPutObject({ keyPrefix: 'TutorPic', filename, contentType });
-        res.json(data);
-      } catch (err) {
-        next(err);
-      }
+    try {
+      const { filename, contentType } = req.query as { filename: string; contentType: string };
+      const data = await presignPutObject({ keyPrefix: 'TutorPic', filename, contentType });
+      res.json(data);
+    } catch (err) {
+      next(err);
     }
+  }
 
   async getProfile(req: AuthenticatedRequest, res: Response) {
     const tutorId = req.user!.id;

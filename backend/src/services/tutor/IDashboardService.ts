@@ -1,5 +1,13 @@
-import { CourseStatus, DateRange, MyCourseRow, RecentEnrollmentRow, TimeGranularity, TopCourseRow, TrendPoint, TutorKpis } from "../../utils/dashboardTutor";
-
+import {
+  CourseStatus,
+  DateRange,
+  MyCourseRow,
+  RecentEnrollmentRow,
+  TimeGranularity,
+  TopCourseRow,
+  TrendPoint,
+  TutorKpis,
+} from '../../utils/dashboardTutor';
 
 export interface ITutorDashboardService {
   getKpis(tutorId: string, range?: Partial<DateRange>): Promise<TutorKpis>;

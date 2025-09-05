@@ -1,5 +1,5 @@
-import { Types } from "mongoose";
-import { DateRange } from "../types/Enrollment";
+import { Types } from 'mongoose';
+import { DateRange } from '../types/Enrollment';
 
 export function toObjectIds(ids: string[]) {
   return ids.map((id) => new Types.ObjectId(id));

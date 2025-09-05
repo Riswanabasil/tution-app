@@ -16,7 +16,9 @@ export class TutorAdminController {
       const result = await this.service.getAllTutors(page, limit, status, search);
       res.status(HttpStatus.OK).json(result);
     } catch (err) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
 

@@ -11,7 +11,9 @@ export class PaidCourseController {
       const modules = await this.paidCourseService.getModulesByCourseId(courseId);
       res.status(HttpStatus.OK).json(modules);
     } catch (error) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch modules', error });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to fetch modules', error });
     }
   };
 

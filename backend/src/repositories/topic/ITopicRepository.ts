@@ -1,4 +1,4 @@
-import { ITopic } from "../../models/topic/TopicSchema";
+import { ITopic } from '../../models/topic/TopicSchema';
 
 export interface ITopicRepository {
   create(data: Partial<ITopic>): Promise<ITopic>;
@@ -8,7 +8,7 @@ export interface ITopicRepository {
   findWithFilter(
     filter: any,
     page: number,
-    limit: number
+    limit: number,
   ): Promise<{ topics: ITopic[]; total: number }>;
 
   findById(id: string): Promise<ITopic | null>;

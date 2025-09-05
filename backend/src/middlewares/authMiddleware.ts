@@ -12,7 +12,7 @@ export const authMiddleware = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
-):Promise<void> => {
+): Promise<void> => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -29,8 +29,8 @@ export const authMiddleware = async (
     if (req.user.role === 'student') {
       const s = await studentRepo.getAuthStateById(req.user.id);
       if (!s) {
-         res.status(401).json({ message: 'Unauthorized' });
-         return
+        res.status(401).json({ message: 'Unauthorized' });
+        return;
       }
       if (s.isBlocked) {
         res.status(403).json({ message: 'ACCOUNT_BLOCKED' });

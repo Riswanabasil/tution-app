@@ -1,4 +1,4 @@
-import { INote } from "../../models/note/NoteSchema";
+import { INote } from '../../models/note/NoteSchema';
 
 export interface INoteRepository {
   create(data: Partial<INote>): Promise<INote>;

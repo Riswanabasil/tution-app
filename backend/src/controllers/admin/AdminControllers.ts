@@ -6,21 +6,20 @@ import { ERROR_MESSAGES } from '../../constants/errorMessages';
 // import { LoginAdminResponseDTO } from "../../dto/admin/adminAuth";
 
 export class AdminController implements IAdminController {
-  constructor(private adminService: IAdminService) { }
-
+  constructor(private adminService: IAdminService) {}
 
   async loginAdmin(req: Request, res: Response): Promise<void> {
     try {
       const { email, password } = req.body;
       const result = await this.adminService.loginAdmin(email, password);
-      const REFRESH_COOKIE = Number(process.env.MAX_AGE)
+      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
       console.log(typeof REFRESH_COOKIE);
-      
+
       res.cookie('adminRefreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000
+        maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
       res.status(HttpStatus.OK).json({
@@ -28,7 +27,7 @@ export class AdminController implements IAdminController {
         accessToken: result.accessToken,
       });
     } catch (error) {
-      console.error(error)
+      console.error(error);
       res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Login failed' });
     }
   }

@@ -12,7 +12,9 @@ export default class ReviewController {
       const studentId = req.user?.id || req.body.studentId;
 
       if (!courseId || !studentId || typeof rating === 'undefined') {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'courseId, studentId and rating are required' });
+        res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: 'courseId, studentId and rating are required' });
         return;
       }
       const r = Number(rating);
@@ -25,7 +27,6 @@ export default class ReviewController {
       res.status(HttpStatus.CREATED).json(created);
       return;
     } catch (err) {
-      
       console.error('createReview error:', err);
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create review' });
       return;
