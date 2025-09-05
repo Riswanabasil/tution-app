@@ -26,10 +26,16 @@ export class PaymentController {
           enrollmentId,
         },
       });
-    } catch (error) {
-      console.error('Create Order Error:', error);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
-    }
+    } 
+    // catch (error) {
+    //   console.error('Create Order Error:', error);
+    //   res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+    // }
+    catch (e: any) {
+    const status = e?.status === 409 ? 409 : HttpStatus.INTERNAL_SERVER_ERROR;
+    const message = e?.status === 409 ? 'You already purchased this course' : ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
+    res.status(status).json({ message });
+  }
   }
 
   async verifyPayment(req: Request, res: Response): Promise<void> {

@@ -13,7 +13,9 @@ export class AdminController implements IAdminController {
     try {
       const { email, password } = req.body;
       const result = await this.adminService.loginAdmin(email, password);
-      // const REFRESH_COOKIE = Number(process.env.MAX_AGE)
+      const REFRESH_COOKIE = Number(process.env.MAX_AGE)
+      console.log(typeof REFRESH_COOKIE);
+      
       res.cookie('adminRefreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

@@ -3,18 +3,7 @@ import { EnrollmentModel, IEnrollment } from '../../../models/payment/Enrollment
 import { BaseRepository } from '../../base/BaseRepository';
 import { IEnrollmentRepository } from '../IEnrollmentRepository';
 import { DateRange, TimeGranularity } from '../../../types/Enrollment';
-// helper
-function toObjectIds(ids: string[]) {
-  return ids.map((id) => new Types.ObjectId(id));
-}
-function matchPaid(range: DateRange, courseIds: string[]) {
-  if (!courseIds.length) return { _id: { $exists: false } };
-  return {
-    status: 'paid',
-    courseId: { $in: toObjectIds(courseIds) },
-    createdAt: { $gte: range.from, $lte: range.to },
-  };
-}
+import { matchPaid, toObjectIds } from '../../../utils/enrollment';
 
 export class EnrollmentRepository
   extends BaseRepository<IEnrollment>
@@ -254,4 +243,31 @@ export class EnrollmentRepository
       amount: d.amount,
     }));
   }
+
+async upsertPending(
+  userId: Types.ObjectId,
+  courseId: Types.ObjectId,
+  amount: number,
+  razorpayOrderId: string
+) {
+  try {
+    return await EnrollmentModel.findOneAndUpdate(
+      { userId, courseId, status: 'pending' },
+      {
+        $set: { amount, razorpayOrderId, status: 'pending' },
+        $setOnInsert: { userId, courseId },
+      },
+      { new: true, upsert: true }
+    ).exec();
+  } catch (e:any) {
+    if (e?.code === 11000) {
+      
+      throw new Error('You already own this course');
+    }
+    throw e;
+  }
+}
+async isPurchased(userId: Types.ObjectId, courseId: Types.ObjectId): Promise<boolean> {
+  return !!(await EnrollmentModel.exists({ userId, courseId, status: 'paid' }).lean());
+}
 }

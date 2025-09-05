@@ -29,6 +29,15 @@ export class PaymentService implements IPaymentService{
     currency: string;
     enrollmentId: string;
   }> {
+ const uId = new Types.ObjectId(userId);
+  const cId = new Types.ObjectId(courseId);
+    if (await this.repo.isPurchased(uId, cId)) {
+      
+    // use your AppError util if you have one
+    const err: any = new Error('You already own this course');
+    err.status = 409; // Conflict
+    throw err;
+  }
     const options = {
       amount: amount * 100,
       currency: 'INR',
@@ -42,13 +51,20 @@ export class PaymentService implements IPaymentService{
       });
     });
 
-    const enrollment = await this.repo.create({
-      userId: new Types.ObjectId(userId),
-      courseId: new Types.ObjectId(courseId),
-      razorpayOrderId: order.id,
-      amount,
-      status: 'pending',
-    } as Partial<IEnrollment>);
+    // const enrollment = await this.repo.create({
+    //   userId: new Types.ObjectId(userId),
+    //   courseId: new Types.ObjectId(courseId),
+    //   razorpayOrderId: order.id,
+    //   amount,
+    //   status: 'pending',
+    // } as Partial<IEnrollment>);
+
+     const enrollment = await this.repo.upsertPending(
+    new Types.ObjectId(userId),
+    new Types.ObjectId(courseId),
+    amount,
+    order.id
+  );
 
     return {
       razorpayOrderId: order.id,
@@ -88,13 +104,9 @@ export class PaymentService implements IPaymentService{
 
   async getMyCourses(userId: string) {
     const enrollments = await this.repo.findPaidByUser(userId);
-    // return enrollments.map((e) => ({
-    //   enrollmentId: e._id.toString(),
-    //   course: e.courseId,
-    //   enrolledAt: e.createdAt,
-    // }));
+   
      return enrollments.map((e: any) => {
-    const c = e.courseId; // plain object from .lean().populate()
+    const c = e.courseId; 
     return {
       enrollmentId: e._id.toString(),
       course: {

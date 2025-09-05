@@ -25,5 +25,12 @@ const EnrollmentSchema = new Schema<IEnrollment>(
 EnrollmentSchema.index({ status: 1, createdAt: 1 });
 EnrollmentSchema.index({ status: 1, courseId: 1, createdAt: 1 });
 EnrollmentSchema.index({ status: 1, userId: 1, createdAt: 1 });
+EnrollmentSchema.index(
+  { userId: 1, courseId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { status: { $in: ['pending', 'paid'] } },
+  }
+);
 
 export const EnrollmentModel = model<IEnrollment>('Enrollment', EnrollmentSchema);

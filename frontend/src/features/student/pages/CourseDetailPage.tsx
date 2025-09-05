@@ -16,6 +16,8 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 // import {Star,Calendar,MessageCircle} from "lucide-react"
 export default function CourseDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -305,7 +307,21 @@ export default function CourseDetailPage() {
                     courseId={course._id}
                     amount={course.price}
                     onSuccess={() => nav('/student/mycourse')}
-                    onError={(err) => alert('Payment failed: ' + err)}
+                    onError={(err) => {
+                       
+    let status: number | undefined;
+    if (axios.isAxiosError(err)) {
+      status = err.response?.status;
+      
+    
+    }
+                      if (status === 409) {
+      toast.info('You already purchased this course. Redirecting to My Courses…');
+   
+      setTimeout(() => nav('/student/mycourse'), 800);
+      return;
+    }
+                    }}
                   />
                 </div>
 
