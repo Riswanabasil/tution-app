@@ -106,4 +106,23 @@ export default class ReviewController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch stats' });
     }
   };
+
+   getMine = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const studentId = req.user?.id;
+      if (!studentId) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+      }
+      const review = await this.svc.getByCourseAndStudent(req.params.courseId, studentId);
+      res.json(review ?? null);
+    } catch (err: any) {
+      if (err?.name === "CastError") {
+        res.status(400).json({ message: "Invalid course id" });
+        return;
+      }
+      console.error("getMine review error:", err);
+      res.status(500).json({ message: "Failed to fetch my review" });
+    }
+  };
 }

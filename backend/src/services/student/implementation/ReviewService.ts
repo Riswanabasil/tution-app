@@ -29,4 +29,7 @@ export class ReviewService implements IReviewService {
   stats(courseId: string): Promise<{ count: number; avg: number }> {
     return this.repo.statsByCourse(courseId);
   }
+  getByCourseAndStudent(courseId: string, studentId: string): Promise<ReviewDTO | null> {
+    return this.repo.findByCourseAndStudent(courseId, studentId);
+  }
 }

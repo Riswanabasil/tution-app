@@ -8,6 +8,7 @@ import type {
   UpdateReviewInput,
 } from '../../../types/Review';
 import { toDTO } from '../../../utils/review';
+import { ReviewDTO } from '../../../dto/student/review';
 
 export class ReviewRepository implements IReviewRepository {
   async create(payload: CreateReviewInput): Promise<Reviews> {
@@ -35,7 +36,12 @@ export class ReviewRepository implements IReviewRepository {
     const skip = (p - 1) * l;
 
     const [docs, total] = await Promise.all([
-      Review.find({ courseId, isDeleted: false }).sort({ createdAt: -1 }).skip(skip).limit(l),
+      Review.find({ courseId, isDeleted: false })
+    .populate({ path: 'studentId', select: 'name profilePic' }) 
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(l)
+    .lean(),     
       Review.countDocuments({ courseId, isDeleted: false }),
     ]);
 
@@ -90,5 +96,17 @@ export class ReviewRepository implements IReviewRepository {
     ]);
 
     return row || { count: 0, avg: 0 };
+  }
+
+  async findByCourseAndStudent(
+    courseId: string | Types.ObjectId,
+    studentId: string | Types.ObjectId
+  ): Promise<ReviewDTO | null> {
+    const doc = await Review.findOne({
+      courseId,
+      studentId,
+      $or: [{ isDeleted: { $exists: false } }, { isDeleted: false }],
+    });
+    return doc ? toDTO(doc) : null;
   }
 }

@@ -1,3 +1,4 @@
+import { ReviewDTO } from '../../dto/student/review';
 import type { Reviews, CreateReviewInput, UpdateReviewInput, Paginated } from '../../types/Review';
 
 export interface IReviewService {
@@ -7,4 +8,5 @@ export interface IReviewService {
   update(id: string, updates: UpdateReviewInput): Promise<Reviews | null>;
   remove(id: string): Promise<boolean>;
   stats(courseId: string): Promise<{ count: number; avg: number }>;
+   getByCourseAndStudent(courseId: string, studentId: string): Promise<ReviewDTO | null>;
 }

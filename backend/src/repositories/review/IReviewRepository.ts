@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { CreateReviewInput, Paginated, Reviews, UpdateReviewInput } from '../../types/Review';
 
 export interface IReviewRepository {
@@ -7,4 +8,8 @@ export interface IReviewRepository {
   update(id: string, updates: UpdateReviewInput): Promise<Reviews | null>;
   softDelete(id: string): Promise<boolean>;
   statsByCourse(courseId: string): Promise<{ count: number; avg: number }>;
+    findByCourseAndStudent(
+    courseId: string | Types.ObjectId,
+    studentId: string | Types.ObjectId
+  ): Promise<Reviews | null>;
 }
