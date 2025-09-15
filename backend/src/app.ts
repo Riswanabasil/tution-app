@@ -10,6 +10,8 @@ import path from 'path';
 const app = express();
 app.use(morgan('dev'));
 import cors from 'cors';
+import { notFound } from './middlewares/notFound';
+import { errorHandler } from './middlewares/errorHandler';
 
 app.use(
   cors({
@@ -29,4 +31,6 @@ app.get('/', (req, res) => {
 app.use('/api/v1/student', studentRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/tutor', tutorRoutes);
+app.use(notFound);      
+app.use(errorHandler);  
 export default app;
