@@ -6,8 +6,11 @@ export class NoteRepository implements INoteRepository {
     return NoteModel.create(data);
   }
 
-  findByTopic(topicId: string) {
-    return NoteModel.find({ topicId, isDeleted: false }).exec();
+   findByTopic(topicId: string) {
+    return NoteModel.find({ topicId, isDeleted: false })
+      .select('_id topicId pdfKey uploadedAt')   
+      .lean()
+      .exec();
   }
 
   findById(id: string) {

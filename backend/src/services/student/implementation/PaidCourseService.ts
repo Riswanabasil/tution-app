@@ -1,6 +1,7 @@
 import { ModuleRepository } from '../../../repositories/module/implementation/ModuleRepository';
 import { NoteRepository } from '../../../repositories/note/implementation/NoteRepository';
 import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
+import { presignGetObject } from '../../../utils/s3Presign';
 import { IPaidCourseService } from '../IPaidCourseService';
 
 export class PaidCourseService implements IPaidCourseService {
@@ -27,7 +28,22 @@ export class PaidCourseService implements IPaidCourseService {
     return this.topicRepository.findWithFilter(filter, page, limit);
   }
 
+  // async getNotesByTopic(topicId: string) {
+  //   return await this.noteRepository.findByTopic(topicId);
+  // }
+
   async getNotesByTopic(topicId: string) {
-    return await this.noteRepository.findByTopic(topicId);
-  }
+  const rows = await this.noteRepository.findByTopic(topicId);
+  const enriched = await Promise.all(
+    rows.map(async (n: any) => {
+      const url = await presignGetObject(n.pdfKey); 
+      return {
+        ...n,
+        pdfUrls: url ? [url] : [], 
+      };
+    })
+  );
+
+  return enriched;
+}
 }

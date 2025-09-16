@@ -1,4 +1,4 @@
-import { PutObjectCommand } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3 } from './s3Client';
 
@@ -32,4 +32,43 @@ export async function presignPutObject({
 
   const uploadUrl = await getSignedUrl(s3, cmd, { expiresIn });
   return { uploadUrl, key };
+}
+// export async function presignGetObject({
+//   key,
+//   bucket = DEFAULT_BUCKET,
+//   expiresIn = DEFAULT_EXPIRES,
+//   downloadName, 
+// }: {
+//   key: string;
+//   bucket?: string;
+//   expiresIn?: number;
+//   downloadName?: string;
+// }): Promise<string> {
+//   const cmd = new GetObjectCommand({
+//     Bucket: bucket,
+//     Key: key,
+//     ResponseContentDisposition: downloadName
+//       ? `attachment; filename="${downloadName}"`
+//       : 'inline',
+//   });
+//   return getSignedUrl(s3, cmd, { expiresIn });
+// }
+
+export async function presignGetObject(
+  key?: string,
+  opts: { bucket?: string; expiresIn?: number } = {}
+): Promise<string | undefined> {
+  if (!key || !key.trim()) return undefined;
+  if (key.startsWith('http')) {
+    try {
+      const u = new URL(key);
+      key = decodeURIComponent(u.pathname.replace(/^\//, ''));
+    } catch { return undefined; }
+  }
+
+  const bucket = opts.bucket ?? DEFAULT_BUCKET;
+  const expiresIn = opts.expiresIn ?? DEFAULT_EXPIRES;
+
+  const cmd = new GetObjectCommand({ Bucket: bucket, Key: key });
+  return getSignedUrl(s3, cmd, { expiresIn });
 }

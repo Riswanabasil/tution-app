@@ -26,26 +26,6 @@ export class StudentCourseController {
     try {
       const { courseId } = req.params;
       const details = await this.courseService.fetchCourseWithModules(courseId);
-      details.reviews = [
-        {
-          author: 'Alice',
-          rating: 5,
-          comment: 'Great intro!',
-          when: '2 weeks ago',
-        },
-        {
-          author: 'Bob',
-          rating: 4,
-          comment: 'Very clear.',
-          when: '1 month ago',
-        },
-        {
-          author: 'Charlie',
-          rating: 5,
-          comment: 'Loved it!',
-          when: '3 months ago',
-        },
-      ];
 
       res.json(details);
     } catch (err) {

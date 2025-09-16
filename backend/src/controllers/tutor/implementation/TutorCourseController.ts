@@ -47,8 +47,10 @@ export class TutorCourseController {
       const data = {
         ...req.body,
         tutor: tutorId,
-        thumbnail: thumbnailUrl,
-        demoVideoUrl: demoVideoUrl,
+        // thumbnail: thumbnailUrl,
+        // demoVideoUrl: demoVideoUrl,
+        thumbnailKey: imageKey,
+      demoKey: demoKey,
       };
       console.log(data);
       const course = await this.courseService.createCourse(data);

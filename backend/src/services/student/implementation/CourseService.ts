@@ -3,6 +3,7 @@ import { IModuleRepository } from '../../../repositories/module/IModuleRepositor
 import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { CourseDetails } from '../../../types/course';
+import { presignGetObject } from '../../../utils/s3Presign';
 import { ICourseService, PaginatedCourses } from '../ICourseService';
 
 export class StudentCourseService implements ICourseService {
@@ -21,7 +22,7 @@ export class StudentCourseService implements ICourseService {
     sortBy?: string,
   ): Promise<PaginatedCourses> {
     const skip = (page - 1) * limit;
-    const filter: any = { status: 'approved' };
+    const filter: any = { status: 'approved',deletedAt: { $exists: false } };
     if (search) {
       const re = new RegExp(search, 'i');
       filter.$or = [{ title: re }, { code: re }, { details: re }];
@@ -39,7 +40,20 @@ export class StudentCourseService implements ICourseService {
       sort['createdAt'] = -1;
     }
     const total = await this.courseRepo.countDocuments(filter);
-    const courses = await this.courseRepo.findMany(filter, { skip, limit, sort });
+
+    // const courses = await this.courseRepo.findMany(filter, { skip, limit, sort });
+
+     const raw = await this.courseRepo.findMany(filter, { skip, limit, sort });
+
+  const courses = await Promise.all(
+    raw.map(async (c: any) => {
+      const obj = c.toObject ? c.toObject() : c;
+      obj.thumbnail = obj.thumbnailKey
+        ? await presignGetObject(obj.thumbnailKey) 
+        : undefined;
+      return obj;
+    })
+  );
     return {
       courses,
       currentPage: page,
@@ -54,6 +68,13 @@ export class StudentCourseService implements ICourseService {
     const modules = await this.moduleRepo.findByCourse(courseId);
     const tutor = await this.tutorRepo.getTutorById(course.tutor.toString());
     if (!tutor) throw new Error('Tutor not found');
+      const obj = course.toObject ? course.toObject() : course;
+      const thumbnail = obj.thumbnailKey
+    ? await presignGetObject(obj.thumbnailKey, { expiresIn: 600 })
+    : undefined;
+  const demoVideoUrl = obj.demoKey
+    ? await presignGetObject(obj.demoKey, { expiresIn: 600 })
+    : undefined;
 
     const enrichedModules = await Promise.all(
       modules.map(async (m) => {
@@ -73,16 +94,26 @@ export class StudentCourseService implements ICourseService {
     );
 
     return {
-      _id: course._id.toString(),
-      title: course.title,
-      code: course.code,
-      semester: course.semester,
-      thumbnail: course.thumbnail,
-      demoVideoUrl: course.demoVideoUrl,
-      price: course.price,
-      offer: course.offer,
-      actualPrice: course.actualPrice,
-      details: course.details,
+      // _id: course._id.toString(),
+      // title: course.title,
+      // code: course.code,
+      // semester: course.semester,
+      // thumbnail: course.thumbnail,
+      // demoVideoUrl: course.demoVideoUrl,
+      // price: course.price,
+      // offer: course.offer,
+      // actualPrice: course.actualPrice,
+      // details: course.details,
+       _id: obj._id.toString(),
+    title: obj.title,
+    code: obj.code,
+    semester: obj.semester,
+    thumbnail,          
+    demoVideoUrl,     
+    price: obj.price,
+    offer: obj.offer,
+    actualPrice: obj.actualPrice,
+    details: obj.details,
       tutorName: tutor.name,
       tutorProfilePic: tutor.profilePic,
       tutorEducation: tutor.verificationDetails?.education || '',

@@ -35,13 +35,23 @@ export class PaidCourseController {
     }
   }
 
+  // async getNotes(req: Request, res: Response) {
+  //   try {
+  //     const { topicId } = req.params;
+  //     const notes = await this.paidCourseService.getNotesByTopic(topicId);
+  //     res.json(notes);
+  //   } catch (err) {
+  //     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch notes' });
+  //   }
+  // }
+
   async getNotes(req: Request, res: Response) {
-    try {
-      const { topicId } = req.params;
-      const notes = await this.paidCourseService.getNotesByTopic(topicId);
-      res.json(notes);
-    } catch (err) {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch notes' });
-    }
+  try {
+    const { topicId } = req.params;
+    const notes = await this.paidCourseService.getNotesByTopic(topicId);
+    res.json(notes);
+  } catch (err) {
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to fetch notes' });
   }
+}
 }
