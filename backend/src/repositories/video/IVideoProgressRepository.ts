@@ -4,15 +4,15 @@ import { IBaseRepository } from '../base/IBaseRepository';
 export type UpsertProgressInput = {
   studentId: string;
   videoId: string;
-  addRanges: { startSec: number; endSec: number }[]; // watched segments to merge
+  addRanges: { startSec: number; endSec: number }[]; 
   lastPositionSec: number;
-  durationSecHint?: number; // client-reported duration (optional)
-  durationSecDb?: number; // duration from Video model (preferred, optional)
+  durationSecHint?: number; 
+  durationSecDb?: number; 
 };
 
-// Combined interface: video listing + progress ops
+
 export interface IVideoProgressRepository extends IBaseRepository<IVideoProgress> {
-  // ---- Video side ----
+  
   listByTopicPublic(
     topicId: string,
   ): Promise<

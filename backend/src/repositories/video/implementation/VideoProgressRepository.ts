@@ -25,7 +25,7 @@ export class StudentVideoProgressRepository
   async listByTopicPublic(topicId: string) {
     return await this.videoModel
       .find({ topic: topicId, isDeleted: false })
-      .select('_id createdAt title description durationSec url')
+      .select('_id createdAt title description durationSec s3Key')
       .sort({ createdAt: -1 })
       .lean()
       .exec();

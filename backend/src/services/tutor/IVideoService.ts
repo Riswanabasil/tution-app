@@ -8,7 +8,6 @@ export type CreateVideoDTO = {
   durationSec: number;
   key: string;
   contentType: string;
-  url: string;
 };
 
 export type UpdateVideoDTO = Partial<Pick<IVideo, 'title' | 'description' | 'durationSec'>>;

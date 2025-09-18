@@ -38,20 +38,20 @@ export class NoteController {
   //   }
   // };
 
-  create = async (req:Request, res:Response) => {
+  create = async (req:Request, res:Response):Promise<void> => {
   try {
     const topicId = new mongoose.Types.ObjectId(req.params.topicId);
     const { pdfKeys } = req.body as { pdfKeys?: string[] };
     const firstKey = pdfKeys?.[0];
-    if (!firstKey) return res.status(400).json({ message: 'pdfKeys[0] required' });
+    if (!firstKey)  res.status(HttpStatus.BAD_REQUEST).json({ message: 'pdfKeys[0] required' });
 
     const note = await this.service.create({ topicId, pdfKey: firstKey });
     const url  = await presignGetObject(firstKey);
 
     const obj = (note as any).toObject ? (note as any).toObject() : note;
-    res.status(201).json({ ...obj, pdfUrls: url ? [url] : [] });
+    res.status(HttpStatus.CREATED).json({ ...obj, pdfUrls: url ? [url] : [] });
   } catch (e) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
   }
 }
   // getByTopic = async (req: Request, res: Response): Promise<void> => {
@@ -64,7 +64,7 @@ export class NoteController {
   //   }
   // };
 
-  getByTopic = async (req:Request, res:Response) => {
+  getByTopic = async (req:Request, res:Response):Promise<void> => {
   try {
     const notes = await this.service.getByTopic(req.params.topicId);
     res.json(notes);                                    
@@ -102,11 +102,11 @@ export class NoteController {
   //   }
   // };
 
-  update = async (req:Request, res:Response) => {
+  update = async (req:Request, res:Response):Promise<void> => {
   try {
     const { pdfKeys } = req.body as { pdfKeys?: string[] };
     const firstKey = pdfKeys?.[0];
-    if (!firstKey) return res.status(400).json({ message: 'pdfKeys[0] required' });
+    if (!firstKey) res.status(HttpStatus.BAD_REQUEST).json({ message: 'pdfKeys[0] required' });
 
     const updated = await this.service.update(req.params.noteId, {
       pdfKey: firstKey,
@@ -115,7 +115,7 @@ export class NoteController {
     const url = await presignGetObject(firstKey);
     res.json({ ...updated, pdfUrls: url ? [url] : [] });
   } catch (e) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
   }
 };
   delete = async (req: Request, res: Response): Promise<void> => {

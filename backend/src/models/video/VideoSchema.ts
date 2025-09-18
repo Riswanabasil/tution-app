@@ -9,7 +9,7 @@ export interface IVideo {
   durationSec: number;
   s3Key: string;
   contentType: string;
-  url: string;
+  url?: string;
   isDeleted: boolean;
   createdAt?: Date;
 }
@@ -23,7 +23,7 @@ const VideoSchema = new Schema<IVideo>(
     durationSec: { type: Number, required: true },
     s3Key: { type: String, required: true, unique: true },
     contentType: { type: String, required: true },
-    url: { type: String, required: true },
+    url: { type: String },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },
