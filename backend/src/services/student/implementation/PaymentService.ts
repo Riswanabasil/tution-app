@@ -5,6 +5,7 @@ import { EnrollmentRepository } from '../../../repositories/payment/implementati
 import { TutorRepository } from '../../../repositories/tutor/implementation/TutorRepository';
 import { CourseRepository } from '../../../repositories/course/implementation/CourseRepository';
 import { IPaymentService } from '../IPaymentService';
+import { presignGetObject } from '../../../utils/s3Presign';
 
 interface RazorpayOrder {
   id: string;
@@ -101,24 +102,45 @@ export class PaymentService implements IPaymentService {
     return this.repo.updateById(enrollmentId, 'failed');
   }
 
-  async getMyCourses(userId: string) {
-    const enrollments = await this.repo.findPaidByUser(userId);
+  // async getMyCourses(userId: string) {
+  //   const enrollments = await this.repo.findPaidByUser(userId);
 
-    return enrollments.map((e: any) => {
+  //   return enrollments.map((e: any) => {
+  //     const c = e.courseId;
+  //     return {
+  //       enrollmentId: e._id.toString(),
+  //       course: {
+  //         _id: c._id.toString(),
+  //         title: c.title,
+  //         thumbnail: c.thumbnail,
+  //         price: c.price,
+  //       },
+  //       enrolledAt: e.createdAt,
+  //     };
+  //   });
+  // }
+async getMyCourses(userId: string) {
+  const enrollments = await this.repo.findPaidByUser(userId);
+
+  return Promise.all(
+    enrollments.map(async (e: any) => {
       const c = e.courseId;
+      const key = c.thumbnailKey 
+      const signedThumb = await presignGetObject(key); 
+
       return {
-        enrollmentId: e._id.toString(),
+        enrollmentId: String(e._id),
         course: {
-          _id: c._id.toString(),
+          _id: String(c._id),
           title: c.title,
-          thumbnail: c.thumbnail,
+          thumbnail: signedThumb, 
           price: c.price,
         },
         enrolledAt: e.createdAt,
       };
-    });
-  }
-
+    })
+  );
+}
   async getStats(userId: string) {
     const totalEnrolled = await this.repo.countPaidByUser(userId);
     return { totalEnrolled };

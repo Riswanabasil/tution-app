@@ -34,7 +34,7 @@ export class EnrollmentRepository
   async findPaidByUser(userId: string): Promise<(IEnrollment & { course: any })[]> {
     return EnrollmentModel.find({ userId: userId, status: 'paid' })
       .sort({ createdAt: -1 })
-      .populate<{ course: any }>('courseId', 'title thumbnail price')
+      .populate<{ course: any }>('courseId', 'title thumbnailKey thumbnail price')
       .exec();
   }
   async findPaymentHistory(userId: string): Promise<(IEnrollment & { course: any })[]> {
