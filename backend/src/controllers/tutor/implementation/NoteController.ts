@@ -38,22 +38,22 @@ export class NoteController {
   //   }
   // };
 
-  create = async (req:Request, res:Response):Promise<void> => {
-  try {
-    const topicId = new mongoose.Types.ObjectId(req.params.topicId);
-    const { pdfKeys } = req.body as { pdfKeys?: string[] };
-    const firstKey = pdfKeys?.[0];
-    if (!firstKey)  res.status(HttpStatus.BAD_REQUEST).json({ message: 'pdfKeys[0] required' });
+  create = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const topicId = new mongoose.Types.ObjectId(req.params.topicId);
+      const { pdfKeys } = req.body as { pdfKeys?: string[] };
+      const firstKey = pdfKeys?.[0];
+      if (!firstKey) res.status(HttpStatus.BAD_REQUEST).json({ message: 'pdfKeys[0] required' });
 
-    const note = await this.service.create({ topicId, pdfKey: firstKey });
-    const url  = await presignGetObject(firstKey);
+      const note = await this.service.create({ topicId, pdfKey: firstKey });
+      const url = await presignGetObject(firstKey);
 
-    const obj = (note as any).toObject ? (note as any).toObject() : note;
-    res.status(HttpStatus.CREATED).json({ ...obj, pdfUrls: url ? [url] : [] });
-  } catch (e) {
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-  }
-}
+      const obj = (note as any).toObject ? (note as any).toObject() : note;
+      res.status(HttpStatus.CREATED).json({ ...obj, pdfUrls: url ? [url] : [] });
+    } catch (e) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+    }
+  };
   // getByTopic = async (req: Request, res: Response): Promise<void> => {
   //   try {
   //     const notes = await this.service.getByTopic(req.params.topicId);
@@ -64,14 +64,14 @@ export class NoteController {
   //   }
   // };
 
-  getByTopic = async (req:Request, res:Response):Promise<void> => {
-  try {
-    const notes = await this.service.getByTopic(req.params.topicId);
-    res.json(notes);                                    
-  } catch (e) {
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
+  getByTopic = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const notes = await this.service.getByTopic(req.params.topicId);
+      res.json(notes);
+    } catch (e) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
   getById = async (req: Request, res: Response): Promise<void> => {
     try {
       const note = await this.service.getById(req.params.id);
@@ -102,22 +102,22 @@ export class NoteController {
   //   }
   // };
 
-  update = async (req:Request, res:Response):Promise<void> => {
-  try {
-    const { pdfKeys } = req.body as { pdfKeys?: string[] };
-    const firstKey = pdfKeys?.[0];
-    if (!firstKey) res.status(HttpStatus.BAD_REQUEST).json({ message: 'pdfKeys[0] required' });
+  update = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { pdfKeys } = req.body as { pdfKeys?: string[] };
+      const firstKey = pdfKeys?.[0];
+      if (!firstKey) res.status(HttpStatus.BAD_REQUEST).json({ message: 'pdfKeys[0] required' });
 
-    const updated = await this.service.update(req.params.noteId, {
-      pdfKey: firstKey,
-      uploadedAt: new Date(),
-    });
-    const url = await presignGetObject(firstKey);
-    res.json({ ...updated, pdfUrls: url ? [url] : [] });
-  } catch (e) {
-    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-  }
-};
+      const updated = await this.service.update(req.params.noteId, {
+        pdfKey: firstKey,
+        uploadedAt: new Date(),
+      });
+      const url = await presignGetObject(firstKey);
+      res.json({ ...updated, pdfUrls: url ? [url] : [] });
+    } catch (e) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+    }
+  };
   delete = async (req: Request, res: Response): Promise<void> => {
     try {
       await this.service.delete(req.params.id);

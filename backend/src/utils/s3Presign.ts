@@ -37,7 +37,7 @@ export async function presignPutObject({
 //   key,
 //   bucket = DEFAULT_BUCKET,
 //   expiresIn = DEFAULT_EXPIRES,
-//   downloadName, 
+//   downloadName,
 // }: {
 //   key: string;
 //   bucket?: string;
@@ -56,14 +56,16 @@ export async function presignPutObject({
 
 export async function presignGetObject(
   key?: string,
-  opts: { bucket?: string; expiresIn?: number } = {}
+  opts: { bucket?: string; expiresIn?: number } = {},
 ): Promise<string | undefined> {
   if (!key || !key.trim()) return undefined;
   if (key.startsWith('http')) {
     try {
       const u = new URL(key);
       key = decodeURIComponent(u.pathname.replace(/^\//, ''));
-    } catch { return undefined; }
+    } catch {
+      return undefined;
+    }
   }
 
   const bucket = opts.bucket ?? DEFAULT_BUCKET;

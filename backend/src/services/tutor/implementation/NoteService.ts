@@ -16,10 +16,12 @@ export class NoteService implements INoteService {
 
   async getByTopic(topicId: string) {
     const notes = await this.repo.findByTopic(topicId);
-    return Promise.all(notes.map(async (n) => {
-      const url = await presignGetObject(n.pdfKey);     // reuse helper
-      return { ...n, pdfUrls: url ? [url] : [] };       // field name matches FE
-    }));
+    return Promise.all(
+      notes.map(async (n) => {
+        const url = await presignGetObject(n.pdfKey); // reuse helper
+        return { ...n, pdfUrls: url ? [url] : [] }; // field name matches FE
+      }),
+    );
   }
 
   getById(id: string) {

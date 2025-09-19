@@ -9,8 +9,8 @@ export interface ICourse extends Document {
   tutor: mongoose.Types.ObjectId | string;
   thumbnail?: string;
   demoVideoUrl?: string;
-  thumbnailKey?:string;
-  demoKey?:string;
+  thumbnailKey?: string;
+  demoKey?: string;
   price: number;
   offer?: number;
   actualPrice?: number;
@@ -30,7 +30,7 @@ const courseSchema = new mongoose.Schema<ICourse>(
     thumbnail: { type: String },
     demoVideoUrl: { type: String },
     thumbnailKey: { type: String },
-demoKey: { type: String },
+    demoKey: { type: String },
     price: { type: Number, required: true },
     offer: { type: Number },
     actualPrice: { type: Number },

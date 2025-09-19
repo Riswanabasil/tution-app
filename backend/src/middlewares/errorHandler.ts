@@ -1,12 +1,11 @@
 import type { Request, Response, NextFunction } from 'express';
 
 export function errorHandler(err: any, req: Request, res: Response, _next: NextFunction) {
-  if (res.headersSent) return; 
+  if (res.headersSent) return;
 
   const status = err.statusCode || err.status || 500;
   const message = err.message || 'Internal server error';
 
- 
   if (process.env.NODE_ENV !== 'test') {
     console.error({
       method: req.method,
@@ -18,8 +17,8 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
   }
 
   const body: Record<string, any> = { message };
-  if (err.code) body.code = err.code;                  
-  if (process.env.NODE_ENV === 'development') body.stack = err.stack; 
+  if (err.code) body.code = err.code;
+  if (process.env.NODE_ENV === 'development') body.stack = err.stack;
 
   res.status(status).json(body);
 }

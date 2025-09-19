@@ -41,7 +41,7 @@ export class StudentVideoService implements IStudentVideoService {
       videos.map(async (v: any) => {
         const url = v.s3Key ? await presignGetObject(v.s3Key) : undefined;
         return { ...v, url };
-      })
+      }),
     );
 
     const progresses = await this.progressRepo.findByStudentAndVideoIds(

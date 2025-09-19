@@ -50,7 +50,7 @@ export class TutorCourseController {
         // thumbnail: thumbnailUrl,
         // demoVideoUrl: demoVideoUrl,
         thumbnailKey: imageKey,
-      demoKey: demoKey,
+        demoKey: demoKey,
       };
       console.log(data);
       const course = await this.courseService.createCourse(data);

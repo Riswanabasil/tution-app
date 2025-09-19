@@ -431,7 +431,12 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 
 // NEW: reviews api
-import { getCourseStats, getCourseReviews, type ReviewDTO, type Paginated } from '../services/ReviewApi';
+import {
+  getCourseStats,
+  getCourseReviews,
+  type ReviewDTO,
+  type Paginated,
+} from '../services/ReviewApi';
 
 function Stars({ value }: { value: number }) {
   // show filled stars for integer part (keep it simple)
@@ -550,8 +555,18 @@ export default function CourseDetailPage() {
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <div className="max-w-md rounded-2xl bg-white p-8 text-center shadow-xl">
           <div className="mb-4 text-red-500">
-            <svg className="mx-auto h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z" />
+            <svg
+              className="mx-auto h-16 w-16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 19.5c-.77.833.192 2.5 1.732 2.5z"
+              />
             </svg>
           </div>
           <h3 className="mb-2 text-xl font-bold text-gray-800">Error Loading Course</h3>
@@ -616,7 +631,7 @@ export default function CourseDetailPage() {
                 <div className="flex flex-wrap items-center gap-4 text-blue-100">
                   <div className="flex items-center gap-2">
                     <Stars value={stats?.avg ?? 0} />
-                    <span className="text-white/90 font-semibold">
+                    <span className="font-semibold text-white/90">
                       {(stats?.avg ?? 0).toFixed(1)}
                     </span>
                   </div>
@@ -726,16 +741,12 @@ export default function CourseDetailPage() {
                   <span className="text-lg font-semibold text-gray-800">
                     {(stats?.avg ?? 0).toFixed(1)}
                   </span>
-                  <span className="text-sm text-gray-500">
-                    {stats?.count ?? 0} total
-                  </span>
+                  <span className="text-sm text-gray-500">{stats?.count ?? 0} total</span>
                 </div>
               </div>
 
               {revError && (
-                <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-                  {revError}
-                </p>
+                <p className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{revError}</p>
               )}
 
               {!revLoading && reviews.length === 0 && (
@@ -927,14 +938,19 @@ export default function CourseDetailPage() {
                         <div className="border-t border-gray-200 bg-gray-50">
                           <div className="space-y-3 p-4">
                             {m.topics.map((t, topicIdx) => (
-                              <div key={t._id} className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm">
+                              <div
+                                key={t._id}
+                                className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm"
+                              >
                                 <div className="flex items-start space-x-3">
                                   <div className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-purple-100 text-xs font-bold text-purple-600">
                                     {topicIdx + 1}
                                   </div>
                                   <div className="flex-1">
                                     <h5 className="mb-2 font-semibold text-gray-800">{t.title}</h5>
-                                    <p className="text-sm leading-relaxed text-gray-600">{t.description}</p>
+                                    <p className="text-sm leading-relaxed text-gray-600">
+                                      {t.description}
+                                    </p>
                                   </div>
                                 </div>
                               </div>

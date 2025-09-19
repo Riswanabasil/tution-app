@@ -8,5 +8,5 @@ export interface IReviewService {
   update(id: string, updates: UpdateReviewInput): Promise<Reviews | null>;
   remove(id: string): Promise<boolean>;
   stats(courseId: string): Promise<{ count: number; avg: number }>;
-   getByCourseAndStudent(courseId: string, studentId: string): Promise<ReviewDTO | null>;
+  getByCourseAndStudent(courseId: string, studentId: string): Promise<ReviewDTO | null>;
 }

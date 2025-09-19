@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { createReview, getMyReview, updateReview, type ReviewDTO } from "../services/ReviewApi";
+import { useEffect, useState } from 'react';
+import { createReview, getMyReview, updateReview, type ReviewDTO } from '../services/ReviewApi';
 
 type Props = {
   courseId: string;
   open: boolean;
   onClose: () => void;
-  onSaved?: (review: ReviewDTO) => void; 
+  onSaved?: (review: ReviewDTO) => void;
 };
 
 export default function ReviewModal({ courseId, open, onClose, onSaved }: Props) {
   const [loading, setLoading] = useState(false);
   const [initial, setInitial] = useState<ReviewDTO | null>(null);
   const [rating, setRating] = useState<number>(0);
-  const [comment, setComment] = useState<string>("");
+  const [comment, setComment] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,9 +23,9 @@ export default function ReviewModal({ courseId, open, onClose, onSaved }: Props)
       .then((r) => {
         setInitial(r);
         setRating(r?.rating ?? 0);
-        setComment(r?.comment ?? "");
+        setComment(r?.comment ?? '');
       })
-      .catch((e) => setError(e?.message || "Failed to load review"))
+      .catch((e) => setError(e?.message || 'Failed to load review'))
       .finally(() => setLoading(false));
   }, [courseId, open]);
 
@@ -34,7 +34,7 @@ export default function ReviewModal({ courseId, open, onClose, onSaved }: Props)
       setError(null);
       setLoading(true);
       if (rating < 1 || rating > 5) {
-        setError("Rating must be between 1 and 5");
+        setError('Rating must be between 1 and 5');
         setLoading(false);
         return;
       }
@@ -47,7 +47,7 @@ export default function ReviewModal({ courseId, open, onClose, onSaved }: Props)
       onSaved?.(saved);
       onClose();
     } catch (e: any) {
-      setError(e?.response?.data?.message || e?.message || "Failed to save review");
+      setError(e?.response?.data?.message || e?.message || 'Failed to save review');
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ export default function ReviewModal({ courseId, open, onClose, onSaved }: Props)
       <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
         <div className="mb-4">
           <h3 className="text-xl font-semibold text-gray-800">
-            {initial ? "Edit your review" : "Rate & Review"}
+            {initial ? 'Edit your review' : 'Rate & Review'}
           </h3>
           <p className="text-sm text-gray-500">Course ID: {courseId}</p>
         </div>
@@ -75,7 +75,7 @@ export default function ReviewModal({ courseId, open, onClose, onSaved }: Props)
                 type="button"
                 onClick={() => setRating(n)}
                 className={`h-10 w-10 rounded-full border text-sm font-semibold ${
-                  n <= rating ? "bg-yellow-400/90 border-yellow-400" : "bg-gray-100 border-gray-300"
+                  n <= rating ? 'border-yellow-400 bg-yellow-400/90' : 'border-gray-300 bg-gray-100'
                 }`}
                 aria-label={`Rate ${n}`}
               >
@@ -114,7 +114,7 @@ export default function ReviewModal({ courseId, open, onClose, onSaved }: Props)
             className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-2 font-semibold text-white hover:from-blue-700 hover:to-purple-700 disabled:opacity-60"
             disabled={loading}
           >
-            {loading ? "Saving..." : initial ? "Update Review" : "Submit Review"}
+            {loading ? 'Saving...' : initial ? 'Update Review' : 'Submit Review'}
           </button>
         </div>
       </div>

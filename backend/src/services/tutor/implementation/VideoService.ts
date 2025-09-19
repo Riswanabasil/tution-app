@@ -23,16 +23,16 @@ export class VideoService implements IVideoService {
   // }
 
   async listByTopic(topicId: string): Promise<any[]> {
-  const rows = await this.repo.listByTopic(topicId);
-  const plain = rows.map((v: any) => (v.toObject ? v.toObject() : v));
+    const rows = await this.repo.listByTopic(topicId);
+    const plain = rows.map((v: any) => (v.toObject ? v.toObject() : v));
 
-  return Promise.all(
-    plain.map(async (v: any) => ({
-      ...v,
-      url: v.s3Key ? await presignGetObject(v.s3Key) : undefined,
-    }))
-  );
-}
+    return Promise.all(
+      plain.map(async (v: any) => ({
+        ...v,
+        url: v.s3Key ? await presignGetObject(v.s3Key) : undefined,
+      })),
+    );
+  }
 
   update(id: string, data: UpdateVideoDTO): Promise<IVideo | null> {
     return this.repo.update(id, data);

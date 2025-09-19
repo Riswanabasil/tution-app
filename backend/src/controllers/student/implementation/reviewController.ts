@@ -107,22 +107,22 @@ export default class ReviewController {
     }
   };
 
-   getMine = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  getMine = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
     try {
       const studentId = req.user?.id;
       if (!studentId) {
-        res.status(401).json({ message: "Unauthorized" });
+        res.status(401).json({ message: 'Unauthorized' });
         return;
       }
       const review = await this.svc.getByCourseAndStudent(req.params.courseId, studentId);
       res.json(review ?? null);
     } catch (err: any) {
-      if (err?.name === "CastError") {
-        res.status(400).json({ message: "Invalid course id" });
+      if (err?.name === 'CastError') {
+        res.status(400).json({ message: 'Invalid course id' });
         return;
       }
-      console.error("getMine review error:", err);
-      res.status(500).json({ message: "Failed to fetch my review" });
+      console.error('getMine review error:', err);
+      res.status(500).json({ message: 'Failed to fetch my review' });
     }
   };
 }

@@ -183,10 +183,6 @@ router.get('/courses/:courseId/reviews', authMiddleware, reviewCtrl.listByCourse
 router.get('/courses/:courseId/reviews/stats', authMiddleware, reviewCtrl.stats.bind(reviewCtrl));
 router.patch('/reviews/:id', authMiddleware, reviewCtrl.update.bind(reviewCtrl));
 router.delete('/reviews/:id', authMiddleware, reviewCtrl.remove.bind(reviewCtrl));
-router.get(
-  "/courses/:courseId/reviews/mine",
-  authMiddleware,
-  reviewCtrl.getMine.bind(reviewCtrl)
-);
+router.get('/courses/:courseId/reviews/mine', authMiddleware, reviewCtrl.getMine.bind(reviewCtrl));
 
 export default router;

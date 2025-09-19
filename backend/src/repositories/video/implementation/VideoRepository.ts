@@ -14,12 +14,12 @@ export class VideoRepository extends BaseRepository<IVideo> implements IVideoRep
   //   });
   // }
   async listByTopic(topicId: string): Promise<IVideo[]> {
-  return Video.find({ topic: new Types.ObjectId(topicId), isDeleted: false })
-    .sort({ createdAt: -1 })
-    .select('_id tutor topic title description durationSec s3Key contentType createdAt updatedAt') 
-    .lean()
-    .exec();
-}
+    return Video.find({ topic: new Types.ObjectId(topicId), isDeleted: false })
+      .sort({ createdAt: -1 })
+      .select('_id tutor topic title description durationSec s3Key contentType createdAt updatedAt')
+      .lean()
+      .exec();
+  }
 
   async softDelete(id: string): Promise<boolean> {
     const res = await Video.findByIdAndUpdate(id, { isDeleted: true }, { new: true });

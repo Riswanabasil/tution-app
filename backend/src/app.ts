@@ -31,6 +31,6 @@ app.get('/', (req, res) => {
 app.use('/api/v1/student', studentRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/tutor', tutorRoutes);
-app.use(notFound);      
-app.use(errorHandler);  
+app.use(notFound);
+app.use(errorHandler);
 export default app;

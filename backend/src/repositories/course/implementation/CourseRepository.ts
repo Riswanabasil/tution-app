@@ -28,7 +28,9 @@ export class CourseRepository implements ICourseRepository {
     { skip, limit, sort = { createdAt: -1 } }: IPaginateOptions,
   ): Promise<ICourse[]> {
     return Course.find(filter)
-      .select('_id title code semester tutor price offer actualPrice details status createdAt thumbnailKey demoKey')
+      .select(
+        '_id title code semester tutor price offer actualPrice details status createdAt thumbnailKey demoKey',
+      )
       .skip(skip)
       .limit(limit)
       .sort(sort)

@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface INote extends Document {
   topicId: mongoose.Types.ObjectId;
-  pdfKey: string
+  pdfKey: string;
   pdfUrls?: string[];
   uploadedAt: Date;
   isDeleted: boolean;

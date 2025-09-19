@@ -38,7 +38,7 @@ export class VideoController implements IVideoController {
   //     next(err);
   //   }
   // }
-async getVideoUploadUrl(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  async getVideoUploadUrl(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { filename, contentType } = req.query as { filename: string; contentType: string };
       const data = await presignPutObject({ keyPrefix: 'Tutor-videos', filename, contentType });
@@ -72,28 +72,28 @@ async getVideoUploadUrl(req: AuthenticatedRequest, res: Response, next: NextFunc
   // }
 
   async createVideo(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  try {
-    const tutorId = req.user!.id;
-    const { topicId, title, description, durationSec, key, contentType } = req.body;
+    try {
+      const tutorId = req.user!.id;
+      const { topicId, title, description, durationSec, key, contentType } = req.body;
 
-    const video = await this.service.create({
-      tutorId,
-      topicId,
-      title,
-      description,
-      durationSec: Number(durationSec),
-      key,            
-      contentType,
-    });
+      const video = await this.service.create({
+        tutorId,
+        topicId,
+        title,
+        description,
+        durationSec: Number(durationSec),
+        key,
+        contentType,
+      });
 
-    const signed = await presignGetObject(key); 
-    const obj = (video as any).toObject ? (video as any).toObject() : video;
+      const signed = await presignGetObject(key);
+      const obj = (video as any).toObject ? (video as any).toObject() : video;
 
-    res.status(HttpStatus.CREATED).json({ ...obj, url: signed });
-  } catch (err) {
-    next(err);
+      res.status(HttpStatus.CREATED).json({ ...obj, url: signed });
+    } catch (err) {
+      next(err);
+    }
   }
-}
   async listByTopic(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { topicId } = req.params;
@@ -113,7 +113,6 @@ async getVideoUploadUrl(req: AuthenticatedRequest, res: Response, next: NextFunc
       next(err);
     }
   }
-  
 
   async remove(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {

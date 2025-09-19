@@ -37,11 +37,11 @@ export class ReviewRepository implements IReviewRepository {
 
     const [docs, total] = await Promise.all([
       Review.find({ courseId, isDeleted: false })
-    .populate({ path: 'studentId', select: 'name profilePic' }) 
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(l)
-    .lean(),     
+        .populate({ path: 'studentId', select: 'name profilePic' })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(l)
+        .lean(),
       Review.countDocuments({ courseId, isDeleted: false }),
     ]);
 
@@ -100,7 +100,7 @@ export class ReviewRepository implements IReviewRepository {
 
   async findByCourseAndStudent(
     courseId: string | Types.ObjectId,
-    studentId: string | Types.ObjectId
+    studentId: string | Types.ObjectId,
   ): Promise<ReviewDTO | null> {
     const doc = await Review.findOne({
       courseId,

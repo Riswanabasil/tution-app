@@ -9,7 +9,7 @@ export interface ReviewDTO {
   comment?: string;
   createdAt: string;
   updatedAt: string;
-   studentName?: string;
+  studentName?: string;
   studentAvatar?: string;
 }
 
@@ -35,7 +35,7 @@ export async function getMyReview(courseId: string): Promise<ReviewDTO | null> {
 }
 
 export async function createReview(input: CreateReviewInput): Promise<ReviewDTO> {
-  const { data } = await api.post<ReviewDTO>("/student/reviews", input);
+  const { data } = await api.post<ReviewDTO>('/student/reviews', input);
   return data;
 }
 
@@ -45,18 +45,19 @@ export async function updateReview(id: string, input: UpdateReviewInput): Promis
 }
 
 export async function getCourseStats(courseId: string): Promise<{ count: number; avg: number }> {
-  const { data } = await api.get<{ count: number; avg: number }>(`/student/courses/${courseId}/reviews/stats`);
+  const { data } = await api.get<{ count: number; avg: number }>(
+    `/student/courses/${courseId}/reviews/stats`,
+  );
   return data;
 }
 
 export async function getCourseReviews(
   courseId: string,
   page = 1,
-  limit = 5
+  limit = 5,
 ): Promise<Paginated<ReviewDTO>> {
-  const { data } = await api.get<Paginated<ReviewDTO>>(
-    `/student/courses/${courseId}/reviews`,
-    { params: { page, limit } }
-  );
+  const { data } = await api.get<Paginated<ReviewDTO>>(`/student/courses/${courseId}/reviews`, {
+    params: { page, limit },
+  });
   return data;
 }

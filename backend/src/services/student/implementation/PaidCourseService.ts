@@ -33,17 +33,17 @@ export class PaidCourseService implements IPaidCourseService {
   // }
 
   async getNotesByTopic(topicId: string) {
-  const rows = await this.noteRepository.findByTopic(topicId);
-  const enriched = await Promise.all(
-    rows.map(async (n: any) => {
-      const url = await presignGetObject(n.pdfKey); 
-      return {
-        ...n,
-        pdfUrls: url ? [url] : [], 
-      };
-    })
-  );
+    const rows = await this.noteRepository.findByTopic(topicId);
+    const enriched = await Promise.all(
+      rows.map(async (n: any) => {
+        const url = await presignGetObject(n.pdfKey);
+        return {
+          ...n,
+          pdfUrls: url ? [url] : [],
+        };
+      }),
+    );
 
-  return enriched;
-}
+    return enriched;
+  }
 }
