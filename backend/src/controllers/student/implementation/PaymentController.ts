@@ -4,9 +4,10 @@ import { PaymentService } from '../../../services/student/implementation/Payment
 import { AuthenticatedRequest } from '../../../types/Index';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { IPaymentService } from '../../../services/student/IPaymentService';
 
 export class PaymentController {
-  constructor(private paymentService: PaymentService) {}
+  constructor(private paymentService: IPaymentService) {}
   async createOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const { courseId, amount } = req.body;

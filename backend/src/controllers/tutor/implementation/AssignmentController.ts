@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { AssignmentService } from '../../../services/tutor/implementation/AssignmentService';
 import { HttpStatus } from '../../../constants/statusCode';
+import { IAssignmentService } from '../../../services/tutor/IAssignmentService';
 
 export class AssignmentController {
-  constructor(private assignmentService: AssignmentService) {}
+  constructor(private assignmentService: IAssignmentService) {}
 
   createAssignment = async (req: Request, res: Response) => {
     try {

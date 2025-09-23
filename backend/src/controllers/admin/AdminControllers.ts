@@ -1,11 +1,9 @@
 import { Request, Response } from 'express';
-import { IAdminController } from './IAdminController';
 import { IAdminService } from '../../services/admin/IAdminService';
 import { HttpStatus } from '../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../constants/errorMessages';
-// import { LoginAdminResponseDTO } from "../../dto/admin/adminAuth";
 
-export class AdminController implements IAdminController {
+export class AdminController {
   constructor(private adminService: IAdminService) {}
 
   async loginAdmin(req: Request, res: Response): Promise<void> {

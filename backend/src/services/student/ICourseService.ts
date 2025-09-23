@@ -1,4 +1,5 @@
 import { ICourse } from '../../models/course/CourseSchema';
+import { CourseDetails } from '../../types/course';
 
 export interface PaginatedCourses {
   courses: ICourse[];
@@ -7,5 +8,7 @@ export interface PaginatedCourses {
 }
 
 export interface ICourseService {
-  listApproved(page: number, limit: number, search: string): Promise<PaginatedCourses>;
+  listApproved(page: number, limit: number, search: string, semester?: number,
+    sortBy?: string,): Promise<PaginatedCourses>;
+    fetchCourseWithModules(courseId: string): Promise<CourseDetails>;
 }

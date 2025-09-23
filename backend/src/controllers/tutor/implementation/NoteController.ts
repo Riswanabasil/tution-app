@@ -3,9 +3,10 @@ import { NoteService } from '../../../services/tutor/implementation/NoteService'
 import mongoose from 'mongoose';
 import { presignGetObject, presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
+import { INoteService } from '../../../services/tutor/INoteService';
 
 export class NoteController {
-  constructor(private readonly service: NoteService) {}
+  constructor(private readonly service: INoteService) {}
 
   async getNoteUploadUrls(req: Request, res: Response, next: NextFunction) {
     try {
@@ -16,27 +17,6 @@ export class NoteController {
       next(err);
     }
   }
-  // create = async (req: Request, res: Response): Promise<void> => {
-  //   try {
-  //     const topicId = new mongoose.Types.ObjectId(req.params.topicId);
-  //     const { pdfKeys } = req.body;
-  //     if (!topicId || !Array.isArray(pdfKeys) || pdfKeys.length === 0) {
-  //       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing topicId or pdfKeys' });
-  //       return;
-  //     }
-  //     const pdfUrls = pdfKeys.map(
-  //       (key: string) =>
-  //         `https://${process.env.S3_BUCKET_NAME}.s3.${
-  //           process.env.AWS_REGION
-  //         }.amazonaws.com/${encodeURIComponent(key)}`,
-  //     );
-  //     const note = await this.service.create({ topicId, pdfUrls });
-  //     res.status(HttpStatus.CREATED).json(note);
-  //   } catch (err) {
-  //     console.error('Create Note Error:', err);
-  //     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-  //   }
-  // };
 
   create = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -54,15 +34,6 @@ export class NoteController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
   };
-  // getByTopic = async (req: Request, res: Response): Promise<void> => {
-  //   try {
-  //     const notes = await this.service.getByTopic(req.params.topicId);
-  //     res.json(notes);
-  //   } catch (err) {
-  //     console.error('Get Notes by Topic Error:', err);
-  //     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-  //   }
-  // };
 
   getByTopic = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -85,22 +56,6 @@ export class NoteController {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
     }
   };
-  // update = async (req: Request, res: Response): Promise<void> => {
-  //   try {
-  //     const { pdfKeys } = req.body;
-  //     const pdfUrls = pdfKeys.map(
-  //       (key: string) =>
-  //         `https://${process.env.S3_BUCKET_NAME}.s3.${
-  //           process.env.AWS_REGION
-  //         }.amazonaws.com/${encodeURIComponent(key)}`,
-  //     );
-  //     const note = await this.service.update(req.params.id, { pdfUrls });
-  //     res.json(note);
-  //   } catch (err) {
-  //     console.error('Update Note Error:', err);
-  //     res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
-  //   }
-  // };
 
   update = async (req: Request, res: Response): Promise<void> => {
     try {

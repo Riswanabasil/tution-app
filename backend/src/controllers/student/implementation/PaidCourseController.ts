@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { PaidCourseService } from '../../../services/student/implementation/PaidCourseService';
 import { HttpStatus } from '../../../constants/statusCode';
+import { IPaidCourseService } from '../../../services/student/IPaidCourseService';
 
 export class PaidCourseController {
-  constructor(private paidCourseService: PaidCourseService) {}
+  constructor(private paidCourseService: IPaidCourseService) {}
 
   getModulesByCourse = async (req: Request, res: Response): Promise<void> => {
     try {

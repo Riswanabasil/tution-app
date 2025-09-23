@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import { StudentCourseService } from '../../../services/student/implementation/CourseService';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { ICourseService } from '../../../services/student/ICourseService';
 
 export class StudentCourseController {
-  constructor(private courseService: StudentCourseService) {}
+  constructor(private courseService: ICourseService) {}
   async list(req: Request, res: Response): Promise<void> {
     try {
       const page = Math.max(1, parseInt(req.query.page as string) || 1);

@@ -3,9 +3,10 @@ import { TopicService } from '../../../services/tutor/implementation/TopicServic
 import mongoose from 'mongoose';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { ITopicService } from '../../../services/tutor/ITopicService';
 
 export class TopicController {
-  constructor(private readonly service: TopicService) {}
+  constructor(private readonly service: ITopicService) {}
 
   create = async (req: Request, res: Response) => {
     try {

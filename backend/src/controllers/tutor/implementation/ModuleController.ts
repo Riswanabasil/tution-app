@@ -3,9 +3,10 @@ import type { TutorModuleService } from '../../../services/tutor/implementation/
 import { promises } from 'dns';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { ITutorModuleService } from '../../../services/tutor/ITutorModuleService';
 
 export class ModuleController {
-  constructor(private service: TutorModuleService) {}
+  constructor(private service: ITutorModuleService) {}
 
   async list(req: Request, res: Response) {
     try {

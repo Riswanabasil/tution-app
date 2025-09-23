@@ -4,9 +4,10 @@ import { StudentAssignmentService } from '../../../services/student/implementati
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { IStudentAssignmentService } from '../../../services/student/IStudentAssignmentService';
 
 export class AssignmentController {
-  constructor(private assgnService: StudentAssignmentService) {}
+  constructor(private assgnService: IStudentAssignmentService) {}
 
   async getAssignmentsForStudent(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {

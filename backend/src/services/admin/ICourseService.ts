@@ -1,7 +1,7 @@
 import { ICourse } from '../../models/course/CourseSchema';
-import { PaginatedCourses } from '../../types/course';
+import { CourseStatus, PaginatedCourses } from '../../types/course';
 
 export interface IAdminCourseService {
-  listPaginated(page: number, limit: number): Promise<PaginatedCourses>;
+  listPaginated(page: number, limit: number,status:CourseStatus,search:string|undefined): Promise<PaginatedCourses>;
   updateStatus(id: string, status: ICourse['status']): Promise<ICourse>;
 }

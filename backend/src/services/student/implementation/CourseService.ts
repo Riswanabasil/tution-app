@@ -41,8 +41,6 @@ export class StudentCourseService implements ICourseService {
     }
     const total = await this.courseRepo.countDocuments(filter);
 
-    // const courses = await this.courseRepo.findMany(filter, { skip, limit, sort });
-
     const raw = await this.courseRepo.findMany(filter, { skip, limit, sort });
 
     const courses = await Promise.all(
@@ -92,16 +90,6 @@ export class StudentCourseService implements ICourseService {
     );
 
     return {
-      // _id: course._id.toString(),
-      // title: course.title,
-      // code: course.code,
-      // semester: course.semester,
-      // thumbnail: course.thumbnail,
-      // demoVideoUrl: course.demoVideoUrl,
-      // price: course.price,
-      // offer: course.offer,
-      // actualPrice: course.actualPrice,
-      // details: course.details,
       _id: obj._id.toString(),
       title: obj.title,
       code: obj.code,

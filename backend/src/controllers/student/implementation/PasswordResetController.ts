@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import { PasswordResetService } from '../../../services/student/implementation/PasswordResetService';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { IPasswordResetService } from '../../../services/student/IPasswordResetService';
 
 export class PasswordResetController {
-  constructor(private svc: PasswordResetService) {}
+  constructor(private svc: IPasswordResetService) {}
   async forgotPassword(req: Request, res: Response): Promise<void> {
     const { email } = req.body;
     await this.svc.requestReset(email);
