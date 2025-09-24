@@ -1,14 +1,17 @@
+import { IModuleRepository } from '../../../repositories/module/IModuleRepository';
 import { ModuleRepository } from '../../../repositories/module/implementation/ModuleRepository';
 import { NoteRepository } from '../../../repositories/note/implementation/NoteRepository';
+import { INoteRepository } from '../../../repositories/note/INoteRepository';
 import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
+import { ITopicRepository } from '../../../repositories/topic/ITopicRepository';
 import { presignGetObject } from '../../../utils/s3Presign';
 import { IPaidCourseService } from '../IPaidCourseService';
 
 export class PaidCourseService implements IPaidCourseService {
   constructor(
-    private moduleRepository: ModuleRepository,
-    private topicRepository: TopicRepository,
-    private noteRepository: NoteRepository,
+    private moduleRepository: IModuleRepository,
+    private topicRepository: ITopicRepository,
+    private noteRepository: INoteRepository,
   ) {}
 
   async getModulesByCourseId(courseId: string) {

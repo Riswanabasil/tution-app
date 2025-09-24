@@ -1,46 +1,47 @@
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { IHasher } from '../../../interfaces/common/IHasher';
 import { ITutor } from '../../../models/tutor/TutorSchema';
-import { ITutorService } from '../ITutorService';
+import { ITutorService, LoginTutorResponse, RegisterTutorResponse, TutorVerificationInput } from '../ITutorService';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
-import { TokenService } from '../../common/TokenService';
+// import { TokenService } from '../../common/TokenService';
 import bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
+import { ITokenService } from '../../../interfaces/common/ITokenService';
 
-export interface RegisterTutorResponse {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  role: string;
-  status: string;
-}
+// export interface RegisterTutorResponse {
+//   id: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   role: string;
+//   status: string;
+// }
 
-export interface TutorVerificationInput {
-  summary: string;
-  education: string;
-  experience: string;
-  idProof: string;
-  resume: string;
-}
+// export interface TutorVerificationInput {
+//   summary: string;
+//   education: string;
+//   experience: string;
+//   idProof: string;
+//   resume: string;
+// }
 
-export interface LoginTutorResponse {
-  accessToken: string;
-  refreshToken: string;
-  tutor: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-    status: string;
-  };
-}
+// export interface LoginTutorResponse {
+//   accessToken: string;
+//   refreshToken: string;
+//   tutor: {
+//     id: string;
+//     email: string;
+//     name: string;
+//     role: string;
+//     status: string;
+//   };
+// }
 
 export class TutorService implements ITutorService {
   constructor(
     private tutorRepo: ITutorRepository,
     private hasher: IHasher,
-    private tokenService: TokenService,
+    private tokenService: ITokenService,
   ) {}
 
   async registerTutor(
@@ -174,7 +175,7 @@ export class TutorService implements ITutorService {
     return tutor;
   }
 
-  async updateProfile(userId: string, updates: Partial<any>) {
+  async updateProfile(userId: string, updates: Partial<any>): Promise<Omit<ITutor, "password">> {
     const updated = await this.tutorRepo.updateById(userId, updates);
     if (!updated) throw new Error('Failed to update tutor profile');
     return updated;

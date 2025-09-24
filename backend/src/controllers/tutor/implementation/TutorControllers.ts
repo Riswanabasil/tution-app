@@ -1,18 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import {
-  TutorService,
-  RegisterTutorResponse,
-  TutorVerificationInput,
-  LoginTutorResponse,
-} from '../../../services/tutor/implementation/TutorService';
 import { ITutorController } from '../ITutorController';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { ITutorService, LoginTutorResponse, RegisterTutorResponse, TutorVerificationInput } from '../../../services/tutor/ITutorService';
 
 export class TutorController implements ITutorController {
-  constructor(private tutorService: TutorService) {}
+  constructor(private tutorService: ITutorService) {}
 
   async registerTutor(req: Request, res: Response): Promise<void> {
     try {

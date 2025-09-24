@@ -8,13 +8,15 @@ import { IStudentService } from '../IStudentService';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
 import { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
 import bcrypt from 'bcrypt';
+import { IOtpService } from '../../../interfaces/common/IOtpService';
+import { ITokenService } from '../../../interfaces/common/ITokenService';
 
 export class StudentService implements IStudentService {
   constructor(
     private studentRepo: IStudentRepository,
     private hasher: IHasher,
-    private otpService: OtpService,
-    private tokenService: TokenService,
+    private otpService: IOtpService,
+    private tokenService: ITokenService,
     private enrollRepo: IEnrollmentRepository,
   ) {}
 

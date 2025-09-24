@@ -1,9 +1,10 @@
 import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
 import { ITopic } from '../../../models/topic/TopicSchema';
 import { ITopicService } from '../ITopicService';
+import { ITopicRepository } from '../../../repositories/topic/ITopicRepository';
 
 export class TopicService implements ITopicService {
-  constructor(private readonly topicRepo: TopicRepository) {}
+  constructor(private readonly topicRepo: ITopicRepository) {}
 
   create(data: Partial<ITopic>) {
     return this.topicRepo.create(data);
