@@ -27,20 +27,56 @@ export class TutorController implements ITutorController {
       res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
+ async getVerificationUploadUrls(req: Request, res: Response) {
+    // const tutorId = req.user!.id; 
+    const { idFilename, idContentType, resumeFilename, resumeContentType } = req.body as {
+      idFilename: string; idContentType: string;
+      resumeFilename: string; resumeContentType: string;
+    };
 
+    // (Optional) basic server-side validation
+    // const allowed = ['application/pdf',
+    //                  'application/msword',
+    //                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    // if (!allowed.includes(idContentType) || !allowed.includes(resumeContentType)) {
+    //   return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Unsupported file type' });
+    // }
+
+    const idProof = await presignPutObject({
+      keyPrefix: `tutors/verification/id`,
+      filename: idFilename,
+      contentType: idContentType,
+    });
+
+    const resume = await presignPutObject({
+      keyPrefix: `tutors/verification/resume`,
+      filename: resumeFilename,
+      contentType: resumeContentType,
+    });
+
+    res.json({ idProof, resume }); 
+  }
   async submitTutorVerification(req: Request, res: Response): Promise<void> {
     try {
-      const { summary, education, experience, tutorId } = req.body;
-      const files = req.files as Record<string, Express.Multer.File[]>;
-      const idProof = files['idProof']?.[0].filename;
-      const resume = files['resume']?.[0].filename;
-
-      if (!tutorId || !idProof || !resume || !summary || !education || !experience) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
-        return;
+      const { summary, education, experience, tutorId,idProofKey, resumeKey  } = req.body;
+      
+      if (!tutorId || !summary || !education || !experience || !idProofKey || !resumeKey) {
+         res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
       }
+      // const files = req.files as Record<string, Express.Multer.File[]>;
+      // const idProof = files['idProof']?.[0].filename;
+      // const resume = files['resume']?.[0].filename;
 
-      const input: TutorVerificationInput = { summary, education, experience, idProof, resume };
+      // if (!tutorId || !idProof || !resume || !summary || !education || !experience) {
+      //   res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
+      //   return;
+      // }
+
+      const input: TutorVerificationInput = {
+        summary, education, experience,
+        idProof: idProofKey,
+        resume:  resumeKey,
+      };
       const updatedTutor = await this.tutorService.submitTutorVerification(tutorId, input);
 
       res.status(HttpStatus.OK).json({
@@ -59,6 +95,8 @@ export class TutorController implements ITutorController {
     try {
       const { email, password } = req.body;
       const result: LoginTutorResponse = await this.tutorService.loginTutor(email, password);
+      console.log(email, password);
+      
       const REFRESH_COOKIE = Number(process.env.MAX_AGE);
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,

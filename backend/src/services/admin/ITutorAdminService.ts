@@ -22,12 +22,19 @@ export interface TutorDetails {
   status: string;
   // assignedCourses: string[];
   verificationDetails?: {
-    summary: string;
-    education: string;
-    experience: string;
-    idProof: string;
-    resume: string;
+    summary?: string;
+    education?: string;
+    experience?: string;
+    idProof?: string;
+    resume?: string;
   };
+}
+export interface TutorVerificationDetails {
+  summary?: string;
+  education?: string;
+  experience?: string;
+  idProof?: string|undefined; 
+  resume?: string|undefined;  
 }
 export interface ITutorAdminService {
   getAllTutors(page: number, limit: number, status?: string, search?: string): Promise<PagedTutors>;

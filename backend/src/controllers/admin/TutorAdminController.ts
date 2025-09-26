@@ -25,7 +25,6 @@ export class TutorAdminController {
   async getTutorById(req: Request, res: Response): Promise<void> {
     try {
       const id = req.params.id;
-      console.log(id);
 
       const tutor = await this.service.getTutorById(id);
       res.status(HttpStatus.OK).json(tutor);

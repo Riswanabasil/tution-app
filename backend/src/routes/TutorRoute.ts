@@ -71,8 +71,11 @@ const enrollmentController = new TutorDashboardController(enrollmentService);
 
 router.post('/register', tutorController.registerTutor.bind(tutorController));
 router.post(
+  '/verification/upload-urls',
+  tutorController.getVerificationUploadUrls.bind(tutorController),
+);
+router.post(
   '/submit-verification',
-  uploadTutorDocs,
   tutorController.submitTutorVerification.bind(tutorController),
 );
 router.post('/login', tutorController.loginTutor.bind(tutorController));

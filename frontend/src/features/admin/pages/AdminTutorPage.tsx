@@ -259,7 +259,7 @@ const AdminTutorPage = () => {
                 <p>
                   <strong>ID Proof:</strong>{' '}
                   <a
-                    href={`http://localhost:5000/uploads/tutorDocs/${selectedTutor.verificationDetails.idProof}`}
+                    href={`${selectedTutor.verificationDetails.idProof}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"
@@ -271,7 +271,7 @@ const AdminTutorPage = () => {
                 <p>
                   <strong>Resume:</strong>{' '}
                   <a
-                    href={`http://localhost:5000/uploads/tutorDocs/${selectedTutor.verificationDetails.resume}`}
+                    href={`${selectedTutor.verificationDetails.resume}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"

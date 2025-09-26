@@ -54,16 +54,52 @@ export const registerTutor = async (data: TutorSignupData) => {
   return res.data;
 };
 
-export const submitTutorVerification = async (payload: TutorVerificationPayload) => {
-  const formData = new FormData();
-  formData.append('tutorId', payload.tutorId);
-  formData.append('summary', payload.summary);
-  formData.append('education', payload.education);
-  formData.append('experience', payload.experience);
-  formData.append('idProof', payload.idProof);
-  formData.append('resume', payload.resume);
+// export const submitTutorVerification = async (payload: TutorVerificationPayload) => {
+//   const formData = new FormData();
+//   formData.append('tutorId', payload.tutorId);
+//   formData.append('summary', payload.summary);
+//   formData.append('education', payload.education);
+//   formData.append('experience', payload.experience);
+//   formData.append('idProof', payload.idProof);
+//   formData.append('resume', payload.resume);
 
-  const response = await axios.post('/tutor/submit-verification', formData);
+//   const response = await axios.post('/tutor/submit-verification', formData);
+//   return response.data;
+// };
+
+export const submitTutorVerification = async (payload: TutorVerificationPayload) => {
+  // 1) Ask backend for presigned PUT URLs
+  const { data: presigned } = await axios.post('/tutor/verification/upload-urls', {
+    idFilename: payload.idProof.name,
+    idContentType: payload.idProof.type || 'application/octet-stream',
+    resumeFilename: payload.resume.name,
+    resumeContentType: payload.resume.type || 'application/octet-stream',
+  });
+
+  // 2) Upload both files directly to S3
+  await Promise.all([
+    fetch(presigned.idProof.uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': payload.idProof.type || 'application/octet-stream' },
+      body: payload.idProof,
+    }),
+    fetch(presigned.resume.uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': payload.resume.type || 'application/octet-stream' },
+      body: payload.resume,
+    }),
+  ]);
+
+  // 3) Send only KEYS to the submit endpoint
+  const response = await axios.post('/tutor/submit-verification', {
+    tutorId: payload.tutorId,
+    summary: payload.summary,
+    education: payload.education,
+    experience: payload.experience,
+    idProofKey: presigned.idProof.key,
+    resumeKey: presigned.resume.key,
+  });
+
   return response.data;
 };
 
@@ -74,7 +110,7 @@ export const loginTutor = async (data: LoginPayload) => {
 };
 
 export const tutorGoogleLogin = async (idToken: string): Promise<TutorLoginResp> => {
-  const api = getAxios('tutor'); // uses your role-aware axios
+  const api = getAxios('tutor'); 
   const { data } = await api.post('/tutor/google-login', { idToken });
   return data;
 };

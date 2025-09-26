@@ -1,6 +1,7 @@
-import { ITutorAdminService, PagedTutors, TutorDetails } from '../ITutorAdminService';
+import { ITutorAdminService, PagedTutors, TutorDetails ,TutorVerificationDetails} from '../ITutorAdminService';
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { ITutor } from '../../../models/tutor/TutorSchema';
+import { presignGetObject } from '../../../utils/s3Presign';
 
 export class TutorAdminService implements ITutorAdminService {
   constructor(private tutorRepo: ITutorRepository) {}
@@ -45,6 +46,13 @@ export class TutorAdminService implements ITutorAdminService {
     const t = await this.tutorRepo.getTutorById(id);
     if (!t) throw new Error('Tutor not found');
 
+     const vd = (t.verificationDetails ?? {}) as TutorVerificationDetails;
+
+  const [idProofUrl, resumeUrl] = await Promise.all([
+    presignGetObject(vd.idProof),
+    presignGetObject(vd.resume),
+  ]);
+
     return {
       id: t._id.toString(),
       name: t.name,
@@ -53,7 +61,11 @@ export class TutorAdminService implements ITutorAdminService {
       isGoogleSignup: t.isGoogleSignup,
       status: t.status,
       // assignedCourses: t.assignedCourses.map(id => id.toString()),
-      verificationDetails: t.verificationDetails,
+       verificationDetails: {
+      ...vd,
+      idProof: idProofUrl,  
+      resume: resumeUrl,
+    },
     };
   }
 

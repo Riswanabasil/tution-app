@@ -40,9 +40,16 @@ export class TutorRepository extends BaseRepository<ITutor> implements ITutorRep
     return Tutor.countDocuments(query);
   }
 
-  async getTutorById(id: string): Promise<ITutor | null> {
-    return Tutor.findById(id);
-  }
+  // async getTutorById(id: string): Promise<ITutor | null> {
+  //   return Tutor.findById(id);
+  // }
+
+  async getTutorById(id: string) {
+  return Tutor.findById(id)
+    .select('name email phone isGoogleSignup status verificationDetails') 
+    .lean()   
+    .exec();
+}
   async updateTutorStatus(id: string, status: 'approved' | 'rejected'): Promise<Boolean> {
     const updated = await Tutor.findByIdAndUpdate(id, { status });
     return !!updated;
