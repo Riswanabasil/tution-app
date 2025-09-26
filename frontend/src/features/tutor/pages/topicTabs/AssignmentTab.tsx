@@ -8,6 +8,7 @@ import {
 import { Button, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material';
 import Swal from 'sweetalert2';
 import type { AxiosError } from 'axios';
+import { useDebouncedValue } from '../../../../hooks/useDebounce';
 
 type Assignment = {
   _id: string;
@@ -24,6 +25,7 @@ type AssignmentTabProps = {
 export default function AssignmentTab({ topicId }: AssignmentTabProps) {
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [search, setSearch] = useState('');
+  const debouncedSearch=useDebouncedValue(search,400)
   const [filtered, setFiltered] = useState<Assignment[]>([]);
   const [open, setOpen] = useState(false);
   const [editAssignment, setEditAssignment] = useState<Assignment | null>(null);
@@ -49,9 +51,9 @@ export default function AssignmentTab({ topicId }: AssignmentTabProps) {
   }, [topicId]);
 
   useEffect(() => {
-    const results = assignments.filter((a) => a.title.toLowerCase().includes(search.toLowerCase()));
+    const results = assignments.filter((a) => a.title.toLowerCase().includes(debouncedSearch.toLowerCase()));
     setFiltered(results);
-  }, [search, assignments]);
+  }, [debouncedSearch, assignments]);
 
   const handleSubmit = async () => {
     if (!title || !dueDate) return;

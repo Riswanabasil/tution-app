@@ -4,6 +4,7 @@ import type { ICourse } from '../../../types/course';
 import CourseCard from '../components/CourseCard';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, BookOpen, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { useDebouncedValue } from '../../../hooks/useDebounce';
 
 export default function CourseGridPage() {
   const [courses, setCourses] = useState<ICourse[]>([]);
@@ -12,6 +13,7 @@ export default function CourseGridPage() {
   const [limit] = useState(3);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
+  const debouncedSearch=useDebouncedValue(search,400)
   const [semester, setSemester] = useState<number | undefined>(undefined);
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export default function CourseGridPage() {
     setLoading(true);
     try {
       const [{ courses, currentPage, totalPages: tp }, myCourses] = await Promise.all([
-        getApprovedCourses(page, limit, search, semester, sortBy),
+        getApprovedCourses(page, limit, debouncedSearch, semester, sortBy),
         getMyCourses(),
       ]);
 
@@ -38,7 +40,7 @@ export default function CourseGridPage() {
 
   useEffect(() => {
     load();
-  }, [page, search, semester, sortBy]);
+  }, [page, debouncedSearch, semester, sortBy]);
 
   const handleExplore = (id: string) => {
     navigate(`/student/courses/${id}`);

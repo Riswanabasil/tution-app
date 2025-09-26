@@ -5,6 +5,7 @@ import type { ICourse } from '../../../types/course';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import type { AxiosError } from 'axios';
+import { useDebouncedValue } from '../../../hooks/useDebounce';
 
 export default function CourseListPage() {
   const [allCourses, setAllCourses] = useState<ICourse[]>([]);
@@ -13,6 +14,7 @@ export default function CourseListPage() {
   const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
+  const debouncedSearch=useDebouncedValue(search,400)
   const [filterSemester, setFilterSemester] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,8 +29,8 @@ export default function CourseListPage() {
   const filterAndPaginate = () => {
     let filtered = allCourses;
 
-    if (search) {
-      const query = search.toLowerCase();
+    if (debouncedSearch) {
+      const query = debouncedSearch.toLowerCase();
       filtered = filtered.filter(
         (c) => c.title.toLowerCase().includes(query) || c.code.toLowerCase().includes(query),
       );
@@ -63,7 +65,7 @@ export default function CourseListPage() {
 
   useEffect(() => {
     filterAndPaginate();
-  }, [search, filterSemester, filterStatus, page, allCourses]);
+  }, [debouncedSearch, filterSemester, filterStatus, page, allCourses]);
 
   const onDelete = async (id: string) => {
     const result = await Swal.fire({

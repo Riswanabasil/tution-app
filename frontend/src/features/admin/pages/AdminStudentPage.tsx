@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { fetchStudents, updateStudentBlockStatus } from '../services/AdminApi';
 import type { IStudent } from '../../../types/types';
+import { useDebouncedValue } from '../../../hooks/useDebounce';
 
 const AdminStudentPage = () => {
   const [students, setStudents] = useState<IStudent[]>([]);
   const [search, setSearch] = useState('');
+  const debouncedSearch=useDebouncedValue(search,400)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -12,7 +14,7 @@ const AdminStudentPage = () => {
   const loadStudents = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchStudents(page, 5, search);
+      const res = await fetchStudents(page, 5, debouncedSearch);
       setStudents(res.students);
       setTotalPages(res.totalPages);
     } catch (err) {
@@ -20,7 +22,7 @@ const AdminStudentPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, search]);
+  }, [page, debouncedSearch]);
 
   const handleBlockToggle = async (id: string, block: boolean) => {
     try {

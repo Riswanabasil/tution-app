@@ -4,6 +4,7 @@ import type { IPaginatedCourses } from '../services/CourseApi';
 import type { ICourse } from '../../../types/course';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
+import { useDebouncedValue } from '../../../hooks/useDebounce';
 
 type Course = Pick<ICourse, '_id' | 'title' | 'code' | 'price' | 'details' | 'status'>;
 
@@ -15,6 +16,7 @@ export default function CourseListPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [statusFilter, setStatusFilter] = useState<CourseStatus | ''>('');
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearch=useDebouncedValue(searchTerm,400)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,7 +28,7 @@ export default function CourseListPage() {
         page,
         limit,
         statusFilter || undefined,
-        searchTerm || undefined,
+        debouncedSearch || undefined,
       );
       setCourses(result.courses);
       setTotalPages(result.totalPages);
@@ -40,7 +42,7 @@ export default function CourseListPage() {
 
   useEffect(() => {
     loadPage();
-  }, [page, statusFilter, searchTerm]);
+  }, [page, statusFilter, debouncedSearch]);
 
   const onStatusChange = async (id: string, status: ICourse['status']) => {
     try {

@@ -3,11 +3,13 @@ import { Link, useParams } from 'react-router-dom';
 import { fetchTopics, deleteTopic } from '../services/CourseApi';
 import AddEditTopicForm from '../components/AddEditTopicForm';
 import type { Topic } from '../../../types/topic';
+import { useDebouncedValue } from '../../../hooks/useDebounce';
 
 export default function ContentArea() {
   const { moduleId } = useParams<{ moduleId: string }>();
   const [allTopics, setAllTopics] = useState<Topic[]>([]);
   const [search, setSearch] = useState('');
+  const debouncedSearch=useDebouncedValue(search,400)
   const [page, setPage] = useState(1);
   const limit = 5;
 
@@ -44,8 +46,8 @@ export default function ContentArea() {
   };
 
   const filtered = useMemo(() => {
-    return allTopics.filter((topic) => topic.title.toLowerCase().includes(search.toLowerCase()));
-  }, [allTopics, search]);
+    return allTopics.filter((topic) => topic.title.toLowerCase().includes(debouncedSearch.toLowerCase()));
+  }, [allTopics, debouncedSearch]);
 
   const paginated = useMemo(() => {
     const start = (page - 1) * limit;

@@ -3,6 +3,7 @@ import { fetchTutors, getTutorById, updateTutorStatus } from '../services/AdminA
 import type { AxiosError } from 'axios';
 import Modal from '../components/Modal';
 import type { ITutor } from '../../../types/types';
+import { useDebouncedValue } from '../../../hooks/useDebounce';
 // import { useDispatch, useSelector } from "react-redux";
 // import { fetchCoursesThunk } from "../../../redux/slices/courseSlice";
 // import type { RootState, AppDispatch } from "../../../redux/store";
@@ -26,6 +27,7 @@ const AdminTutorPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
+  const debouncedSearch=useDebouncedValue(search,400)
   const [status, setStatus] = useState('');
   const [selectedTutor, setSelectedTutor] = useState<ITutor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +42,7 @@ const AdminTutorPage = () => {
   const loadTutors = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetchTutors(page, 5, status, search);
+      const res = await fetchTutors(page, 5, status, debouncedSearch);
       console.log(res.tutors);
 
       setTutors(res.tutors);
@@ -51,7 +53,7 @@ const AdminTutorPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, status, search]);
+  }, [page, status, debouncedSearch]);
 
   useEffect(() => {
     loadTutors();
