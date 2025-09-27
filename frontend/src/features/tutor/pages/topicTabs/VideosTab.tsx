@@ -11,6 +11,42 @@ import {
 } from '../../services/NoteApi';
 
 type Props = { topicId: string };
+// ---- limits (tweak as you like)
+const MAX_VIDEO_SIZE_MB = 500; // 500 MB
+const BYTES_PER_MB = 1024 * 1024;
+const ALLOWED_MIME = [
+  'video/mp4',
+  'video/webm',
+  'video/ogg',
+  'video/quicktime',       // .mov
+  'video/x-matroska',      // .mkv
+];
+
+// ---- inside VideosTab component:
+type FormErrors = { title?: string; file?: string };
+const [errors, setErrors] = useState<FormErrors>({});
+
+function validateForm(isEditing: boolean, title: string, file: File | null) {
+  const e: FormErrors = {};
+
+  if (!title.trim()) e.title = 'Title is required';
+
+  if (!isEditing) {
+    if (!file) {
+      e.file = 'Select a video file';
+    } else {
+      if (!ALLOWED_MIME.includes(file.type)) {
+        e.file = 'Unsupported format. Use MP4, WebM, MOV, MKV, or Ogg.';
+      } else if (file.size > MAX_VIDEO_SIZE_MB * BYTES_PER_MB) {
+        e.file = `File must be ≤ ${MAX_VIDEO_SIZE_MB} MB`;
+      }
+    }
+  }
+
+  setErrors(e);
+  return Object.keys(e).length === 0;
+}
+
 
 export default function VideosTab({ topicId }: Props) {
   const [videos, setVideos] = useState<VideoItem[]>([]);
@@ -39,25 +75,58 @@ export default function VideosTab({ topicId }: Props) {
     load();
   }, [topicId]);
 
-  const onFileChange = (f: File | null) => {
-    setFile(f);
-    if (!f) {
-      setDurationSec(0);
-      return;
-    }
-    const url = URL.createObjectURL(f);
-    const v = document.createElement('video');
-    v.preload = 'metadata';
-    v.src = url;
-    v.onloadedmetadata = () => {
-      setDurationSec(Math.ceil(v.duration || 0));
-      URL.revokeObjectURL(url);
-    };
-    v.onerror = () => {
-      setDurationSec(0);
-      URL.revokeObjectURL(url);
-    };
+  // const onFileChange = (f: File | null) => {
+  //   setFile(f);
+  //   if (!f) {
+  //     setDurationSec(0);
+  //     return;
+  //   }
+  //   const url = URL.createObjectURL(f);
+  //   const v = document.createElement('video');
+  //   v.preload = 'metadata';
+  //   v.src = url;
+  //   v.onloadedmetadata = () => {
+  //     setDurationSec(Math.ceil(v.duration || 0));
+  //     URL.revokeObjectURL(url);
+  //   };
+  //   v.onerror = () => {
+  //     setDurationSec(0);
+  //     URL.revokeObjectURL(url);
+  //   };
+  // };
+const onFileChange = (f: File | null) => {
+  setFile(f);
+
+  setDurationSec(0);
+
+  if (errors.file) setErrors((s) => ({ ...s, file: undefined }));
+
+  if (!f) return;
+
+  if (!ALLOWED_MIME.includes(f.type)) {
+    setErrors((s) => ({ ...s, file: 'Unsupported format. Use MP4, WebM, MOV, MKV, or Ogg.' }));
+    setFile(null);
+    return;
+  }
+  if (f.size > MAX_VIDEO_SIZE_MB * BYTES_PER_MB) {
+    setErrors((s) => ({ ...s, file: `File must be ≤ ${MAX_VIDEO_SIZE_MB} MB` }));
+    setFile(null);
+    return;
+  }
+
+  const url = URL.createObjectURL(f);
+  const v = document.createElement('video');
+  v.preload = 'metadata';
+  v.src = url;
+  v.onloadedmetadata = () => {
+    setDurationSec(Math.ceil(v.duration || 0));
+    URL.revokeObjectURL(url);
   };
+  v.onerror = () => {
+    setDurationSec(0);
+    URL.revokeObjectURL(url);
+  };
+};
 
   const resetForm = () => {
     setTitle('');
@@ -67,54 +136,102 @@ export default function VideosTab({ topicId }: Props) {
     setEditing(null);
   };
 
+  // const handleSave = async () => {
+  //   try {
+  //     setUploading(true);
+
+  //     if (editing) {
+  //       await updateVideo(editing._id, { title, description, durationSec });
+  //       Swal.fire('Updated!', 'Video updated successfully', 'success');
+  //       setOpen(false);
+  //       resetForm();
+  //       load();
+  //       return;
+  //     }
+
+  //     if (!file) {
+  //       Swal.fire('Required', 'Select a video file', 'warning');
+  //       return;
+  //     }
+
+  //     const { uploadUrl, key } = await getVideoUploadUrl(file.name, file.type);
+  //     console.log('uploadUrl', uploadUrl, key);
+
+  //     const putRes = await fetch(uploadUrl, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': file.type },
+  //       body: file,
+  //     });
+  //     if (!putRes.ok) throw new Error('Upload failed');
+
+  //     await createVideo({
+  //       topicId,
+  //       title,
+  //       description,
+  //       durationSec: durationSec || 0,
+  //       key,
+  //       contentType: file.type,
+  //     });
+
+  //     Swal.fire('Added!', 'Video uploaded successfully', 'success');
+  //     setOpen(false);
+  //     resetForm();
+  //     load();
+  //   } catch (e: any) {
+  //     console.error(e);
+  //     Swal.fire('Error', e?.message || 'Something went wrong', 'error');
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
+
   const handleSave = async () => {
-    try {
-      setUploading(true);
+  // run validation first
+  const ok = validateForm(!!editing, title, file);
+  if (!ok) return;
 
-      if (editing) {
-        await updateVideo(editing._id, { title, description, durationSec });
-        Swal.fire('Updated!', 'Video updated successfully', 'success');
-        setOpen(false);
-        resetForm();
-        load();
-        return;
-      }
+  try {
+    setUploading(true);
 
-      if (!file) {
-        Swal.fire('Required', 'Select a video file', 'warning');
-        return;
-      }
-
-      const { uploadUrl, key } = await getVideoUploadUrl(file.name, file.type);
-      console.log('uploadUrl', uploadUrl, key);
-
-      const putRes = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': file.type },
-        body: file,
-      });
-      if (!putRes.ok) throw new Error('Upload failed');
-
-      await createVideo({
-        topicId,
-        title,
-        description,
-        durationSec: durationSec || 0,
-        key,
-        contentType: file.type,
-      });
-
-      Swal.fire('Added!', 'Video uploaded successfully', 'success');
+    if (editing) {
+      await updateVideo(editing._id, { title: title.trim(), description: description.trim(), durationSec });
+      Swal.fire('Updated!', 'Video updated successfully', 'success');
       setOpen(false);
       resetForm();
       load();
-    } catch (e: any) {
-      console.error(e);
-      Swal.fire('Error', e?.message || 'Something went wrong', 'error');
-    } finally {
-      setUploading(false);
+      return;
     }
-  };
+
+    // creation path (file guaranteed by validation)
+    const { uploadUrl, key } = await getVideoUploadUrl(file!.name, file!.type);
+
+    const putRes = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': file!.type },
+      body: file!,
+    });
+    if (!putRes.ok) throw new Error('Upload failed');
+
+    await createVideo({
+      topicId,
+      title: title.trim(),
+      description: description.trim(),
+      durationSec: durationSec || 0,
+      key,
+      contentType: file!.type,
+    });
+
+    Swal.fire('Added!', 'Video uploaded successfully', 'success');
+    setOpen(false);
+    resetForm();
+    load();
+  } catch (e: any) {
+    console.error(e);
+    Swal.fire('Error', e?.message || 'Something went wrong', 'error');
+  } finally {
+    setUploading(false);
+  }
+};
 
   const handleDelete = async (id: string) => {
     const c = await Swal.fire({
@@ -330,12 +447,23 @@ export default function VideosTab({ topicId }: Props) {
         </DialogTitle>
 
         <DialogContent className="space-y-4 p-6">
-          <TextField
+          {/* <TextField
             label="Title"
             fullWidth
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-          />
+          /> */}
+          <TextField
+  label="Title"
+  fullWidth
+  value={title}
+  onChange={(e) => {
+    setTitle(e.target.value);
+    if (errors.title) setErrors((s) => ({ ...s, title: undefined }));
+  }}
+  error={!!errors.title}
+  helperText={errors.title}
+/>
           <TextField
             label="Description"
             fullWidth
@@ -344,7 +472,7 @@ export default function VideosTab({ topicId }: Props) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          {!editing && (
+          {/* {!editing && (
             <>
               <input
                 type="file"
@@ -356,7 +484,23 @@ export default function VideosTab({ topicId }: Props) {
                 {durationSec ? `${Math.floor(durationSec / 60)}m ${durationSec % 60}s` : '—'}
               </div>
             </>
-          )}
+          )} */}
+
+          {!editing && (
+  <>
+    <input
+      type="file"
+      accept="video/*"
+      onChange={(e) => onFileChange(e.target.files?.[0] || null)}
+    />
+    {errors.file && (
+      <p className="text-sm text-red-600 mt-1">{errors.file}</p>
+    )}
+    <div className="text-sm text-slate-600">
+      Duration: {durationSec ? `${Math.floor(durationSec / 60)}m ${durationSec % 60}s` : '—'}
+    </div>
+  </>
+)}
 
           <div className="flex justify-end gap-3 pt-2">
             <Button

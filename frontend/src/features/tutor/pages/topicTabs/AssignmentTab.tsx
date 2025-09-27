@@ -34,6 +34,28 @@ export default function AssignmentTab({ topicId }: AssignmentTabProps) {
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [description, setDescription] = useState('');
+  // under other useState(...)
+type FormErrors = { title?: string; dueDate?: string };            
+const [formErrors, setFormErrors] = useState<FormErrors>({});      
+function todayYMD() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+
+function validateForm() {                                          
+  const e: FormErrors = {};
+  if (!title.trim()) e.title = 'Title is required';
+  if (!dueDate) e.dueDate = 'Due date is required';
+  else if (!/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) e.dueDate = 'Invalid date';
+   else if (dueDate < todayYMD()) e.dueDate = 'Due date cannot be before today';
+  setFormErrors(e);
+  return Object.keys(e).length === 0;
+}
+
 
   const loadAssignments = async () => {
     setLoading(true);
@@ -56,6 +78,7 @@ export default function AssignmentTab({ topicId }: AssignmentTabProps) {
   }, [debouncedSearch, assignments]);
 
   const handleSubmit = async () => {
+    if (!validateForm()) return; 
     if (!title || !dueDate) return;
 
     const payload = {
@@ -440,7 +463,7 @@ export default function AssignmentTab({ topicId }: AssignmentTabProps) {
 
         <DialogContent className="space-y-6 p-6">
           <div className="space-y-4">
-            <TextField
+            {/* <TextField
               label="Assignment Title"
               fullWidth
               value={title}
@@ -463,7 +486,38 @@ export default function AssignmentTab({ topicId }: AssignmentTabProps) {
               InputProps={{
                 style: { borderRadius: '12px' },
               }}
-            />
+            /> */}
+            <TextField
+  label="Assignment Title"
+  fullWidth
+  value={title}
+  onChange={(e) => {
+    setTitle(e.target.value);
+    if (formErrors.title) setFormErrors(s => ({ ...s, title: undefined })); 
+  }}
+  variant="outlined"
+  placeholder="Enter a descriptive title for the assignment"
+  error={!!formErrors.title}                
+  helperText={formErrors.title}             
+  InputProps={{ style: { borderRadius: '12px' } }}
+/>
+
+<TextField
+  label="Due Date"
+  fullWidth
+  type="date"
+  value={dueDate}
+  onChange={(e) => {
+    setDueDate(e.target.value);
+    if (formErrors.dueDate) setFormErrors(s => ({ ...s, dueDate: undefined })); 
+  }}
+  InputLabelProps={{ shrink: true }}
+  variant="outlined"
+  error={!!formErrors.dueDate}              
+  helperText={formErrors.dueDate}           
+  InputProps={{ style: { borderRadius: '12px' } }}
+/>
+
 
             <TextField
               label="Description"

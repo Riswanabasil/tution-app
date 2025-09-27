@@ -24,6 +24,34 @@ type NotesTabProps = {
   topicId: string;
 };
 
+// limits (tweak as you like)
+const MAX_FILES = 10;
+const MAX_FILE_SIZE_MB = 10;
+const BYTES_PER_MB = 1024 * 1024;
+
+function validatePdfFiles(list: FileList | null) {
+  const errors: string[] = [];
+  if (!list || list.length === 0) {
+    errors.push('Please select at least one PDF.');
+    return { ok: false, errors };
+  }
+
+  if (list.length > MAX_FILES) {
+    errors.push(`You can upload up to ${MAX_FILES} PDFs at once.`);
+  }
+
+  for (const f of Array.from(list)) {
+    const isPdf = f.type === 'application/pdf' || /\.pdf$/i.test(f.name);
+    if (!isPdf) errors.push(`"${f.name}" is not a PDF.`);
+    if (f.size > MAX_FILE_SIZE_MB * BYTES_PER_MB) {
+      errors.push(`"${f.name}" exceeds ${MAX_FILE_SIZE_MB} MB.`);
+    }
+  }
+
+  return { ok: errors.length === 0, errors };
+}
+
+
 export default function NotesTab({ topicId }: NotesTabProps) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [open, setOpen] = useState(false);
@@ -31,6 +59,7 @@ export default function NotesTab({ topicId }: NotesTabProps) {
   const [files, setFiles] = useState<FileList | null>(null);
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const loadNotes = async () => {
     if (!topicId) return;
@@ -42,41 +71,85 @@ export default function NotesTab({ topicId }: NotesTabProps) {
     loadNotes();
   }, [topicId]);
 
+  // const handleAddEdit = async () => {
+  //   if (!files || files.length === 0 || !topicId) return;
+  //   try {
+  //     setUploading(true);
+  //     const { data: presigned } = await getNoteUploadUrls(files.length);
+  //     await Promise.all(
+  //       Array.from(files).map((file, i) =>
+  //         fetch(presigned[i].uploadUrl, {
+  //           method: 'PUT',
+  //           headers: { 'Content-Type': 'application/pdf' },
+  //           body: file,
+  //         }),
+  //       ),
+  //     );
+  //     const pdfKeys = presigned.map((item: Prisigned) => item.key);
+
+  //     if (editNote) {
+  //       await updateNote(editNote._id, { pdfKeys });
+  //       Swal.fire('Updated!', 'Note updated successfully', 'success');
+  //     } else {
+  //       await createNote(topicId, { pdfKeys });
+  //       Swal.fire('Added!', 'Note uploaded successfully', 'success');
+  //     }
+
+  //     setOpen(false);
+  //     setEditNote(null);
+  //     setFiles(null);
+  //     loadNotes();
+  //   } catch (err) {
+  //     console.error(err);
+  //     Swal.fire('Error', 'Upload failed', 'error');
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
+
   const handleAddEdit = async () => {
-    if (!files || files.length === 0 || !topicId) return;
-    try {
-      setUploading(true);
-      const { data: presigned } = await getNoteUploadUrls(files.length);
-      await Promise.all(
-        Array.from(files).map((file, i) =>
-          fetch(presigned[i].uploadUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/pdf' },
-            body: file,
-          }),
-        ),
-      );
-      const pdfKeys = presigned.map((item: Prisigned) => item.key);
+  const res = validatePdfFiles(files);
+  if (!res.ok || !topicId) {
+    if (!res.ok) Swal.fire('Invalid files', res.errors.join('<br/>'), 'error');
+    return;
+  }
 
-      if (editNote) {
-        await updateNote(editNote._id, { pdfKeys });
-        Swal.fire('Updated!', 'Note updated successfully', 'success');
-      } else {
-        await createNote(topicId, { pdfKeys });
-        Swal.fire('Added!', 'Note uploaded successfully', 'success');
-      }
+  try {
+    setUploading(true);
+    const { data: presigned } = await getNoteUploadUrls(files!.length);
 
-      setOpen(false);
-      setEditNote(null);
-      setFiles(null);
-      loadNotes();
-    } catch (err) {
-      console.error(err);
-      Swal.fire('Error', 'Upload failed', 'error');
-    } finally {
-      setUploading(false);
+    await Promise.all(
+      Array.from(files!).map((file, i) =>
+        fetch(presigned[i].uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/pdf' },
+          body: file,
+        })
+      )
+    );
+
+    const pdfKeys = presigned.map((item: any) => item.key);
+    if (editNote) {
+      await updateNote(editNote._id, { pdfKeys });
+      Swal.fire('Updated!', 'Note updated successfully', 'success');
+    } else {
+      await createNote(topicId, { pdfKeys });
+      Swal.fire('Added!', 'Note uploaded successfully', 'success');
     }
-  };
+
+    setOpen(false);
+    setEditNote(null);
+    setFiles(null);
+    setFileError(null);
+    loadNotes();
+  } catch (err) {
+    console.error(err);
+    Swal.fire('Error', 'Upload failed', 'error');
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   const handleDelete = async (id: string) => {
     const result = await Swal.fire({
@@ -105,16 +178,32 @@ export default function NotesTab({ topicId }: NotesTabProps) {
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+  // const handleDrop = (e: React.DragEvent) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   setDragActive(false);
 
-    const droppedFiles = e.dataTransfer.files;
-    if (droppedFiles) {
-      setFiles(droppedFiles);
-    }
-  };
+  //   const droppedFiles = e.dataTransfer.files;
+  //   if (droppedFiles) {
+  //     setFiles(droppedFiles);
+  //   }
+  // };
+const handleDrop = (e: React.DragEvent) => {
+  e.preventDefault();
+  e.stopPropagation();
+  setDragActive(false);
+
+  const droppedFiles = e.dataTransfer.files;
+  const res = validatePdfFiles(droppedFiles);
+  if (!res.ok) {
+    setFiles(null);
+    setFileError(res.errors.join('\n'));
+    // Swal.fire('Invalid files', res.errors.join('<br/>'), 'error');
+  } else {
+    setFiles(droppedFiles);
+    setFileError(null);
+  }
+};
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
@@ -409,14 +498,31 @@ export default function NotesTab({ topicId }: NotesTabProps) {
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            <input
+            {/* <input
               type="file"
               multiple
               accept=".pdf"
               onChange={(e) => setFiles(e.target.files)}
               className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-            />
-
+            /> */}
+<input
+  type="file"
+  multiple
+  accept=".pdf"
+  onChange={(e) => {
+    const res = validatePdfFiles(e.target.files);
+    if (!res.ok) {
+      setFiles(null);
+      setFileError(res.errors.join('\n'));
+      // or SweetAlert if you prefer:
+      // Swal.fire('Invalid files', res.errors.join('<br/>'), 'error');
+    } else {
+      setFiles(e.target.files);
+      setFileError(null);
+    }
+  }}
+  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+/>
             <div className="space-y-4">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-purple-100">
                 <svg
