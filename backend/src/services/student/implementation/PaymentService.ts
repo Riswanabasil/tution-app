@@ -141,6 +141,8 @@ async getMyCourses(userId: string) {
     })
   );
 }
+
+
   async getStats(userId: string) {
     const totalEnrolled = await this.repo.countPaidByUser(userId);
     return { totalEnrolled };

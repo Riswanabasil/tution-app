@@ -2,12 +2,25 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { AxiosError } from 'axios';
 import { loginTutor, logoutTutor, tutorGoogleLogin } from '../../features/tutor/services/TutorApi';
 
+interface TutorProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: 'tutor';
+}
 interface TutorAuthState {
   accessToken: string | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
+  profile: TutorProfile | null; 
 }
+
+export interface TutorLoginResp {
+  accessToken: string;
+  tutor: { id: string; name: string; email: string; role: 'tutor' };
+}
+
 
 const LS_KEY = 'tutorAccessToken';
 const saved = localStorage.getItem(LS_KEY);
@@ -17,21 +30,37 @@ const initialState: TutorAuthState = {
   isAuthenticated: !!saved,
   loading: false,
   error: null,
+  profile: null,
 };
 
+// export const loginTutorThunk = createAsyncThunk<
+//   string,
+//   { email: string; password: string },
+//   { rejectValue: string }
+// >('tutor/login', async (payload, thunkAPI) => {
+//   try {
+//     const res = await loginTutor(payload);
+//     localStorage.setItem(LS_KEY, res.accessToken);
+//     return res.accessToken;
+//   } catch (err) {
+//     const e = err as AxiosError<{ message?: string }>;
+//     const msg = e.response?.data?.message || 'Login failed';
+//     return thunkAPI.rejectWithValue(msg);
+//   }
+// });
 export const loginTutorThunk = createAsyncThunk<
-  string,
+  { accessToken: string; profile: TutorLoginResp['tutor'] }, // thunk return type
   { email: string; password: string },
   { rejectValue: string }
->('tutor/login', async (payload, thunkAPI) => {
+>('tutor/login', async (payload, { rejectWithValue }) => {
   try {
-    const res = await loginTutor(payload);
+    const res: TutorLoginResp = await loginTutor(payload);  // you can keep API as-is
     localStorage.setItem(LS_KEY, res.accessToken);
-    return res.accessToken;
+    localStorage.setItem('tutorProfile', JSON.stringify(res.tutor));
+    return { accessToken: res.accessToken, profile: res.tutor };
   } catch (err) {
     const e = err as AxiosError<{ message?: string }>;
-    const msg = e.response?.data?.message || 'Login failed';
-    return thunkAPI.rejectWithValue(msg);
+    return rejectWithValue(e.response?.data?.message || 'Login failed');
   }
 });
 
@@ -80,7 +109,8 @@ const tutorAuthSlice = createSlice({
     b.addCase(loginTutorThunk.fulfilled, (s, a) => {
       s.loading = false;
       s.isAuthenticated = true;
-      s.accessToken = a.payload;
+      s.accessToken = a.payload.accessToken;
+       s.profile = a.payload.profile;
     });
     b.addCase(loginTutorThunk.rejected, (s, a) => {
       s.loading = false;

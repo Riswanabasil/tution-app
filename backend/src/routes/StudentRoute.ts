@@ -32,6 +32,9 @@ import { StudentVideoController } from '../controllers/student/implementation/Vi
 import { ReviewRepository } from '../repositories/review/implementation/ReviewRepository';
 import { ReviewService } from '../services/student/implementation/ReviewService';
 import ReviewController from '../controllers/student/implementation/reviewController';
+import { LiveSessionRepository } from '../repositories/liveSession/implementation/LiveSessionRepository';
+import { StudentLiveSessionService } from '../services/student/implementation/LiveSessionService';
+import { StudentLiveSessionController } from '../controllers/student/implementation/LiveSessionController';
 
 const router = express.Router();
 
@@ -75,6 +78,10 @@ const videoCtrl = new StudentVideoController(videoSvc);
 const reviewRepo = new ReviewRepository();
 const reviewService = new ReviewService(reviewRepo);
 const reviewCtrl = new ReviewController(reviewService);
+
+const liveRepo = new LiveSessionRepository();
+const liveService = new StudentLiveSessionService(liveRepo);
+const liveController = new StudentLiveSessionController(liveService);
 // Route
 router.post('/register', studentController.registerStudent.bind(studentController));
 router.post(
@@ -184,5 +191,19 @@ router.get('/courses/:courseId/reviews/stats', authMiddleware, reviewCtrl.stats.
 router.patch('/reviews/:id', authMiddleware, reviewCtrl.update.bind(reviewCtrl));
 router.delete('/reviews/:id', authMiddleware, reviewCtrl.remove.bind(reviewCtrl));
 router.get('/courses/:courseId/reviews/mine', authMiddleware, reviewCtrl.getMine.bind(reviewCtrl));
+
+//live
+router.get(
+  '/topic/:topicId/livesession',
+  authMiddleware,              
+  liveController.listByTopic.bind(liveController)
+);
+
+
+router.get(
+  '/livesession/:id',
+  authMiddleware,
+  liveController.getById.bind(liveController)
+);
 
 export default router;

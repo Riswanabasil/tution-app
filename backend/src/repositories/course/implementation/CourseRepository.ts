@@ -167,4 +167,14 @@ export class CourseRepository implements ICourseRepository {
       createdAt: d.createdAt as Date,
     }));
   }
+
+  async findActiveByIds(ids: string[]): Promise<ICourse[]> {
+  return Course.find({
+    _id: { $in: ids },
+    $or: [{ deletedAt: { $exists: false } }, { deletedAt: null }],
+  })
+    .select('_id title price thumbnailKey')
+    .lean()
+    .exec();
+}
 }

@@ -1,3 +1,4 @@
+import { ObjectId, Types } from 'mongoose';
 import { Module, IModule } from '../../../models/module/ModuleSchema';
 import { BaseRepository } from '../../base/BaseRepository';
 import type { IModuleRepository } from '../IModuleRepository';
@@ -28,4 +29,8 @@ export class ModuleRepository extends BaseRepository<IModule> implements IModule
   async softDelete(id: string): Promise<void> {
     await Module.findByIdAndUpdate(id, { deletedAt: new Date() }).exec();
   }
+
+  async findById(id: Types.ObjectId | string): Promise<IModule | null> {
+  return Module.findById(id).exec();
+}
 }

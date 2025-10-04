@@ -69,7 +69,7 @@ export class StudentService implements IStudentService {
       throw new Error('Invalid password');
     }
 
-    const accessToken = generateAccessToken(student._id.toString(), student.email, student.role);
+    const accessToken = generateAccessToken(student._id.toString(), student.email, student.role,student.name);
 
     const refreshToken = generateRefreshToken(student._id.toString(), student.email, student.role);
 

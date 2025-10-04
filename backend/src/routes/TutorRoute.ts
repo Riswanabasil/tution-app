@@ -32,6 +32,9 @@ import { AdminDashboardService } from '../services/admin/implementation/AdminDas
 import { TutorDashboardService } from '../services/tutor/implementation/DashboardService';
 import { TutorDashboardController } from '../controllers/tutor/implementation/DashboardController';
 import { getNoteUploadUrls } from '../controllers/tutor/implementation/upload.controller';
+import { LiveSessionRepository } from '../repositories/liveSession/implementation/LiveSessionRepository';
+import { LiveSessionService } from '../services/tutor/implementation/LiveSessionService';
+import { LiveSessionController } from '../controllers/tutor/implementation/liveSession.controller';
 
 const router = express.Router();
 
@@ -68,6 +71,11 @@ const videoCtrl = new VideoController(videoService);
 const enrollmentRepo = new EnrollmentRepository();
 const enrollmentService = new TutorDashboardService(courseRepo, enrollmentRepo, tutorRepo);
 const enrollmentController = new TutorDashboardController(enrollmentService);
+
+//live session
+const liveRepo= new LiveSessionRepository()
+const liveService= new LiveSessionService(liveRepo,topicRepo,moduleRepo,courseRepo)
+const liveController= new LiveSessionController(liveService)
 
 router.post('/register', tutorController.registerTutor.bind(tutorController));
 router.post(
@@ -189,5 +197,14 @@ router.get(
   authMiddleware,
   enrollmentController.getPendingApprovalsPreview,
 );
+
+
+// live session
+router.post('/:topicId/livesession', authMiddleware, liveController.create.bind(liveController));
+router.get('/:topicId/livesession', authMiddleware, liveController.listByTopic.bind(liveController));
+
+router.get('/livesession/:id',authMiddleware, liveController.getById.bind(liveController));
+router.patch('/livesession/:id/status', authMiddleware, liveController.updateStatus.bind(liveController));
+router.delete('/livesession/:id', authMiddleware, liveController.delete.bind(liveController));
 
 export default router;

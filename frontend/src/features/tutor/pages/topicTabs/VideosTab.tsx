@@ -23,7 +23,21 @@ const ALLOWED_MIME = [
 ];
 
 // ---- inside VideosTab component:
-type FormErrors = { title?: string; file?: string };
+
+export default function VideosTab({ topicId }: Props) {
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<VideoItem | null>(null);
+
+  // form
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [durationSec, setDurationSec] = useState<number>(0);
+  const [uploading, setUploading] = useState(false);
+
+  type FormErrors = { title?: string; file?: string };
 const [errors, setErrors] = useState<FormErrors>({});
 
 function validateForm(isEditing: boolean, title: string, file: File | null) {
@@ -48,18 +62,6 @@ function validateForm(isEditing: boolean, title: string, file: File | null) {
 }
 
 
-export default function VideosTab({ topicId }: Props) {
-  const [videos, setVideos] = useState<VideoItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<VideoItem | null>(null);
-
-  // form
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [durationSec, setDurationSec] = useState<number>(0);
-  const [uploading, setUploading] = useState(false);
 
   const load = async () => {
     setLoading(true);

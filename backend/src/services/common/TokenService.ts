@@ -15,9 +15,10 @@ export class TokenService {
         id: string;
         email: string;
         role: string;
+        name?:string
       };
 
-      return generateAccessToken(decoded.id, decoded.email, decoded.role);
+      return generateAccessToken(decoded.id, decoded.email, decoded.role,decoded?.name);
     } catch (error) {
       throw new Error('Invalid or expired refresh token');
     }

@@ -463,30 +463,6 @@ function validateForm() {
 
         <DialogContent className="space-y-6 p-6">
           <div className="space-y-4">
-            {/* <TextField
-              label="Assignment Title"
-              fullWidth
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              variant="outlined"
-              placeholder="Enter a descriptive title for the assignment"
-              InputProps={{
-                style: { borderRadius: '12px' },
-              }}
-            />
-
-            <TextField
-              label="Due Date"
-              fullWidth
-              type="date"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              variant="outlined"
-              InputProps={{
-                style: { borderRadius: '12px' },
-              }}
-            /> */}
             <TextField
   label="Assignment Title"
   fullWidth

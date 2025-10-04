@@ -15,6 +15,8 @@ import AssignmentTab from './pages/topicViewPages/AssignmentTab';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import VideoTab from './pages/topicViewPages/VideoTab';
 import NotFoundPage from '../../components/NotFoundPage';
+import SessionsTab from './pages/topicViewPages/SessionsTab';
+import LiveSessionPage from '../tutor/pages/topicTabs/LiveSessionPage';
 
 const StudentRoutes = () => {
   return (
@@ -34,8 +36,10 @@ const StudentRoutes = () => {
             <Route path="notes" element={<NoteTab />} />
             <Route path="assignments" element={<AssignmentTab />} />
             <Route path="videos" element={<VideoTab />} />
+            <Route path="sessions" element={<SessionsTab />} />
           </Route>
         </Route>
+        <Route path="live/:sessionId" element={<LiveSessionPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

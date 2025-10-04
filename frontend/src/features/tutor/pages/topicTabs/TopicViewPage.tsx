@@ -3,6 +3,7 @@ import NotesTab from './NotesTab';
 import { useState } from 'react';
 import AssignmentTab from './AssignmentTab';
 import VideosTab from './VideosTab';
+import LiveTab from './LiveTab';
 
 export default function TopicViewPage() {
   const { topicId } = useParams<{ topicId: string }>();
@@ -186,50 +187,52 @@ export default function TopicViewPage() {
               {activeTab === 'notes' && <NotesTab topicId={topicId!} />}
               {activeTab === 'assignments' && <AssignmentTab topicId={topicId!} />}
               {activeTab === 'videos' && <VideosTab topicId={topicId!} />}
-              {activeTab === 'live' && (
-                <div className="py-16 text-center">
-                  <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-100 to-pink-100">
-                    <svg
-                      className="h-10 w-10 text-purple-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="mb-2 text-xl font-semibold text-slate-800">
-                    Live Sessions Coming Soon
-                  </h3>
-                  <p className="mx-auto max-w-md text-slate-500">
-                    Interactive virtual classroom sessions will be available soon. Stay tuned for
-                    real-time learning experiences!
-                  </p>
-                  <div className="mt-6">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 px-4 py-2 text-sm font-medium text-purple-700">
-                      <svg
-                        className="h-4 w-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      Under Development
-                    </div>
-                  </div>
-                </div>
-              )}
+              {activeTab === 'live' && <LiveTab topicId={topicId!} />
+              //  (
+              //   <div className="py-16 text-center">
+              //     <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-100 to-pink-100">
+              //       <svg
+              //         className="h-10 w-10 text-purple-500"
+              //         fill="none"
+              //         stroke="currentColor"
+              //         viewBox="0 0 24 24"
+              //       >
+              //         <path
+              //           strokeLinecap="round"
+              //           strokeLinejoin="round"
+              //           strokeWidth={2}
+              //           d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+              //         />
+              //       </svg>
+              //     </div>
+              //     <h3 className="mb-2 text-xl font-semibold text-slate-800">
+              //       Live Sessions Coming Soon
+              //     </h3>
+              //     <p className="mx-auto max-w-md text-slate-500">
+              //       Interactive virtual classroom sessions will be available soon. Stay tuned for
+              //       real-time learning experiences!
+              //     </p>
+              //     <div className="mt-6">
+              //       <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 px-4 py-2 text-sm font-medium text-purple-700">
+              //         <svg
+              //           className="h-4 w-4"
+              //           fill="none"
+              //           stroke="currentColor"
+              //           viewBox="0 0 24 24"
+              //         >
+              //           <path
+              //             strokeLinecap="round"
+              //             strokeLinejoin="round"
+              //             strokeWidth={2}
+              //             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              //           />
+              //         </svg>
+              //         Under Development
+              //       </div>
+              //     </div>
+              //   </div>
+              // )
+              }
             </div>
           </div>
         </div>

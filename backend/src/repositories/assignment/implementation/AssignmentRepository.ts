@@ -22,4 +22,5 @@ export class AssignmentRepository implements IAssignmentRepository {
   async softDelete(id: string): Promise<void> {
     await AssignmentModel.findByIdAndUpdate(id, { isDeleted: true }).exec();
   }
+  
 }

@@ -5,12 +5,19 @@ import {
   studentGoogleLogin,
   logoutStudent,
 } from '../../features/student/services/StudentApi';
+interface StudentProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: 'student';
 
+}
 interface RoleAuthState {
   accessToken: string | null;
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
+    profile: StudentProfile | null;
 }
 
 const LS_KEY = 'accessToken';
@@ -21,6 +28,7 @@ const initialState: RoleAuthState = {
   isAuthenticated: !!saved,
   loading: false,
   error: null,
+  profile: null,
 };
 
 export const loginStudentThunk = createAsyncThunk(
@@ -29,7 +37,7 @@ export const loginStudentThunk = createAsyncThunk(
     try {
       const res = await studentLogin(payload);
       localStorage.setItem(LS_KEY, res.accessToken);
-      return res.accessToken;
+      return { accessToken: res.accessToken, profile: res.student as StudentProfile };
     } catch (err) {
       const e = err as AxiosError<{ message?: string }>;
       return thunkAPI.rejectWithValue(e.response?.data?.message || 'Login failed');
@@ -82,7 +90,8 @@ const studentAuthSlice = createSlice({
     b.addCase(loginStudentThunk.fulfilled, (s, a) => {
       s.loading = false;
       s.isAuthenticated = true;
-      s.accessToken = a.payload;
+      s.accessToken = a.payload.accessToken;
+       s.profile = a.payload.profile;
     });
     b.addCase(loginStudentThunk.rejected, (s, a) => {
       s.loading = false;

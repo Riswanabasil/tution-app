@@ -13,6 +13,7 @@ import TutorProfilePage from './pages/TutorProfilePage';
 import TopicViewPage from './pages/topicTabs/TopicViewPage';
 import NotFoundPage from '../../components/NotFoundPage';
 import TutorDashboardPage from './pages/DashboardPage';
+import LiveSessionPage from './pages/topicTabs/LiveSessionPage';
 
 const TutorRoutes = () => {
   return (
@@ -28,6 +29,7 @@ const TutorRoutes = () => {
         <Route path="courses/:id/edit" element={<AddEditCoursePage />} />
         <Route path="profile" element={<TutorProfilePage />} />
         <Route path="topic/:topicId" element={<TopicViewPage />}></Route>
+        <Route path="live/:sessionId" element={<LiveSessionPage />} />
         <Route path="courses/:courseId/content" element={<CourseContentLayout />}>
           <Route index element={<div>Select a module from the left…</div>} />
           <Route path="modules">

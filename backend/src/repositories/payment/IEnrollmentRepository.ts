@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { IEnrollment } from '../../models/payment/Enrollment';
 import { DateRange, TimeGranularity } from '../../types/Enrollment';
 export interface IEnrollmentRepository {
@@ -60,4 +61,6 @@ export interface IEnrollmentRepository {
       amount: number;
     }>
   >;
+
+  isPurchased(userId: Types.ObjectId, courseId: Types.ObjectId): Promise<boolean>
 }
