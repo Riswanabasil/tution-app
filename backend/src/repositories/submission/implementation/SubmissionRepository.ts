@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { ISubmission, SubmissionModel } from '../../../models/submission/SubmissionSchema';
 import { ISubmissionRepository } from '../ISubmissionRepository';
 
@@ -45,6 +45,14 @@ export class SubmissionRepository implements ISubmissionRepository {
         status: 'pending',
       },
       { new: true },
+    );
+  }
+
+   async updateFeedbackAndVerify(submissionId: string, feedback: string): Promise<ISubmission | null> {
+    return SubmissionModel.findByIdAndUpdate(
+      new Types.ObjectId(submissionId),
+      { feedback, status: 'verified', updatedAt: new Date() },
+      { new: true }
     );
   }
 }

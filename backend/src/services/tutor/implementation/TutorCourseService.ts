@@ -6,8 +6,6 @@ export class TutorCourseService implements ITutorCourseService {
   constructor(private courseRepo: ICourseRepository) {}
 
   async createCourse(data: Partial<ICourse>): Promise<ICourse> {
-    console.log(data);
-
     return this.courseRepo.create(data);
   }
 

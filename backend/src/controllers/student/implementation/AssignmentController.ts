@@ -23,10 +23,27 @@ export class AssignmentController {
         .json({ error: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
-  async generatePresignedUrl(req: Request, res: Response, next: NextFunction) {
+  async generatePresignedUrl(req: Request, res: Response, next: NextFunction):Promise<void> {
     try {
-      const { filename, contentType } = req.query as { filename: string; contentType: string };
-      const data = await presignPutObject({ keyPrefix: 'submission', filename, contentType });
+      // const { filename, contentType } = req.query as { filename: string; contentType: string };
+      // const data = await presignPutObject({ keyPrefix: 'submission', filename, contentType });
+
+      const q = req.query as Record<string, any>;
+
+    // accept either "?fileName=" or "?filename="
+    const filename =
+      (q.filename ?? q.fileName ?? '').toString().trim();
+    const contentType = (q.contentType ?? '').toString().trim();
+
+    if (!filename || !contentType) {
+      res.status(400).json({ message: 'fileName and contentType are required' });
+    }
+
+    const data = await presignPutObject({
+      keyPrefix: 'submission',
+      filename: decodeURIComponent(filename),
+      contentType: decodeURIComponent(contentType),
+    });
       res.json(data);
     } catch (err) {
       next(err);
@@ -35,7 +52,7 @@ export class AssignmentController {
   async createSubmissionController(req: AuthenticatedRequest, res: Response) {
     try {
       const assignmentId = req.params.assignmentId;
-      console.log(assignmentId);
+    
 
       const studentId = req.user!.id;
       const data = req.body;
@@ -45,7 +62,6 @@ export class AssignmentController {
         studentId,
         assignmentId,
       );
-
       res.status(201).json({ message: 'Submission created successfully', submission });
     } catch (error) {
       console.log(error);

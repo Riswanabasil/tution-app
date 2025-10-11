@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { AdminCourseService } from '../../services/admin/implementation/CourseService';
 import { CourseStatus, ICourse } from '../../models/course/CourseSchema';
 import { PaginatedCourses } from '../../types/course';
 import { IAdminCourseService } from '../../services/admin/ICourseService';

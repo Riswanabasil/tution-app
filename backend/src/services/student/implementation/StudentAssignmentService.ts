@@ -3,6 +3,7 @@ import { ISubmission } from '../../../models/submission/SubmissionSchema';
 import { AssignmentRepository } from '../../../repositories/assignment/implementation/AssignmentRepository';
 import { SubmissionRepository } from '../../../repositories/submission/implementation/SubmissionRepository';
 import { IStudentAssignmentService } from '../IStudentAssignmentService';
+import { presignGetObject } from '../../../utils/s3Presign';
 
 export class StudentAssignmentService implements IStudentAssignmentService {
   constructor(
@@ -57,12 +58,13 @@ export class StudentAssignmentService implements IStudentAssignmentService {
     data: {
       topicId: string;
       response: string;
-      FileKey: string;
+      fileKey: string;
     },
     studentId: string,
     assignmentId: string,
   ) {
-    const { topicId, response, FileKey } = data;
+    
+    const { topicId, response, fileKey } = data;
 
     const assgn = new mongoose.Types.ObjectId(assignmentId);
     const assignment = await this.assignmentRepo.findById(assgn);
@@ -70,7 +72,7 @@ export class StudentAssignmentService implements IStudentAssignmentService {
 
     const courseId = assignment.courseId;
 
-    const submittedFile = `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${encodeURIComponent(FileKey)}`;
+    // const submittedFile = `https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/${encodeURIComponent(FileKey)}`;
 
     const toSave: Partial<ISubmission> = {
       studentId,
@@ -78,19 +80,37 @@ export class StudentAssignmentService implements IStudentAssignmentService {
       courseId,
       assignmentId,
       response,
-      submittedFile,
+      submittedFile: fileKey,
       status: 'pending',
     };
 
-    return await this.submissionRepo.create(toSave);
+    
+
+    const created = await this.submissionRepo.create(toSave);
+    const url = await presignGetObject(fileKey);
+
+    const obj = (created as any).toObject ? (created as any).toObject() : created;
+     return { ...obj, submittedFile: url };
+
+    // return await this.submissionRepo.create(toSave);
+
+    
   }
+
+
+  
   async getSubmission(assignmentId: string, studentId: string) {
     const submission = await this.submissionRepo.findByAssignmentAndStudent(
       assignmentId,
       studentId,
     );
     if (!submission) throw new Error('Submission not found');
-    return submission;
+    // return submission;
+    const url = await presignGetObject(submission.submittedFile);
+
+  // return same shape the FE expects, but with URL
+  const obj = (submission as any).toObject ? (submission as any).toObject() : submission;
+  return { ...obj, submittedFile: url ?? '' };
   }
 
   async updateSubmissionByAssignment(

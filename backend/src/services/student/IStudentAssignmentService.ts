@@ -19,7 +19,7 @@ export interface IStudentAssignmentService {
   listAssignmentsWithStatus(topicId: string, studentId: string): Promise<AssignmentWithStatus[]>;
 
   createSubmissionService(
-    data: { topicId: string; response: string; FileKey: string },
+    data: { topicId: string; response: string; fileKey: string },
     studentId: string,
     assignmentId: string,
   ): Promise<ISubmission>;

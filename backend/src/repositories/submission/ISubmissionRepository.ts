@@ -15,4 +15,6 @@ export interface ISubmissionRepository {
     response: string,
     submittedFile: string,
   ): Promise<ISubmission | null>;
+
+  updateFeedbackAndVerify(submissionId: string, feedback: string): Promise<ISubmission | null>;
 }
