@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import type { ITutorDashboardService } from '../../../services/tutor/IDashboardService';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { parseDateRange, parseGranularity, parseLimit } from '../../../utils/dashboard';

@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { NoteService } from '../../../services/tutor/implementation/NoteService';
 import mongoose from 'mongoose';
 import { presignGetObject, presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';

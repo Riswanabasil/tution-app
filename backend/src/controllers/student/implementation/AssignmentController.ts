@@ -25,12 +25,11 @@ export class AssignmentController {
   }
   async generatePresignedUrl(req: Request, res: Response, next: NextFunction):Promise<void> {
     try {
-      // const { filename, contentType } = req.query as { filename: string; contentType: string };
-      // const data = await presignPutObject({ keyPrefix: 'submission', filename, contentType });
+   
 
       const q = req.query as Record<string, any>;
 
-    // accept either "?fileName=" or "?filename="
+    
     const filename =
       (q.filename ?? q.fileName ?? '').toString().trim();
     const contentType = (q.contentType ?? '').toString().trim();

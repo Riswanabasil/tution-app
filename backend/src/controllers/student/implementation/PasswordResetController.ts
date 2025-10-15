@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { PasswordResetService } from '../../../services/student/implementation/PasswordResetService';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 import { IPasswordResetService } from '../../../services/student/IPasswordResetService';

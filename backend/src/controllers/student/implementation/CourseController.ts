@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { StudentCourseService } from '../../../services/student/implementation/CourseService';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 import { ICourseService } from '../../../services/student/ICourseService';

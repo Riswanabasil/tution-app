@@ -70,14 +70,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
           )}
         </div>
 
-        {/* Explore button */}
-        {/* <button
-          onClick={() => onExplore(_id)}
-          className="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded text-sm font-medium"
-        >
-          Explore
-        </button> */}
-
         {isPurchased ? (
           <button
             onClick={() => onGoToCourse(course._id)}

@@ -3,7 +3,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import { FaBook, FaLaptopCode, FaGraduationCap } from 'react-icons/fa';
+import {  FaGraduationCap } from 'react-icons/fa';
 
 export default function Home() {
   return (
@@ -15,10 +15,6 @@ export default function Home() {
             <FaGraduationCap className="h-10 w-10 text-blue-600" />
             <span className="text-3xl font-bold">Tech Tute</span>
           </div>
-          {/* <div className="flex items-center gap-3">
-            <img src="/assets/logo.png" alt="Tech Tute" className="h-10 w-10 object-cover rounded" />
-            <span className="text-3xl font-[Cinzel]">Tech Tute</span>
-          </div> */}
 
           {/* right: student auth */}
           <nav className="flex items-center gap-6">
@@ -26,7 +22,7 @@ export default function Home() {
               Login
             </Link>
             <Link
-              to="/student/signup"
+              to="/student/register"
               className="rounded-full bg-black px-5 py-2 text-xl text-white transition hover:bg-gray-800"
             >
               Signup
@@ -152,10 +148,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-4 md:justify-end">
-            {/* <img src="/assets/social-fb.png" alt="facebook" className="h-10" />
-            <img src="/assets/social-ig.png" alt="instagram" className="h-10" />
-            <img src="/assets/social-tw.png" alt="twitter" className="h-10" />
-            <img src="/assets/social-in.png" alt="linkedin" className="h-10" /> */}
+            
             <div className="flex gap-4 text-gray-600">
               <a href="https://facebook.com" target="_blank" rel="noreferrer">
                 <FacebookIcon fontSize="large" />

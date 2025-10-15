@@ -1,6 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
-import type { TutorModuleService } from '../../../services/tutor/implementation/ModuleService';
-import { promises } from 'dns';
+import { Request, Response } from 'express';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 import { ITutorModuleService } from '../../../services/tutor/ITutorModuleService';

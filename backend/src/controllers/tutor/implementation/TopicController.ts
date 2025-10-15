@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { TopicService } from '../../../services/tutor/implementation/TopicService';
 import mongoose from 'mongoose';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';

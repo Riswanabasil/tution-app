@@ -145,7 +145,7 @@ const AdminTutorPage = () => {
             <th className="border p-2">Name</th>
             <th className="border p-2">Email</th>
             <th className="border p-2">Status</th>
-            <th className="border p-2">Assigned Course</th>
+            {/* <th className="border p-2">Assigned Course</th> */}
             <th className="border p-2">Actions</th>
           </tr>
         </thead>
@@ -163,11 +163,11 @@ const AdminTutorPage = () => {
                 <td className="p-2">{tutor.email}</td>
                 <td className="p-2 capitalize">{tutor.status}</td>
                 {/* <td className="p-2">{tutor.assignedCourses|| "------"}</td> */}
-                <td>
+                {/* <td>
                   {Array.isArray(tutor.assignedCourses) && tutor.assignedCourses.length > 0
                     ? tutor.assignedCourses.map((course) => course.title).join(', ')
                     : 'No Courses Assigned'}
-                </td>
+                </td> */}
 
                 <td className="space-x-2 p-2">
                   <button

@@ -5,6 +5,7 @@ import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 import { ITutorService, LoginTutorResponse, RegisterTutorResponse, TutorVerificationInput } from '../../../services/tutor/ITutorService';
+import { validateUpdateTutorProfileDto } from '../../../validators/tutor/UpdateTutorProfileValidator';
 
 export class TutorController implements ITutorController {
   constructor(private tutorService: ITutorService) {}
@@ -28,19 +29,11 @@ export class TutorController implements ITutorController {
     }
   }
  async getVerificationUploadUrls(req: Request, res: Response) {
-    // const tutorId = req.user!.id; 
     const { idFilename, idContentType, resumeFilename, resumeContentType } = req.body as {
       idFilename: string; idContentType: string;
       resumeFilename: string; resumeContentType: string;
     };
 
-    // (Optional) basic server-side validation
-    // const allowed = ['application/pdf',
-    //                  'application/msword',
-    //                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    // if (!allowed.includes(idContentType) || !allowed.includes(resumeContentType)) {
-    //   return res.status(HttpStatus.BAD_REQUEST).json({ message: 'Unsupported file type' });
-    // }
 
     const idProof = await presignPutObject({
       keyPrefix: `tutors/verification/id`,
@@ -63,14 +56,6 @@ export class TutorController implements ITutorController {
       if (!tutorId || !summary || !education || !experience || !idProofKey || !resumeKey) {
          res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
       }
-      // const files = req.files as Record<string, Express.Multer.File[]>;
-      // const idProof = files['idProof']?.[0].filename;
-      // const resume = files['resume']?.[0].filename;
-
-      // if (!tutorId || !idProof || !resume || !summary || !education || !experience) {
-      //   res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
-      //   return;
-      // }
 
       const input: TutorVerificationInput = {
         summary, education, experience,
@@ -202,6 +187,31 @@ export class TutorController implements ITutorController {
     const data = await this.tutorService.updateProfile(tutorId, updates);
     res.json({ data });
   }
+
+  //  async updateProfile(req: AuthenticatedRequest, res: Response) {
+  //   try {
+  //      const tutorId = req.user!.id;
+  //     const v = validateUpdateTutorProfileDto(req.body);
+  //     if (!v.ok) return res.status(400).json({ message: v.error });
+
+  //     const data = await this.tutorService.updateProfile(tutorId, v.data);
+  //      res.json({ data });
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     res.status(500).json({ message: 'Failed to update profile' });
+  //   }
+  // }
+
+  // Get tutor profile (returns URL)
+  // async getProfile(req: Request, res: Response) {
+  //   try {
+  //     const tutorId = (req as any).user.id;
+  //     const data = await this.tutorService.getProfile(tutorId);
+  //     res.json(data);
+  //   } catch (err: any) {
+  //     res.status(404).json({ message: 'Tutor not found' });
+  //   }
+  // }
 
   async changePassword(req: AuthenticatedRequest, res: Response) {
     const tutorId = req.user!.id;

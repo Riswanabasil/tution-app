@@ -7,6 +7,8 @@ import { generateAccessToken, generateRefreshToken } from '../../../utils/Genera
 import bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { ITokenService } from '../../../interfaces/common/ITokenService';
+import { UpdateTutorProfileDto } from '../../../dto/tutor/UpdateTutorProfileDto';
+import { TutorMapper } from '../../../mappers/tutor/TutorMapper';
 
 // export interface RegisterTutorResponse {
 //   id: string;
@@ -167,7 +169,7 @@ export class TutorService implements ITutorService {
     };
   }
 
-  //profile
+  
 
   async getProfile(userId: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
@@ -180,7 +182,22 @@ export class TutorService implements ITutorService {
     if (!updated) throw new Error('Failed to update tutor profile');
     return updated;
   }
+  // async updateProfile(tutorId: string, dto: UpdateTutorProfileDto) {
+  //   // Store only the S3 key
+  //   const updates = { ...dto };
 
+  //   const updated = await this.tutorRepo.updateById(tutorId, updates);
+  //   if (!updated) throw new Error('Failed to update tutor profile');
+
+  //   return await TutorMapper.toResponse(updated);
+  // }
+
+  // async getProfile(tutorId: string) {
+  //   const tutor = await this.tutorRepo.getTutorById(tutorId);
+  //   if (!tutor) throw new Error('Tutor not found');
+
+  //   return await TutorMapper.toResponse(tutor);
+  // }
   async changePassword(userId: string, current: string, next: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
     if (!tutor) throw new Error('Tutor not found');

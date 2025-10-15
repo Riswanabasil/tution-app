@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { AssignmentService } from '../../../services/tutor/implementation/AssignmentService';
 import { HttpStatus } from '../../../constants/statusCode';
 import { IAssignmentService } from '../../../services/tutor/IAssignmentService';
 
