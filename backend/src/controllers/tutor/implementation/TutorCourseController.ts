@@ -92,20 +92,20 @@ export class TutorCourseController {
     }
   }
 
-  async updateCourse(req: Request, res: Response): Promise<void> {
-    try {
-      const thumbnail = (req.file as Express.Multer.File)?.filename;
-      const data = { ...req.body, ...(thumbnail && { thumbnail }) };
-      const updated = await this.courseService.updateCourse(req.params.id, data);
-      if (!updated) {
-        res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found' });
-        return;
-      }
-      res.status(HttpStatus.OK).json(updated);
-    } catch (err) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
-    }
-  }
+  // async updateCourse(req: Request, res: Response): Promise<void> {
+  //   try {
+  //     const thumbnail = (req.file as Express.Multer.File)?.filename;
+  //     const data = { ...req.body, ...(thumbnail && { thumbnail }) };
+  //     const updated = await this.courseService.updateCourse(req.params.id, data);
+  //     if (!updated) {
+  //       res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found' });
+  //       return;
+  //     }
+  //     res.status(HttpStatus.OK).json(updated);
+  //   } catch (err) {
+  //     res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
+  //   }
+  // }
 
   async reapplyCourse(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {

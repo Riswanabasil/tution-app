@@ -3,7 +3,6 @@ import { TutorRepository } from '../repositories/tutor/implementation/TutorRepos
 import { BcryptHasher } from '../services/common/BcryptHasher';
 import { TutorService } from '../services/tutor/implementation/TutorService';
 import { TutorController } from '../controllers/tutor/implementation/TutorControllers';
-import { uploadTutorDocs } from '../middlewares/uploadTutorDocs';
 import { TokenService } from '../services/common/TokenService';
 import { CourseRepository } from '../repositories/course/implementation/CourseRepository';
 import { TutorCourseService } from '../services/tutor/implementation/TutorCourseService';
@@ -109,7 +108,7 @@ router.get('/profile/upload-url', tutorController.getProfileUploadUrl);
 router.post('/course', authMiddleware, courseController.createCourse.bind(courseController));
 router.get('/courses', authMiddleware, courseController.getAllCourses.bind(courseController));
 router.get('/course/:id', courseController.getCourseById.bind(courseController));
-router.put('/course/:id', courseController.updateCourse.bind(courseController));
+// router.put('/course/:id', courseController.updateCourse.bind(courseController));
 router.delete('/course/:id', courseController.softDeleteCourse.bind(courseController));
 router.get('/courses/upload-url', courseController.getUploadUrl);
 router.get('/courses/demo-upload-url', courseController.getDemoUploadUrl);
