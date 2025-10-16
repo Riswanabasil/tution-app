@@ -1,5 +1,6 @@
+
+
 import type {
-  ITutorDashboardService,
   TutorKpis,
   DateRange,
   TimeGranularity,
@@ -8,14 +9,15 @@ import type {
   RecentEnrollmentRow,
   MyCourseRow,
   CourseStatus,
-} from '../IDashboardService';
+} from '../../../utils/dashboardTutor';
 
 import type { ICourseRepository } from '../../../repositories/course/ICourseRepository';
 import type { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
 import type { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { resolveRange, startOfMonth, startOfToday } from '../../../utils/dashboard';
+import { ITutorDashboardService } from '../IDashboardService';
 
-export class TutorDashboardService implements ITutorDashboardService {
+export class TutorDashboardService implements ITutorDashboardService{
   constructor(
     private readonly courses: ICourseRepository,
     private readonly enrollments: IEnrollmentRepository,

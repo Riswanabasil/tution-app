@@ -108,16 +108,6 @@ export default function AddEditModulePage() {
         
         </div>
 
-        {/* <div>
-          <label className="mb-1 block">Order</label>
-          <input
-            type="number"
-            min={1}
-            value={order}
-            onChange={(e) => setOrder(parseInt(e.target.value, 10))}
-            className="w-full rounded border p-2"
-          />
-        </div> */}
         <div>
           <label className="mb-1 block">Order</label>
           <input

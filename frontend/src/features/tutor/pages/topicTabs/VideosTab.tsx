@@ -77,25 +77,7 @@ function validateForm(isEditing: boolean, title: string, file: File | null) {
     load();
   }, [topicId]);
 
-  // const onFileChange = (f: File | null) => {
-  //   setFile(f);
-  //   if (!f) {
-  //     setDurationSec(0);
-  //     return;
-  //   }
-  //   const url = URL.createObjectURL(f);
-  //   const v = document.createElement('video');
-  //   v.preload = 'metadata';
-  //   v.src = url;
-  //   v.onloadedmetadata = () => {
-  //     setDurationSec(Math.ceil(v.duration || 0));
-  //     URL.revokeObjectURL(url);
-  //   };
-  //   v.onerror = () => {
-  //     setDurationSec(0);
-  //     URL.revokeObjectURL(url);
-  //   };
-  // };
+  
 const onFileChange = (f: File | null) => {
   setFile(f);
 
@@ -138,54 +120,7 @@ const onFileChange = (f: File | null) => {
     setEditing(null);
   };
 
-  // const handleSave = async () => {
-  //   try {
-  //     setUploading(true);
-
-  //     if (editing) {
-  //       await updateVideo(editing._id, { title, description, durationSec });
-  //       Swal.fire('Updated!', 'Video updated successfully', 'success');
-  //       setOpen(false);
-  //       resetForm();
-  //       load();
-  //       return;
-  //     }
-
-  //     if (!file) {
-  //       Swal.fire('Required', 'Select a video file', 'warning');
-  //       return;
-  //     }
-
-  //     const { uploadUrl, key } = await getVideoUploadUrl(file.name, file.type);
-  //     console.log('uploadUrl', uploadUrl, key);
-
-  //     const putRes = await fetch(uploadUrl, {
-  //       method: 'PUT',
-  //       headers: { 'Content-Type': file.type },
-  //       body: file,
-  //     });
-  //     if (!putRes.ok) throw new Error('Upload failed');
-
-  //     await createVideo({
-  //       topicId,
-  //       title,
-  //       description,
-  //       durationSec: durationSec || 0,
-  //       key,
-  //       contentType: file.type,
-  //     });
-
-  //     Swal.fire('Added!', 'Video uploaded successfully', 'success');
-  //     setOpen(false);
-  //     resetForm();
-  //     load();
-  //   } catch (e: any) {
-  //     console.error(e);
-  //     Swal.fire('Error', e?.message || 'Something went wrong', 'error');
-  //   } finally {
-  //     setUploading(false);
-  //   }
-  // };
+  
 
   const handleSave = async () => {
   // run validation first
@@ -449,12 +384,7 @@ const onFileChange = (f: File | null) => {
         </DialogTitle>
 
         <DialogContent className="space-y-4 p-6">
-          {/* <TextField
-            label="Title"
-            fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          /> */}
+         
           <TextField
   label="Title"
   fullWidth
@@ -474,19 +404,7 @@ const onFileChange = (f: File | null) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          {/* {!editing && (
-            <>
-              <input
-                type="file"
-                accept="video/*"
-                onChange={(e) => onFileChange(e.target.files?.[0] || null)}
-              />
-              <div className="text-sm text-slate-600">
-                Duration:{' '}
-                {durationSec ? `${Math.floor(durationSec / 60)}m ${durationSec % 60}s` : '—'}
-              </div>
-            </>
-          )} */}
+         
 
           {!editing && (
   <>

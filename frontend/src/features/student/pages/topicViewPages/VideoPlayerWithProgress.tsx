@@ -1,13 +1,4 @@
-// import useVideoProgress from "../../../../hooks/useVideoProgress";
 
-// export default function VideoPlayerWithProgress({
-//   videoId, src, durationSecFromDb, resumeAt
-// }: {
-//   videoId: string; src: string; durationSecFromDb?: number; resumeAt?: number;
-// }) {
-//   const { videoRef } = useVideoProgress({ videoId, resumeAt, durationSecFromDb });
-//   return <video ref={videoRef} className="w-full rounded-lg bg-black" src={src} controls preload="metadata" />;
-// }
 import { X } from 'lucide-react';
 import useVideoProgress from '../../../../hooks/useVideoProgress';
 

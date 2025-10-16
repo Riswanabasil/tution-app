@@ -33,21 +33,7 @@ const initialState: TutorAuthState = {
   profile: null,
 };
 
-// export const loginTutorThunk = createAsyncThunk<
-//   string,
-//   { email: string; password: string },
-//   { rejectValue: string }
-// >('tutor/login', async (payload, thunkAPI) => {
-//   try {
-//     const res = await loginTutor(payload);
-//     localStorage.setItem(LS_KEY, res.accessToken);
-//     return res.accessToken;
-//   } catch (err) {
-//     const e = err as AxiosError<{ message?: string }>;
-//     const msg = e.response?.data?.message || 'Login failed';
-//     return thunkAPI.rejectWithValue(msg);
-//   }
-// });
+
 export const loginTutorThunk = createAsyncThunk<
   { accessToken: string; profile: TutorLoginResp['tutor'] }, // thunk return type
   { email: string; password: string },

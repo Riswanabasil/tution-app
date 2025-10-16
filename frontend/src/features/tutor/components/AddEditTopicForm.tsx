@@ -72,16 +72,9 @@ export default function AddEditTopicForm({ topicId, onSuccess }: Props) {
 setServerError(undefined);
     setFieldErrors({});
     setLoading(true);
-    // if (topicId) {
-    //   await updateTopic(topicId, form);
-    // } else {
-    //   await createTopic(moduleId, form);
-    // }
-
-    // if (onSuccess) onSuccess();
-    // else navigate(-1);
+   
     try {
-      // ✅ validate first (collect all errors)
+     
       await topicSchema.validate(form, { abortEarly: false });
 
       if (topicId) {
@@ -107,36 +100,7 @@ setServerError(undefined);
   };
 
   return (
-    // <form onSubmit={handleSubmit} className="space-y-4">
-    //   <input
-    //     type="number"
-    //     name="order"
-    //     value={form.order}
-    //     onChange={handleChange}
-    //     placeholder="Order"
-    //     required
-    //     className="w-full rounded border p-2"
-    //   />
-    //   <input
-    //     type="text"
-    //     name="title"
-    //     value={form.title}
-    //     onChange={handleChange}
-    //     placeholder="Title"
-    //     required
-    //     className="w-full rounded border p-2"
-    //   />
-    //   <textarea
-    //     name="description"
-    //     value={form.description}
-    //     onChange={handleChange}
-    //     placeholder="Description (optional)"
-    //     className="w-full rounded border p-2"
-    //   />
-    //   <button type="submit" className="rounded bg-green-600 px-4 py-2 text-white">
-    //     {topicId ? 'Update Topic' : 'Create Topic'}
-    //   </button>
-    // </form>
+    
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
       {serverError && (
         <p className="rounded border border-red-200 bg-red-50 p-2 text-red-700">

@@ -20,14 +20,7 @@ const Sidebar = ({ currentPath }: { currentPath: string }) => {
 
       {moduleItems ? (
         <>
-          {/* <h2 className="text-lg font-semibold mb-3 text-gray-800">Module Topics</h2>
-          <ul className="space-y-2">
-            {moduleItems.map((topic: any) => (
-              <li key={topic._id} className="text-gray-700 hover:text-indigo-600">
-                {topic.title}
-              </li>
-            ))}
-          </ul> */}
+          
         </>
       ) : (
         <nav className="flex flex-col space-y-4 text-gray-700">

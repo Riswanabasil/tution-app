@@ -54,18 +54,7 @@ export const registerTutor = async (data: TutorSignupData) => {
   return res.data;
 };
 
-// export const submitTutorVerification = async (payload: TutorVerificationPayload) => {
-//   const formData = new FormData();
-//   formData.append('tutorId', payload.tutorId);
-//   formData.append('summary', payload.summary);
-//   formData.append('education', payload.education);
-//   formData.append('experience', payload.experience);
-//   formData.append('idProof', payload.idProof);
-//   formData.append('resume', payload.resume);
 
-//   const response = await axios.post('/tutor/submit-verification', formData);
-//   return response.data;
-// };
 
 export const submitTutorVerification = async (payload: TutorVerificationPayload) => {
   // 1) Ask backend for presigned PUT URLs

@@ -57,9 +57,6 @@ const TutorVerification = () => {
         idProof: data.idProof[0],
         resume: data.resume[0],
       });
-      //   localStorage.removeItem("pendingTutorId");
-      //   localStorage.removeItem("pendingTutorEmail");
-      //   localStorage.removeItem("pendingTutorName");
       navigate('/tutor/verification-status');
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message: string }>;

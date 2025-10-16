@@ -71,41 +71,7 @@ export default function NotesTab({ topicId }: NotesTabProps) {
     loadNotes();
   }, [topicId]);
 
-  // const handleAddEdit = async () => {
-  //   if (!files || files.length === 0 || !topicId) return;
-  //   try {
-  //     setUploading(true);
-  //     const { data: presigned } = await getNoteUploadUrls(files.length);
-  //     await Promise.all(
-  //       Array.from(files).map((file, i) =>
-  //         fetch(presigned[i].uploadUrl, {
-  //           method: 'PUT',
-  //           headers: { 'Content-Type': 'application/pdf' },
-  //           body: file,
-  //         }),
-  //       ),
-  //     );
-  //     const pdfKeys = presigned.map((item: Prisigned) => item.key);
-
-  //     if (editNote) {
-  //       await updateNote(editNote._id, { pdfKeys });
-  //       Swal.fire('Updated!', 'Note updated successfully', 'success');
-  //     } else {
-  //       await createNote(topicId, { pdfKeys });
-  //       Swal.fire('Added!', 'Note uploaded successfully', 'success');
-  //     }
-
-  //     setOpen(false);
-  //     setEditNote(null);
-  //     setFiles(null);
-  //     loadNotes();
-  //   } catch (err) {
-  //     console.error(err);
-  //     Swal.fire('Error', 'Upload failed', 'error');
-  //   } finally {
-  //     setUploading(false);
-  //   }
-  // };
+  
 
   const handleAddEdit = async () => {
   const res = validatePdfFiles(files);
@@ -178,16 +144,7 @@ export default function NotesTab({ topicId }: NotesTabProps) {
     }
   };
 
-  // const handleDrop = (e: React.DragEvent) => {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   setDragActive(false);
 
-  //   const droppedFiles = e.dataTransfer.files;
-  //   if (droppedFiles) {
-  //     setFiles(droppedFiles);
-  //   }
-  // };
 const handleDrop = (e: React.DragEvent) => {
   e.preventDefault();
   e.stopPropagation();
@@ -498,13 +455,7 @@ const handleDrop = (e: React.DragEvent) => {
             onDragOver={handleDrag}
             onDrop={handleDrop}
           >
-            {/* <input
-              type="file"
-              multiple
-              accept=".pdf"
-              onChange={(e) => setFiles(e.target.files)}
-              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-            /> */}
+            
 <input
   type="file"
   multiple

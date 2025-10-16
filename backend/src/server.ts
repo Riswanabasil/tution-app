@@ -1,5 +1,6 @@
 
 import dotenv from 'dotenv';
+dotenv.config();
 import http from 'http'
 import app from './app';
 import connectDB from './config/db';
@@ -12,17 +13,6 @@ const PORT = process.env.PORT || 5000;
 const server = http.createServer(app);
 createSignalingServer(server);
 
-// export const io = new Server(httpServer, {
-//   cors: {
-//     origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:5173',
-//     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-//     credentials: true,
-//   },
-// });
-
-// io.use(socketAuth(process.env.JWT_SECRET!));
-dotenv.config();
-import './signaling';
 
 connectDB().then(() => {
   server.listen(PORT, () => {

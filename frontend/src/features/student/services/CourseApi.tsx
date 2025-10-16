@@ -111,12 +111,8 @@ export const updateAssignmentResponse = async (
   return res.data;
 };
 
-// export const getSubmissionDetails = async (assignmentId: string) => {
-//   const res = await axios.get(`/student/submission/${assignmentId}`);
-//   return res.data;
-// };
 
-//videos
+
 
 export async function listStudentVideosByTopic(topicId: string) {
   const { data } = await axios.get<StudentVideoItem[]>(`/student/topics/${topicId}/videos`);
