@@ -56,7 +56,7 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
         handler: async (response: RazorpayPaymentResponse) => {
           try {
             // 4) verify payment
-            await verifyPayment(response, eid);
+            await verifyPayment(response, eid,courseId);
             onSuccess?.();
           } catch (err) {
             onError?.(err);

@@ -41,14 +41,17 @@ export class PaymentController {
     }
   }
 
-  async verifyPayment(req: Request, res: Response): Promise<void> {
+  async verifyPayment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+        const userId = req.user!.id;
+      const { razorpay_payment_id, razorpay_order_id, razorpay_signature,courseId } = req.body;
 
       await this.paymentService.verifyAndUpdate(
         razorpay_payment_id,
         razorpay_order_id,
         razorpay_signature,
+        courseId,
+        userId
       );
 
       res.status(HttpStatus.OK).json({

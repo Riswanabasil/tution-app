@@ -20,6 +20,7 @@ export const createOrder = async (
 export const verifyPayment = async (
   response: RazorpayPaymentResponse,
   enrollmentId: string,
+  courseId?:string
 ): Promise<void> => {
   await axios.post('/student/payments/verify', {
     razorpay_payment_id: response.razorpay_payment_id,

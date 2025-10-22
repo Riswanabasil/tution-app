@@ -74,23 +74,31 @@ export class PaymentService implements IPaymentService {
     };
   }
 
-  async verifyAndUpdate(paymentId: string, orderId: string, signature: string) {
+  async verifyAndUpdate(paymentId: string, orderId: string, signature: string,courseId?:string,userId?:string) {
     const crypto = await import('crypto');
     const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!);
     shasum.update(`${orderId}|${paymentId}`);
     if (shasum.digest('hex') !== signature) {
       throw new Error('Invalid signature');
     }
+const uId = new Types.ObjectId(userId);
+    const cId = new Types.ObjectId(courseId);
+    if (await this.repo.isPurchased(uId, cId)) {
+      // use your AppError util if you have one
+      const err: any = new Error('You already own this course');
+      err.status = 409; // Conflict
+      throw err;
+    }
     const enrollment = await this.repo.updateStatus(orderId, 'paid');
     if (!enrollment) throw new Error('Enrollment not found');
-    let courseId: string;
+    let courseID: string;
     if (enrollment.courseId instanceof Types.ObjectId) {
-      courseId = enrollment.courseId.toHexString();
+      courseID = enrollment.courseId.toHexString();
     } else {
-      courseId = enrollment.courseId._id.toString();
+      courseID = enrollment.courseId._id.toString();
     }
 
-    const course = await this.courseRepo.findById(courseId);
+    const course = await this.courseRepo.findById(courseID);
     if (!course) throw new Error('Course not found');
 
     const payout = Math.round(enrollment.amount * 0.7 * 100) / 100;
