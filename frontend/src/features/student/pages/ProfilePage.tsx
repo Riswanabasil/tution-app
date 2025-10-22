@@ -24,6 +24,7 @@ import type { ProfileDTO, StatsDTO, PaymentHistoryDTO } from '../services/Studen
 
 import { PaymentButton } from '../components/PaymentButton';
 import type { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
@@ -34,6 +35,20 @@ export default function ProfilePage() {
   const [stats, setStats] = useState<StatsDTO | null>(null);
   const [history, setHistory] = useState<PaymentHistoryDTO[]>([]);
   const [activeTab, setActiveTab] = useState('profile');
+  const navigate = useNavigate();
+  function getUserMessage(err: any): string {
+  // server might return structured { message, enrollmentId }
+  if (!err) return 'Something went wrong. Please try again.';
+  if (err.userMessage) return err.userMessage; // if you rethrow structured object from helper
+  if (err.response?.data?.message) return err.response.data.message; // axios response body
+  if (typeof err === 'string') return err;
+  if (err.message) return err.message;
+  return 'Something went wrong. Please try again.';
+}
+
+function getEnrollmentIdFromError(err: any): string | undefined {
+  return err?.response?.data?.enrollmentId || err?.existingEnrollmentId || err?.enrollmentId;
+}
 
   const loadData = useCallback(async () => {
     try {
@@ -377,7 +392,37 @@ export default function ProfilePage() {
                                 Swal.fire('Success', 'Payment retried!', 'success');
                                 loadData();
                               }}
-                              onError={(err) => Swal.fire('Error', `${err}`, 'error')}
+                              onError={(err:any) => {
+                                 const userMessage = getUserMessage(err);
+        const status = err?.response?.status || err?.status || null;
+
+        if (status === 409) {
+          // Already paid — give user a friendly message and an action to view the enrollment
+          Swal.fire({
+            title: 'Payment already completed',
+            text: userMessage || 'Payment already completed for this course.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'View enrollment',
+            cancelButtonText: 'OK',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              const existingEnrollmentId = getEnrollmentIdFromError(err);
+              if (existingEnrollmentId) {
+                navigate(`/student/mycourse`);
+              } else {
+                // fallback: go to payments/history or course page
+                navigate('/student/mycourse');
+              }
+            }
+          });
+        } else {
+          // generic failure
+          Swal.fire('Error', userMessage, 'error');
+        }
+                              }
+                                // Swal.fire('Error', `${err}`, 'error')
+                              }
                             />
                           ) : (
                             <span

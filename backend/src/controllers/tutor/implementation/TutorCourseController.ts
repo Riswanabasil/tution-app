@@ -35,20 +35,9 @@ export class TutorCourseController {
 
       const imageKey = req.body.imageKey as string | undefined;
       const demoKey = req.body.demoKey as string | undefined;
-
-      const thumbnailUrl = imageKey
-        ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
-          encodeURIComponent(imageKey)
-        : undefined;
-      const demoVideoUrl = demoKey
-        ? `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/` +
-          encodeURIComponent(demoKey)
-        : undefined;
       const data = {
         ...req.body,
         tutor: tutorId,
-        // thumbnail: thumbnailUrl,
-        // demoVideoUrl: demoVideoUrl,
         thumbnailKey: imageKey,
         demoKey: demoKey,
       };
@@ -106,6 +95,40 @@ export class TutorCourseController {
   //     res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
   //   }
   // }
+// Controller method (replace your commented multer-based handler)
+async updateCourse(req: AuthenticatedRequest, res: Response): Promise<void> {
+  try {
+    const id = String(req.params.id);
+
+    // support both names just in case: thumbnailKey (new) or imageKey (old)
+    const thumbnailKey = (req.body.thumbnailKey ?? req.body.imageKey) as string | undefined;
+    const demoKey = req.body.demoKey as string | undefined;
+
+    // build update payload: spread req.body but override with keys we want to set
+    // also avoid accidentally sending unwanted fields (optional — you can whitelist)
+    const data: Partial<ICourse> = {
+      ...req.body,         // keep everything coming from client (title, description, etc.)
+      ...(thumbnailKey && { thumbnailKey }),
+      ...(demoKey && { demoKey }),
+    };
+
+    // If you want to remove a thumbnail/demo when user passes empty string or null:
+    // if (req.body.thumbnailKey === null || req.body.thumbnailKey === "") data.thumbnailKey = null;
+    // if (req.body.demoKey === null || req.body.demoKey === "") data.demoKey = null;
+
+    const updated = await this.courseService.updateCourse(id, data);
+
+    if (!updated) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found' });
+      return;
+    }
+
+    res.status(HttpStatus.OK).json(updated);
+  } catch (err) {
+    console.error('updateCourse error:', err);
+    res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
+  }
+}
 
   async reapplyCourse(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {

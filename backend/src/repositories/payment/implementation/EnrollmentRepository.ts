@@ -1,4 +1,4 @@
-import { Types } from 'mongoose';
+import { FilterQuery, Types } from 'mongoose';
 import { EnrollmentModel, IEnrollment } from '../../../models/payment/Enrollment';
 import { BaseRepository } from '../../base/BaseRepository';
 import { IEnrollmentRepository } from '../IEnrollmentRepository';
@@ -25,6 +25,9 @@ export class EnrollmentRepository
 
   async findByOrderId(id: string): Promise<IEnrollment | null> {
     return EnrollmentModel.findOne({ razorpayOrderId: id });
+  }
+    async findOne(filter: FilterQuery<IEnrollment>): Promise<IEnrollment | null> {
+    return EnrollmentModel.findOne(filter).exec();
   }
 
   async updateById(id: string, status: IEnrollment['status']) {

@@ -4,6 +4,7 @@ import { AuthenticatedRequest } from '../../../types/Index';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
 import { IPaymentService } from '../../../services/student/IPaymentService';
+import { AlreadyPaidError } from '../../../middlewares/errorHandler';
 
 export class PaymentController {
   constructor(private paymentService: IPaymentService) {}
@@ -103,21 +104,51 @@ export class PaymentController {
         .json({ message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
   }
-  async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
-    try {
-      const { enrollmentId } = req.body;
-      if (!enrollmentId) {
-        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing enrollmentId' });
-        return;
-      }
+  // async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
+  //   try {
+  //     const { enrollmentId } = req.body;
+  //     if (!enrollmentId) {
+  //       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing enrollmentId' });
+  //       return;
+  //     }
 
-      const payload = await this.paymentService.retryOrder(enrollmentId);
-      res.json({ data: payload });
-      return;
-    } catch (err) {
-      console.error(' retryOrder error:', err);
-      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
+  //     const payload = await this.paymentService.retryOrder(enrollmentId);
+  //     res.json({ data: payload });
+  //     return;
+  //   } catch (err) {
+  //     console.error(' retryOrder error:', err);
+  //     res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
+  //     return;
+  //   }
+  // }
+
+  async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
+  try {
+    const { enrollmentId } = req.body;
+    if (!enrollmentId) {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing enrollmentId' });
       return;
     }
+
+    const payload = await this.paymentService.retryOrder(enrollmentId);
+    res.json({ data: payload });
+    return;
+  } catch (err: any) {
+    console.error(' retryOrder error:', err);
+
+    if (err instanceof AlreadyPaidError || err.name === 'AlreadyPaidError') {
+      res.status(HttpStatus.CONFLICT).json({ message: err.message }); // 409
+      return;
+    }
+
+    // if you want to surface validation-like errors:
+    if (err.message === 'Enrollment not found' || err.message === 'Can only retry failed payments') {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+      return;
+    }
+
+    res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
+    return;
   }
+}
 }

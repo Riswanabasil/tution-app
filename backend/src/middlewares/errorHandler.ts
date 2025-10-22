@@ -22,3 +22,7 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
 
   res.status(status).json(body);
 }
+
+export class AlreadyPaidError extends Error {
+  constructor(message = 'Course already paid') { super(message); this.name = 'AlreadyPaidError'; }
+}

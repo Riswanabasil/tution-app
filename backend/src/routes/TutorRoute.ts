@@ -108,7 +108,7 @@ router.get('/profile/upload-url', tutorController.getProfileUploadUrl);
 router.post('/course', authMiddleware, courseController.createCourse.bind(courseController));
 router.get('/courses', authMiddleware, courseController.getAllCourses.bind(courseController));
 router.get('/course/:id', courseController.getCourseById.bind(courseController));
-// router.put('/course/:id', courseController.updateCourse.bind(courseController));
+router.put('/course/:id', courseController.updateCourse.bind(courseController));
 router.delete('/course/:id', courseController.softDeleteCourse.bind(courseController));
 router.get('/courses/upload-url', courseController.getUploadUrl);
 router.get('/courses/demo-upload-url', courseController.getDemoUploadUrl);

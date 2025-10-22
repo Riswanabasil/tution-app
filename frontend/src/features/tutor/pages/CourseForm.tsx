@@ -134,81 +134,163 @@ export default function AddEditCoursePage() {
     }
   };
 
+  // const onSubmit = async () => {
+  //   setLoading(true);
+  //   setError(null);
+  //   setFieldErrors({});
+
+  //   try {
+  //     await courseSchema.validate(
+  //       {
+  //         ...formData,
+  //         file,
+  //         demoFile,
+  //       },
+  //       { abortEarly: false, context: { isEdit } },
+  //     );
+
+  //     let imageKey: string | undefined;
+  //     let demoKey: string | undefined;
+
+  //     if (file) {
+  //       const { uploadUrl, key } = await getUploadUrl(file.name, file.type);
+  //       await fetch(uploadUrl, {
+  //         method: 'PUT',
+  //         headers: { 'Content-Type': file.type },
+  //         body: file,
+  //       });
+  //       imageKey = key;
+  //     }
+
+  //     if (demoFile) {
+  //       const { uploadUrl, key } = await getDemoUploadUrl(demoFile.name, demoFile.type);
+  //       await fetch(uploadUrl, {
+  //         method: 'PUT',
+  //         headers: { 'Content-Type': demoFile.type },
+  //         body: demoFile,
+  //       });
+  //       demoKey = key;
+  //     }
+
+  //     const payload: CoursePayload = {
+  //       title: formData.title.trim(),
+  //       code: formData.code.trim(),
+  //       semester: Number(formData.semester),
+  //       price: Number(formData.price),
+  //       offer: formData.offer ? Number(formData.offer) : undefined,
+  //       actualPrice: formData.actualPrice ? Number(formData.actualPrice) : undefined,
+  //       details: formData.details || undefined,
+  //       imageKey,
+  //       demoKey,
+  //     };
+
+  //     if (id) {
+  //       await updateCourse(id, payload);
+  //     } else {
+  //       await createCourse(payload);
+  //     }
+
+  //     navigate('/tutor/courses');
+  //   } catch (err: unknown) {
+  //     if (err && typeof err === 'object' && 'inner' in (err as any)) {
+  //       const yupErr = err as yup.ValidationError;
+  //       const fe: Record<string, string> = {};
+  //       yupErr.inner.forEach((e) => {
+  //         if (e.path && !fe[e.path]) fe[e.path] = e.message;
+  //       });
+  //       setFieldErrors(fe);
+  //     } else {
+  //       const axiosError = err as AxiosError<{ message: string }>;
+  //       setError(
+  //         axiosError?.response?.data?.message || axiosError?.message || 'Something went wrong',
+  //       );
+  //     }
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const onSubmit = async () => {
-    setLoading(true);
-    setError(null);
-    setFieldErrors({});
+  setLoading(true);
+  setError(null);
+  setFieldErrors({});
 
-    try {
-      await courseSchema.validate(
-        {
-          ...formData,
-          file,
-          demoFile,
-        },
-        { abortEarly: false, context: { isEdit } },
-      );
+  try {
+    await courseSchema.validate(
+      {
+        ...formData,
+        file,
+        demoFile,
+      },
+      { abortEarly: false, context: { isEdit } },
+    );
 
-      let imageKey: string | undefined;
-      let demoKey: string | undefined;
+    let imageKey: string | undefined;
+    let demoKey: string | undefined;
 
-      if (file) {
-        const { uploadUrl, key } = await getUploadUrl(file.name, file.type);
-        await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': file.type },
-          body: file,
-        });
-        imageKey = key;
-      }
-
-      if (demoFile) {
-        const { uploadUrl, key } = await getDemoUploadUrl(demoFile.name, demoFile.type);
-        await fetch(uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': demoFile.type },
-          body: demoFile,
-        });
-        demoKey = key;
-      }
-
-      const payload: CoursePayload = {
-        title: formData.title.trim(),
-        code: formData.code.trim(),
-        semester: Number(formData.semester),
-        price: Number(formData.price),
-        offer: formData.offer ? Number(formData.offer) : undefined,
-        actualPrice: formData.actualPrice ? Number(formData.actualPrice) : undefined,
-        details: formData.details || undefined,
-        imageKey,
-        demoKey,
-      };
-
-      if (id) {
-        await updateCourse(id, payload);
-      } else {
-        await createCourse(payload);
-      }
-
-      navigate('/tutor/courses');
-    } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'inner' in (err as any)) {
-        const yupErr = err as yup.ValidationError;
-        const fe: Record<string, string> = {};
-        yupErr.inner.forEach((e) => {
-          if (e.path && !fe[e.path]) fe[e.path] = e.message;
-        });
-        setFieldErrors(fe);
-      } else {
-        const axiosError = err as AxiosError<{ message: string }>;
-        setError(
-          axiosError?.response?.data?.message || axiosError?.message || 'Something went wrong',
-        );
-      }
-    } finally {
-      setLoading(false);
+    // If a new thumbnail file was picked, get presign url and upload
+    if (file) {
+      const { uploadUrl, key } = await getUploadUrl(file.name, file.type);
+      const putRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type },
+        body: file,
+      });
+      if (!putRes.ok) throw new Error('Failed to upload thumbnail to S3');
+      imageKey = key;
     }
-  };
+
+    // If a new demo file was picked, get presign url and upload
+    if (demoFile) {
+      const { uploadUrl, key } = await getDemoUploadUrl(demoFile.name, demoFile.type);
+      const putRes = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': demoFile.type },
+        body: demoFile,
+      });
+      if (!putRes.ok) throw new Error('Failed to upload demo video to S3');
+      demoKey = key;
+    }
+
+    const payload: CoursePayload = {
+      title: formData.title.trim(),
+      code: formData.code.trim(),
+      semester: Number(formData.semester),
+      price: Number(formData.price),
+      offer: formData.offer ? Number(formData.offer) : undefined,
+      actualPrice: formData.actualPrice ? Number(formData.actualPrice) : undefined,
+      details: formData.details || undefined,
+      // only include keys if a new file was uploaded
+      ...(imageKey ? { imageKey } : {}),
+      ...(demoKey ? { demoKey } : {}),
+    };
+
+    if (id) {
+      await updateCourse(id, payload);
+    } else {
+      await createCourse(payload);
+    }
+
+    navigate('/tutor/courses');
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'inner' in (err as any)) {
+      const yupErr = err as yup.ValidationError;
+      const fe: Record<string, string> = {};
+      yupErr.inner.forEach((e) => {
+        if (e.path && !fe[e.path]) fe[e.path] = e.message;
+      });
+      setFieldErrors(fe);
+    } else {
+      const axiosError = err as AxiosError<{ message: string }>;
+      setError(
+        axiosError?.response?.data?.message || (err as Error)?.message || 'Something went wrong',
+      );
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="mx-auto mt-6 max-w-4xl space-y-6 rounded-xl bg-white p-6 shadow-md">

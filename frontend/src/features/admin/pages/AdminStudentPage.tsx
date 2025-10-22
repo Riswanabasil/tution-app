@@ -10,7 +10,7 @@ const AdminStudentPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-
+  
   const loadStudents = useCallback(async () => {
     setLoading(true);
     try {
