@@ -10,7 +10,13 @@ const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   phone: yup.string().required('Phone is required'),
   email: yup.string().email('Invalid email').required('Email is required'),
-  password: yup.string().min(4, 'Min 4 characters').required('Password is required'),
+   password: yup
+    .string()
+    .required('Password is required')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
+      'Password must be at least 8 characters and include uppercase, lowercase, number and special character'
+    ),
 });
 
 type FormData = yup.InferType<typeof schema>;
