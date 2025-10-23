@@ -37,6 +37,9 @@ export default function TutorProfilePage() {
   const [editingVerif, setEditingVerif] = useState(false);
   const [verif, setVerif] = useState<VerificationDetails>(defaultVerif);
   const [activeTab, setActiveTab] = useState('profile');
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+
 
   useEffect(() => {
     (async () => {
@@ -59,8 +62,22 @@ export default function TutorProfilePage() {
     })();
   }, []);
 
+  const hasChanges =
+  nameInput.trim() !== (profile?.name ?? '').trim() ||
+  phoneInput.trim() !== (profile?.phone ?? '').trim() ||
+  !!file;
+
+const formValid = !validateName(nameInput) && !validatePhone(phoneInput);
+
+
   const saveBasic = async () => {
     if (!profile) return;
+    
+  const nameErr = validateName(nameInput);
+  const phoneErr = validatePhone(phoneInput);
+  setNameError(nameErr);
+  setPhoneError(phoneErr);
+  if (nameErr || phoneErr) return;
     let profilePicKey: string | undefined;
     if (file) {
       setUploading(true);
@@ -74,8 +91,8 @@ export default function TutorProfilePage() {
       setUploading(false);
     }
     const updated = await updateTutorProfile({
-      name: nameInput,
-      phone: phoneInput,
+      name: nameInput.trim(),
+  phone: phoneInput.trim() || undefined,
       ...(profilePicKey && { profilePicKey }),
     });
     setProfile(updated);
@@ -83,6 +100,23 @@ export default function TutorProfilePage() {
     setFile(null);
     Swal.fire('Saved!', 'Profile updated', 'success');
   };
+
+  function validateName(name: string): string | null {
+    const t = name.trim();
+    if (!t) return 'Name is required';
+    if (t.length < 2) return 'Name must be at least 2 characters';
+    if (t.length > 15) return 'Name is too long';
+    if (!/^[\p{L} .'-]+$/u.test(t)) return 'Name contains invalid characters';
+    return null;
+  }
+
+  function validatePhone(phone: string): string | null {
+    const p = phone.trim();
+    if (!p) return null; // optional: make required if you prefer
+    if (!/^\d{10}$/.test(p)) return 'Enter a valid 10 digit phone number';
+    return null;
+  }
+
 
   const saveVerif = async () => {
     const updated = await updateTutorProfile({ verificationDetails: verif });
@@ -140,11 +174,10 @@ export default function TutorProfilePage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 rounded-lg px-4 py-2 transition-all duration-200 ${
-                  activeTab === tab.id
+                className={`flex items-center space-x-2 rounded-lg px-4 py-2 transition-all duration-200 ${activeTab === tab.id
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                     : 'text-gray-600 hover:bg-gray-100'
-                }`}
+                  }`}
               >
                 <tab.icon className="h-5 w-5" />
                 <span className="font-medium">{tab.label}</span>
@@ -197,7 +230,8 @@ export default function TutorProfilePage() {
                   <div className="flex space-x-2">
                     <button
                       onClick={saveBasic}
-                      disabled={uploading}
+                      disabled={uploading || !hasChanges}
+
                       className="flex items-center space-x-2 rounded-full bg-green-600 px-6 py-2 text-white"
                     >
                       <Check />
@@ -223,18 +257,34 @@ export default function TutorProfilePage() {
                     <input
                       type="text"
                       value={nameInput}
-                      onChange={(e) => setNameInput(e.target.value)}
+                      // onChange={(e) => setNameInput(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setNameInput(v);
+                        setNameError(validateName(v));
+                      }}
+                      onBlur={() => setNameError(validateName(nameInput))}
+
                       className="w-full rounded-lg border border-gray-300 px-4 py-2"
                     />
+                    { nameError && <p className="mt-1 text-sm text-red-600">{nameError}</p> }
                   </div>
                   <div>
                     <label className="mb-2 block text-sm font-medium text-gray-700">Phone</label>
                     <input
                       type="text"
                       value={phoneInput}
-                      onChange={(e) => setPhoneInput(e.target.value)}
+                      // onChange={(e) => setPhoneInput(e.target.value)}
+                      onChange={(e) => {
+                        const v = e.target.value;
+                        setPhoneInput(v);
+                        setPhoneError(validatePhone(v));
+                      }}
+                      onBlur={() => setPhoneError(validatePhone(phoneInput))}
+
                       className="w-full rounded-lg border border-gray-300 px-4 py-2"
                     />
+                    { phoneError && <p className="mt-1 text-sm text-red-600">{phoneError}</p> }
                   </div>
                 </div>
               </div>
@@ -243,12 +293,12 @@ export default function TutorProfilePage() {
             <div className="p-6">
               <div className="mb-4 flex justify-between">
                 <h3 className="text-xl font-semibold">Verification Details</h3>
-                <button
+                {/* <button
                   onClick={() => setEditingVerif(!editingVerif)}
                   className="text-blue-600 hover:underline"
                 >
                   {editingVerif ? 'Cancel' : 'Edit'}
-                </button>
+                </button> */}
               </div>
               {editingVerif ? (
                 <div className="space-y-4">

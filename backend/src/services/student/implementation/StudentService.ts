@@ -163,7 +163,7 @@ export class StudentService implements IStudentService {
     await this.studentRepo.changePassword(userId, hash);
   }
 
-  async updateProfile(userId: string, updates: { phone?: string; profilePicKey?: string }) {
+  async updateProfile(userId: string, updates: { name?: string; phone?: string; profilePicKey?: string }) {
     let finalPic: string | undefined;
     if (updates.profilePicKey) {
       finalPic =
@@ -172,7 +172,7 @@ export class StudentService implements IStudentService {
     }
     const toSave: any = { ...(updates.phone && { phone: updates.phone }) };
     if (finalPic) toSave.profilePic = finalPic;
-
+toSave.name = updates.name
     const updated = await this.studentRepo.updateById(userId, toSave);
     if (!updated) throw new Error('Failed to update profile');
     return updated;

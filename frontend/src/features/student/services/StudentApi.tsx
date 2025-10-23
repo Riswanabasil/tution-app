@@ -61,6 +61,7 @@ export const getProfile = async (): Promise<ProfileDTO> => {
 };
 
 export const updateProfile = async (payload: {
+  name?:string
   phone?: string;
   profilePic?: string;
 }): Promise<ProfileDTO> => {

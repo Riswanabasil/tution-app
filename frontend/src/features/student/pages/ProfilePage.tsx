@@ -35,25 +35,47 @@ export default function ProfilePage() {
   const [stats, setStats] = useState<StatsDTO | null>(null);
   const [history, setHistory] = useState<PaymentHistoryDTO[]>([]);
   const [activeTab, setActiveTab] = useState('profile');
+  const [nameInput, setNameInput] = useState('');
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+
   const navigate = useNavigate();
   function getUserMessage(err: any): string {
-  // server might return structured { message, enrollmentId }
-  if (!err) return 'Something went wrong. Please try again.';
-  if (err.userMessage) return err.userMessage; // if you rethrow structured object from helper
-  if (err.response?.data?.message) return err.response.data.message; // axios response body
-  if (typeof err === 'string') return err;
-  if (err.message) return err.message;
-  return 'Something went wrong. Please try again.';
-}
+    // server might return structured { message, enrollmentId }
+    if (!err) return 'Something went wrong. Please try again.';
+    if (err.userMessage) return err.userMessage; // if you rethrow structured object from helper
+    if (err.response?.data?.message) return err.response.data.message; // axios response body
+    if (typeof err === 'string') return err;
+    if (err.message) return err.message;
+    return 'Something went wrong. Please try again.';
+  }
+  function validateName(name: string): string | null {
+    const trimmed = name.trim();
+    if (!trimmed) return 'Name is required';
+    if (trimmed.length < 2) return 'Name must be at least 2 characters';
+    if (trimmed.length > 15) return 'Name is too long';
+    // optional: allow letters, spaces, dots, hyphens
+    if (!/^[\p{L} .'-]+$/u.test(trimmed)) return 'Name contains invalid characters';
+    return null;
+  }
 
-function getEnrollmentIdFromError(err: any): string | undefined {
-  return err?.response?.data?.enrollmentId || err?.existingEnrollmentId || err?.enrollmentId;
-}
+  function validatePhone(phone: string): string | null {
+    const p = phone.trim();
+    if (!p) return null; // allow empty if you want it optional
+    // simple India-friendly check: 10 digits
+    if (!/^\d{10}$/.test(p)) return 'Enter a valid 10 digit phone number';
+    return null;
+  }
+
+  function getEnrollmentIdFromError(err: any): string | undefined {
+    return err?.response?.data?.enrollmentId || err?.existingEnrollmentId || err?.enrollmentId;
+  }
 
   const loadData = useCallback(async () => {
     try {
       const [p, s, h] = await Promise.all([getProfile(), getStats(), getPaymentHistory()]);
       setProfile(p);
+      setNameInput(p.name ?? '');
       setPhoneInput(p.phone ?? '');
       setStats(s);
       setHistory(h);
@@ -71,6 +93,13 @@ function getEnrollmentIdFromError(err: any): string | undefined {
   const saveProfile = async () => {
     if (!profile) return;
 
+    const nameErr = validateName(nameInput);
+    const phoneErr = validatePhone(phoneInput);
+
+    setNameError(nameErr);
+    setPhoneError(phoneErr);
+    if (nameErr || phoneErr) return;
+
     let profilePicKey: string | undefined = undefined;
 
     if (file) {
@@ -86,7 +115,8 @@ function getEnrollmentIdFromError(err: any): string | undefined {
     }
 
     const updated = await updateProfile({
-      phone: phoneInput,
+      name: nameInput.trim(),
+      phone: phoneInput.trim() || undefined,
       ...(profilePicKey && { profilePicKey }),
     });
 
@@ -94,6 +124,14 @@ function getEnrollmentIdFromError(err: any): string | undefined {
     setEditing(false);
     setFile(null);
   };
+
+  const hasChanges =
+    nameInput.trim() !== (profile?.name ?? '').trim() ||
+    phoneInput.trim() !== (profile?.phone ?? '').trim() ||
+    !!file;
+
+  const formValid = !validateName(nameInput) && !validatePhone(phoneInput);
+
 
   const handleChangePassword = async () => {
     const { value: formValues } = await Swal.fire({
@@ -169,11 +207,10 @@ function getEnrollmentIdFromError(err: any): string | undefined {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 rounded-lg px-4 py-2 transition-all duration-200 ${
-                  activeTab === tab.id
+                className={`flex items-center space-x-2 rounded-lg px-4 py-2 transition-all duration-200 ${activeTab === tab.id
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                     : 'text-gray-600 hover:bg-gray-100'
-                }`}
+                  }`}
               >
                 <tab.icon />
                 <span className="font-medium">{tab.label}</span>
@@ -219,14 +256,23 @@ function getEnrollmentIdFromError(err: any): string | undefined {
                       </button>
                     ) : (
                       <div className="flex space-x-2">
-                        <button
+                        {/* <button
                           onClick={saveProfile}
                           disabled={uploading}
                           className="flex items-center space-x-2 rounded-full bg-green-500 px-6 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:opacity-50"
                         >
                           <Check />
                           <span>{uploading ? 'Saving...' : 'Save'}</span>
+                        </button> */}
+                        <button
+                          onClick={saveProfile}
+                          disabled={uploading || !hasChanges }
+                          className="flex items-center space-x-2 rounded-full bg-green-500 px-6 py-2 font-medium text-white transition-colors hover:bg-green-600 disabled:opacity-50 disabled:opacity-50"
+                        >
+                          <Check />
+                          <span>{uploading ? 'Saving...' : 'Save'}</span>
                         </button>
+
                         <button
                           onClick={() => setEditing(false)}
                           className="flex items-center space-x-2 rounded-full bg-gray-500 px-6 py-2 font-medium text-white transition-colors hover:bg-gray-600"
@@ -244,6 +290,21 @@ function getEnrollmentIdFromError(err: any): string | undefined {
                 <div className="space-y-6 p-6">
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
+                      <label className="mb-2 block text-sm font-medium text-gray-700">Full name</label>
+                      <input
+                        type="text"
+                        value={nameInput}
+                        onChange={(e) => {
+                          setNameInput(e.target.value);
+                          if (nameError) setNameError(null); // clear error on edit
+                        }}
+                        className="w-full rounded-lg border border-gray-300 px-4 py-3"
+                        placeholder="Enter your full name"
+                      />
+                      {nameError && <p className="mt-1 text-sm text-red-600">{nameError}</p>}
+                    </div>
+
+                    <div>
                       <label className="mb-2 block text-sm font-medium text-gray-700">
                         Phone Number
                       </label>
@@ -254,7 +315,10 @@ function getEnrollmentIdFromError(err: any): string | undefined {
                         className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter phone number"
                       />
+                      {phoneError && <p className="mt-1 text-sm text-red-600">{phoneError}</p>}
+
                     </div>
+
                     <div>
                       <label className="mb-2 block text-sm font-medium text-gray-700">
                         Profile Picture
@@ -392,34 +456,34 @@ function getEnrollmentIdFromError(err: any): string | undefined {
                                 Swal.fire('Success', 'Payment retried!', 'success');
                                 loadData();
                               }}
-                              onError={(err:any) => {
-                                 const userMessage = getUserMessage(err);
-        const status = err?.response?.status || err?.status || null;
+                              onError={(err: any) => {
+                                const userMessage = getUserMessage(err);
+                                const status = err?.response?.status || err?.status || null;
 
-        if (status === 409) {
-          // Already paid — give user a friendly message and an action to view the enrollment
-          Swal.fire({
-            title: 'Payment already completed',
-            text: userMessage || 'Payment already completed for this course.',
-            icon: 'info',
-            showCancelButton: true,
-            confirmButtonText: 'View enrollment',
-            cancelButtonText: 'OK',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              const existingEnrollmentId = getEnrollmentIdFromError(err);
-              if (existingEnrollmentId) {
-                navigate(`/student/mycourse`);
-              } else {
-                // fallback: go to payments/history or course page
-                navigate('/student/mycourse');
-              }
-            }
-          });
-        } else {
-          // generic failure
-          Swal.fire('Error', userMessage, 'error');
-        }
+                                if (status === 409) {
+                                  // Already paid — give user a friendly message and an action to view the enrollment
+                                  Swal.fire({
+                                    title: 'Payment already completed',
+                                    text: userMessage || 'Payment already completed for this course.',
+                                    icon: 'info',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'View enrollment',
+                                    cancelButtonText: 'OK',
+                                  }).then((result) => {
+                                    if (result.isConfirmed) {
+                                      const existingEnrollmentId = getEnrollmentIdFromError(err);
+                                      if (existingEnrollmentId) {
+                                        navigate(`/student/mycourse`);
+                                      } else {
+                                        // fallback: go to payments/history or course page
+                                        navigate('/student/mycourse');
+                                      }
+                                    }
+                                  });
+                                } else {
+                                  // generic failure
+                                  Swal.fire('Error', userMessage, 'error');
+                                }
                               }
                                 // Swal.fire('Error', `${err}`, 'error')
                               }
