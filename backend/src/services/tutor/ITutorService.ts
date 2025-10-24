@@ -2,6 +2,7 @@
 import type { ITutor } from '../../models/tutor/TutorSchema';
 import type { ITutorRepository } from '../../repositories/tutor/ITutorRepository';
 import type { IHasher } from '../../interfaces/common/IHasher';
+import { TutorProfileDTO } from '../../dto/tutor/profile';
 
 // Narrow helper return types (tweak to your actual models as needed)
 export type TutorStatus = 'pending' | 'verification-submitted' | 'approved' | 'rejected';
@@ -87,7 +88,7 @@ export interface ITutorService {
   googleLoginTutorService(idToken: string): Promise<GoogleLoginTutorResponse>;
 
   // profile
-  getProfile(userId: string): Promise<ITutor>;
+  getProfile(userId: string): Promise<TutorProfileDTO>;
 
   updateProfile(
     userId: string,

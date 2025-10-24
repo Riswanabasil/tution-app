@@ -10,6 +10,7 @@ import { IEnrollmentRepository } from '../../../repositories/payment/IEnrollment
 import bcrypt from 'bcrypt';
 import { IOtpService } from '../../../interfaces/common/IOtpService';
 import { ITokenService } from '../../../interfaces/common/ITokenService';
+import { StudentMapper } from '../../../mappers/student/profile';
 
 export class StudentService implements IStudentService {
   constructor(
@@ -138,7 +139,10 @@ export class StudentService implements IStudentService {
   async getProfile(userId: string) {
     const student = await this.studentRepo.findById(userId);
     if (!student) throw new Error('Student not found');
-    return student;
+    // return student;
+
+    const dto = StudentMapper.toProfileDTO(student);
+  return dto;
   }
 
   /** Update phone or profilePic */

@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { ITokenService } from '../../../interfaces/common/ITokenService';
 import { UpdateTutorProfileDto } from '../../../dto/tutor/UpdateTutorProfileDto';
-import { TutorMapper } from '../../../mappers/tutor/TutorMapper';
+import { TutorMapper } from '../../../mappers/tutor/profile';
 
 // export interface RegisterTutorResponse {
 //   id: string;
@@ -174,7 +174,9 @@ export class TutorService implements ITutorService {
   async getProfile(userId: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
     if (!tutor) throw new Error('Tutor not found');
-    return tutor;
+    // return tutor;
+    const dto = TutorMapper.toProfileDTO(tutor);
+  return dto;
   }
 
   async updateProfile(userId: string, updates: Partial<any>): Promise<Omit<ITutor, "password">> {
