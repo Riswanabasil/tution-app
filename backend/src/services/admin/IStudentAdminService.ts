@@ -1,7 +1,8 @@
+import { StudentDTO } from '../../dto/admin/student';
 import { IStudent } from '../../models/student/studentSchema';
 
 export interface GetStudentsResult {
-  students: IStudent[];
+  students: StudentDTO[];
   totalPages: number;
 }
 

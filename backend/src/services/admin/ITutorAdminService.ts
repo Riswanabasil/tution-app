@@ -1,13 +1,8 @@
+import { TutorDTO } from '../../dto/admin/tutor';
 import { ITutor } from '../../models/tutor/TutorSchema';
 
 export interface PagedTutors {
-  tutors: Array<{
-    id: string;
-    name: string;
-    email: string;
-    status: string;
-    // assignedCourses: string[];
-  }>;
+  tutors:TutorDTO[]
   total: number;
   currentPage: number;
   totalPages: number;

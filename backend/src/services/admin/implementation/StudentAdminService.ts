@@ -1,5 +1,6 @@
 import { IStudentAdminService, GetStudentsResult } from '../IStudentAdminService';
 import { IStudentRepository } from '../../../repositories/student/IStudentRepository';
+import { StudentMapper } from '../../../mappers/admin/student';
 
 export class StudentAdminService implements IStudentAdminService {
   constructor(private studentRepo: IStudentRepository) {}
@@ -27,8 +28,8 @@ export class StudentAdminService implements IStudentAdminService {
       limit,
       sort: { [sort]: order },
     });
-
-    return { students, totalPages: Math.ceil(total / limit) };
+ const mappedStudents = StudentMapper.toDTOList(students);
+    return { students:mappedStudents, totalPages: Math.ceil(total / limit) };
   }
 
   async blockStudent(studentId: string, block: boolean): Promise<void> {

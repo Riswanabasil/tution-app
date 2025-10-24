@@ -2,6 +2,7 @@ import { ITutorAdminService, PagedTutors, TutorDetails ,TutorVerificationDetails
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { ITutor } from '../../../models/tutor/TutorSchema';
 import { presignGetObject } from '../../../utils/s3Presign';
+import { TutorMapper } from '../../../mappers/admin/tutor';
 
 export class TutorAdminService implements ITutorAdminService {
   constructor(private tutorRepo: ITutorRepository) {}
@@ -24,15 +25,16 @@ export class TutorAdminService implements ITutorAdminService {
 
     const total = await this.tutorRepo.countAllWithFilters(query);
     const tutorsRaw: ITutor[] = await this.tutorRepo.getAllWithFilters(query, skip, limit);
+     const tutors = TutorMapper.toDTOList(tutorsRaw);
 
-    const tutors = tutorsRaw.map((t) => ({
-      _id: t._id.toString(),
-      id: t._id.toString(),
-      name: t.name,
-      email: t.email,
-      status: t.status,
-      // assignedCourses: t.assignedCourses.map(id => id.toString())
-    }));
+    // const tutors = tutorsRaw.map((t) => ({
+    //   _id: t._id.toString(),
+    //   id: t._id.toString(),
+    //   name: t.name,
+    //   email: t.email,
+    //   status: t.status,
+    //   // assignedCourses: t.assignedCourses.map(id => id.toString())
+    // }));
 
     return {
       tutors,
