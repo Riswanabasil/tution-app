@@ -46,7 +46,7 @@ export class TutorRepository extends BaseRepository<ITutor> implements ITutorRep
 
   async getTutorById(id: string) {
   return Tutor.findById(id)
-    .select('name email phone isGoogleSignup status verificationDetails') 
+    .select('name email phone isGoogleSignup status verificationDetails password profilePic walletBalance') 
     .lean()   
     .exec();
 }

@@ -216,6 +216,7 @@ export class TutorController implements ITutorController {
   async changePassword(req: AuthenticatedRequest, res: Response) {
     const tutorId = req.user!.id;
     const { currentPassword, newPassword } = req.body;
+    
     await this.tutorService.changePassword(tutorId, currentPassword, newPassword);
     res.json({ message: 'Password updated' });
   }

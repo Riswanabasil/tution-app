@@ -203,7 +203,6 @@ export class TutorService implements ITutorService {
   async changePassword(userId: string, current: string, next: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
     if (!tutor) throw new Error('Tutor not found');
-
     const match = await bcrypt.compare(current, (tutor as any).password);
     if (!match) throw new Error('Current password incorrect');
 

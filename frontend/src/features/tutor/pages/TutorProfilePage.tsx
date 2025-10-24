@@ -16,7 +16,7 @@ import type {
   VerificationDetails,
 } from '../services/TutorApi';
 import type { AxiosError } from 'axios';
-
+import * as yup from 'yup';
 const defaultVerif: VerificationDetails = {
   summary: '',
   education: '',
@@ -124,32 +124,89 @@ const formValid = !validateName(nameInput) && !validatePhone(phoneInput);
     setEditingVerif(false);
     Swal.fire('Saved!', 'Verification details updated', 'success');
   };
+const passwordSchema = yup.object({
+  currentPassword: yup.string().required('Current password is required'),
+  newPassword: yup
+    .string()
+    .required('New password is required')
+    .matches(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/,
+      'Password must be at least 8 characters and include uppercase, lowercase, number and special character'
+    ),
+  confirmPassword: yup
+    .string()
+    .required('Confirm password is required')
+    .oneOf([yup.ref('newPassword')], 'Passwords must match'),
+});
+  // const handleChangePassword = async () => {
+  //   const { value: formValues } = await Swal.fire({
+  //     title: 'Change Password',
+  //     html:
+  //       `<input id="swal-cur" type="password" class="swal2-input" placeholder="Current Password">` +
+  //       `<input id="swal-new" type="password" class="swal2-input" placeholder="New Password">` +
+  //       `<input id="swal-conf" type="password" class="swal2-input" placeholder="Confirm Password">`,
+  //     preConfirm: () => {
+  //       const current = (document.getElementById('swal-cur') as HTMLInputElement).value;
+  //       const next = (document.getElementById('swal-new') as HTMLInputElement).value;
+  //       const conf = (document.getElementById('swal-conf') as HTMLInputElement).value;
+  //       if (!current || !next || next !== conf) {
+  //         Swal.showValidationMessage('Passwords must match');
+  //         return;
+  //       }
+  //       return { current, next };
+  //     },
+  //     showCancelButton: true,
+  //     confirmButtonText: 'Change',
+  //   });
+  //   if (formValues) {
+  //     await changeTutorPassword(formValues.current, formValues.next);
+  //     Swal.fire('Success', 'Password changed', 'success');
+  //   }
+  // };
 
   const handleChangePassword = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: 'Change Password',
-      html:
-        `<input id="swal-cur" type="password" class="swal2-input" placeholder="Current Password">` +
-        `<input id="swal-new" type="password" class="swal2-input" placeholder="New Password">` +
-        `<input id="swal-conf" type="password" class="swal2-input" placeholder="Confirm Password">`,
-      preConfirm: () => {
-        const current = (document.getElementById('swal-cur') as HTMLInputElement).value;
-        const next = (document.getElementById('swal-new') as HTMLInputElement).value;
-        const conf = (document.getElementById('swal-conf') as HTMLInputElement).value;
-        if (!current || !next || next !== conf) {
-          Swal.showValidationMessage('Passwords must match');
-          return;
-        }
+  const { value: formValues } = await Swal.fire({
+    title: 'Change Password',
+    html:
+      `<input id="swal-cur" type="password" class="swal2-input" placeholder="Current Password">` +
+      `<input id="swal-new" type="password" class="swal2-input" placeholder="New Password">` +
+      `<input id="swal-conf" type="password" class="swal2-input" placeholder="Confirm Password">`,
+    preConfirm: async () => {
+      const current = (document.getElementById('swal-cur') as HTMLInputElement).value;
+      const next = (document.getElementById('swal-new') as HTMLInputElement).value;
+      const conf = (document.getElementById('swal-conf') as HTMLInputElement).value;
+
+      try {
+        // validate with yup
+        await passwordSchema.validate({
+          currentPassword: current,
+          newPassword: next,
+          confirmPassword: conf,
+        }, { abortEarly: false });
+
+        // return the validated values
         return { current, next };
-      },
-      showCancelButton: true,
-      confirmButtonText: 'Change',
-    });
-    if (formValues) {
+      } catch (validationError: any) {
+        // collect messages and show the first one (or all)
+        const msgs = validationError.inner?.map((e: any) => e.message) || [validationError.message];
+        Swal.showValidationMessage(msgs.join('<br/>'));
+        return false;
+      }
+    },
+    showCancelButton: true,
+    confirmButtonText: 'Change',
+  });
+
+  if (formValues) {
+    try {
       await changeTutorPassword(formValues.current, formValues.next);
       Swal.fire('Success', 'Password changed', 'success');
+    } catch (err: unknown) {
+      const ae = err as AxiosError<{ message?: string }>;
+      Swal.fire('Error', ae.response?.data?.message || ae.message || 'Unable to change password', 'error');
     }
-  };
+  }
+};
 
   if (!profile || !stats) {
     return (
