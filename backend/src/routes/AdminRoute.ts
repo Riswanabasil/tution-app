@@ -67,8 +67,8 @@ router.patch(
 );
 
 //course
-router.get('/courses', courseController.listAll);
-router.patch('/courses/:id/status', courseController.updateStatus);
+router.get('/courses',adminAuthMiddleware, courseController.listAll);
+router.patch('/courses/:id/status',adminAuthMiddleware, courseController.updateStatus);
 
 //dashboard
 router.get('/dashboard/kpis', adminAuthMiddleware, dashboardController.getKpis);
