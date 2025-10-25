@@ -2,8 +2,7 @@ import type { Response, NextFunction } from 'express';
 import type { AuthenticatedRequest } from '../../../types/Index';
 import type { IVideoController } from '../IVideoController';
 import type { IVideoService } from '../../../services/tutor/IVideoService';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { S3Client } from '@aws-sdk/client-s3';
 import { HttpStatus } from '../../../constants/statusCode';
 import { presignGetObject, presignPutObject } from '../../../utils/s3Presign';
 
@@ -19,25 +18,6 @@ export class VideoController implements IVideoController {
       },
     });
   }
-  // async getVideoUploadUrl(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  //   try {
-  //     const tutorId = req.user!.id;
-  //     const { filename, contentType } = req.query as { filename: string; contentType: string };
-
-  //     const key = `Tutor-videos/${tutorId}/${Date.now()}-${filename}`;
-  //     const cmd = new PutObjectCommand({
-  //       Bucket: process.env.S3_BUCKET_NAME!,
-  //       Key: key,
-  //       ContentType: contentType,
-  //       ACL: 'private',
-  //     });
-  //     const uploadUrl = await getSignedUrl(this.s3, cmd, { expiresIn: 900 });
-
-  //     res.json({ uploadUrl, key });
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
   async getVideoUploadUrl(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { filename, contentType } = req.query as { filename: string; contentType: string };
@@ -47,29 +27,6 @@ export class VideoController implements IVideoController {
       next(err);
     }
   }
-  // async createVideo(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  //   try {
-  //     const tutorId = req.user!.id;
-  //     const { topicId, title, description, durationSec, key, contentType } = req.body;
-
-  //     const url = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${encodeURIComponent(key)}`;
-
-  //     const video = await this.service.create({
-  //       tutorId,
-  //       topicId,
-  //       title,
-  //       description,
-  //       durationSec: Number(durationSec),
-  //       key,
-  //       contentType,
-  //       url,
-  //     });
-
-  //     res.status(HttpStatus.CREATED).json(video);
-  //   } catch (err) {
-  //     next(err);
-  //   }
-  // }
 
   async createVideo(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {

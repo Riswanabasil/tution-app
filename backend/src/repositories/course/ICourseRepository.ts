@@ -26,5 +26,5 @@ export interface ICourseRepository {
     opts: { status?: CourseStatus; skip?: number; limit?: number },
   ): Promise<TutorCourseListItem[]>;
 
-  findActiveByIds(ids: string[]): Promise<ICourse[]>
+  findActiveByIds(ids: string[]): Promise<ICourse[]>;
 }

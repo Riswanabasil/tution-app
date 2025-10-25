@@ -1,17 +1,14 @@
-import { StudentOtpRepository } from '../../../repositories/student/implementation/StudentOtpRepository';
-import { StudentRepository } from '../../../repositories/student/implementation/studentRepository';
 import bcrypt from 'bcrypt';
-import { OtpService } from '../../common/OtpService';
 import { IStudentOtpRepository } from '../../../repositories/student/IStudentOtpRepository';
 import { IStudentRepository } from '../../../repositories/student/IStudentRepository';
-import { IOtpService } from '../IOtpService';
+import { IOtpService } from '../../../interfaces/common/IOtpService';
 import { IPasswordResetService } from '../IPasswordResetService';
 
 export class PasswordResetService implements IPasswordResetService {
   constructor(
     private otpRepo: IStudentOtpRepository,
     private studentRepo: IStudentRepository,
-    private otpSvc: OtpService,
+    private otpSvc: IOtpService,
   ) {}
 
   async requestReset(email: string): Promise<void> {

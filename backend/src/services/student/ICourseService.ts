@@ -8,7 +8,12 @@ export interface PaginatedCourses {
 }
 
 export interface ICourseService {
-  listApproved(page: number, limit: number, search: string, semester?: number,
-    sortBy?: string,): Promise<PaginatedCourses>;
-    fetchCourseWithModules(courseId: string): Promise<CourseDetails>;
+  listApproved(
+    page: number,
+    limit: number,
+    search: string,
+    semester?: number,
+    sortBy?: string,
+  ): Promise<PaginatedCourses>;
+  fetchCourseWithModules(courseId: string): Promise<CourseDetails>;
 }

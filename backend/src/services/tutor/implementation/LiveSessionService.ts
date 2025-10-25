@@ -11,10 +11,14 @@ export class LiveSessionService implements ILiveSessionService {
     private liveRepo: ILiveSessionRepository,
     private topicRepo: ITopicRepository,
     private moduleRepo: IModuleRepository,
-    private courseRepo: ICourseRepository
+    private courseRepo: ICourseRepository,
   ) {}
 
-  async createSession(topicId: string, tutorId: string, data: Partial<ILiveSession>): Promise<ILiveSession> {
+  async createSession(
+    topicId: string,
+    tutorId: string,
+    data: Partial<ILiveSession>,
+  ): Promise<ILiveSession> {
     const topic = await this.topicRepo.findById(topicId);
     if (!topic) throw new Error('Topic not found');
 

@@ -1,6 +1,6 @@
 export interface TutorDTO {
   _id: string;
-  id?: string;           
+  id?: string;
   name: string;
   email: string;
   status: string;

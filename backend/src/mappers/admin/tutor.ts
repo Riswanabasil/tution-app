@@ -1,4 +1,4 @@
-import { TutorDTO } from "../../dto/admin/tutor";
+import { TutorDTO } from '../../dto/admin/tutor';
 
 export class TutorMapper {
   static toDTO(t: any): TutorDTO {
@@ -14,13 +14,15 @@ export class TutorMapper {
             typeof c === 'string' ? { _id: c } : { _id: c._id?.toString(), title: c.title },
           )
         : undefined,
-      verificationDetails: t.verificationDetails ? {
-        education: t.verificationDetails.education,
-        experience: t.verificationDetails.experience,
-        summary: t.verificationDetails.summary,
-        idProof: t.verificationDetails.idProof,
-        resume: t.verificationDetails.resume,
-      } : undefined,
+      verificationDetails: t.verificationDetails
+        ? {
+            education: t.verificationDetails.education,
+            experience: t.verificationDetails.experience,
+            summary: t.verificationDetails.summary,
+            idProof: t.verificationDetails.idProof,
+            resume: t.verificationDetails.resume,
+          }
+        : undefined,
       createdAt: t.createdAt,
       updatedAt: t.updatedAt,
     };

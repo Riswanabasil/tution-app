@@ -1,8 +1,5 @@
 import { IModuleRepository } from '../../../repositories/module/IModuleRepository';
-import { ModuleRepository } from '../../../repositories/module/implementation/ModuleRepository';
-import { NoteRepository } from '../../../repositories/note/implementation/NoteRepository';
 import { INoteRepository } from '../../../repositories/note/INoteRepository';
-import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
 import { ITopicRepository } from '../../../repositories/topic/ITopicRepository';
 import { presignGetObject } from '../../../utils/s3Presign';
 import { IPaidCourseService } from '../IPaidCourseService';

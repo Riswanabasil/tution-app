@@ -12,7 +12,13 @@ export interface IPaymentService {
     enrollmentId: string;
   }>;
 
-  verifyAndUpdate(paymentId: string, orderId: string, signature: string,courseId?:string,userId?:string): Promise<void>;
+  verifyAndUpdate(
+    paymentId: string,
+    orderId: string,
+    signature: string,
+    courseId?: string,
+    userId?: string,
+  ): Promise<void>;
 
   cancelEnrollment(enrollmentId: string): Promise<IEnrollment | null>;
 

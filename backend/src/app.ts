@@ -29,8 +29,8 @@ app.get('/', (req, res) => {
   res.send('Tuition backend is running');
 });
 
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok", time: new Date().toISOString() });
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', time: new Date().toISOString() });
 });
 
 app.use('/api/v1/student', studentRoutes);

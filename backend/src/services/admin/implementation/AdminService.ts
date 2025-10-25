@@ -1,7 +1,6 @@
 import { LoginAdminResponseDTO } from '../../../dto/admin/adminAuth';
 import { ITokenService } from '../../../interfaces/common/ITokenService';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
-import { TokenService } from '../../common/TokenService';
 import { IAdminService } from '../IAdminService';
 
 export class AdminService implements IAdminService {

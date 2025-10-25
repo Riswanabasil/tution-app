@@ -2,7 +2,7 @@ import { TutorDTO } from '../../dto/admin/tutor';
 import { ITutor } from '../../models/tutor/TutorSchema';
 
 export interface PagedTutors {
-  tutors:TutorDTO[]
+  tutors: TutorDTO[];
   total: number;
   currentPage: number;
   totalPages: number;
@@ -28,8 +28,8 @@ export interface TutorVerificationDetails {
   summary?: string;
   education?: string;
   experience?: string;
-  idProof?: string|undefined; 
-  resume?: string|undefined;  
+  idProof?: string | undefined;
+  resume?: string | undefined;
 }
 export interface ITutorAdminService {
   getAllTutors(page: number, limit: number, status?: string, search?: string): Promise<PagedTutors>;

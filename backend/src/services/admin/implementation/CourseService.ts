@@ -1,6 +1,5 @@
 import { ICourseRepository } from '../../../repositories/course/ICourseRepository';
 import { ICourse } from '../../../models/course/CourseSchema';
-import { TutorRepository } from '../../../repositories/tutor/implementation/TutorRepository';
 import { sendCourseStatusEmail } from '../../../utils/SendEmail';
 import { PaginatedCourses } from '../../../types/course';
 import { IAdminCourseService } from '../ICourseService';
@@ -9,7 +8,7 @@ import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 export class AdminCourseService implements IAdminCourseService {
   constructor(
     private courseRepo: ICourseRepository,
-    private tutorRepo: TutorRepository,
+    private tutorRepo: ITutorRepository,
   ) {}
 
   async listPaginated(

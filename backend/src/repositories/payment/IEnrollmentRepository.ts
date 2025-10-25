@@ -62,5 +62,5 @@ export interface IEnrollmentRepository {
     }>
   >;
 
-  isPurchased(userId: Types.ObjectId, courseId: Types.ObjectId): Promise<boolean>
+  isPurchased(userId: Types.ObjectId, courseId: Types.ObjectId): Promise<boolean>;
 }

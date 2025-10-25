@@ -10,16 +10,12 @@ export class NoteService implements INoteService {
     return this.repo.create(data);
   }
 
-  // getByTopic(topicId: string) {
-  //   return this.repo.findByTopic(topicId);
-  // }
-
   async getByTopic(topicId: string) {
     const notes = await this.repo.findByTopic(topicId);
     return Promise.all(
       notes.map(async (n) => {
-        const url = await presignGetObject(n.pdfKey); 
-        return { ...n, pdfUrls: url ? [url] : [] }; 
+        const url = await presignGetObject(n.pdfKey);
+        return { ...n, pdfUrls: url ? [url] : [] };
       }),
     );
   }

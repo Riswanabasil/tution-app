@@ -1,10 +1,14 @@
 import { UpdateTutorProfileDto } from '../../dto/tutor/UpdateTutorProfileDto';
 
-export function validateUpdateTutorProfileDto(body: any): {
-  ok: true; data: UpdateTutorProfileDto;
-} | {
-  ok: false; error: string;
-} {
+export function validateUpdateTutorProfileDto(body: any):
+  | {
+      ok: true;
+      data: UpdateTutorProfileDto;
+    }
+  | {
+      ok: false;
+      error: string;
+    } {
   const data: UpdateTutorProfileDto = {};
 
   if (body.name) data.name = body.name.toString().trim();

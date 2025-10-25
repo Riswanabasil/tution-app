@@ -1,4 +1,4 @@
-import { TutorProfileDTO } from "../../dto/tutor/profile";
+import { TutorProfileDTO } from '../../dto/tutor/profile';
 
 export class TutorMapper {
   static toProfileDTO(t: any): TutorProfileDTO {
@@ -13,13 +13,15 @@ export class TutorMapper {
       role: t.role,
       status: t.status,
       walletBalance: typeof t.walletBalance === 'number' ? t.walletBalance : 0,
-      verificationDetails: t.verificationDetails ? {
-        summary: t.verificationDetails.summary,
-        education: t.verificationDetails.education,
-        experience: t.verificationDetails.experience,
-        idProof: t.verificationDetails.idProof,
-        resume: t.verificationDetails.resume,
-      } : null,
+      verificationDetails: t.verificationDetails
+        ? {
+            summary: t.verificationDetails.summary,
+            education: t.verificationDetails.education,
+            experience: t.verificationDetails.experience,
+            idProof: t.verificationDetails.idProof,
+            resume: t.verificationDetails.resume,
+          }
+        : null,
       createdAt: t.createdAt ? t.createdAt.toISOString() : undefined,
       updatedAt: t.updatedAt ? t.updatedAt.toISOString() : undefined,
     };

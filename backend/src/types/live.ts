@@ -4,6 +4,6 @@ export interface CreateLiveSession {
   hostId: string;
   title: string;
   description?: string;
-  startsAtISO: string;    
+  startsAtISO: string;
   durationMin: number;
 }

@@ -9,12 +9,14 @@ export class LiveSessionController {
   create = async (req: AuthenticatedRequest, res: Response) => {
     try {
       const { topicId } = req.params;
-      const tutorId = req.user!.id; 
+      const tutorId = req.user!.id;
       const session = await this.service.createSession(topicId, tutorId, req.body);
       res.status(HttpStatus.CREATED).json(session);
     } catch (err) {
       console.error(err);
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to create live session' });
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ message: 'Failed to create live session' });
     }
   };
 
@@ -30,15 +32,15 @@ export class LiveSessionController {
     }
   };
 
-  getById = async (req: Request, res: Response):Promise<void> => {
+  getById = async (req: Request, res: Response): Promise<void> => {
     const session = await this.service.getById(req.params.id);
     if (!session) res.status(404).json({ message: 'Session not found' });
     res.json(session);
   };
 
-  updateStatus = async (req: Request, res: Response):Promise<void> => {
+  updateStatus = async (req: Request, res: Response): Promise<void> => {
     const updated = await this.service.updateStatus(req.params.id, req.body.status);
-    if (!updated)  res.status(404).json({ message: 'Session not found' });
+    if (!updated) res.status(404).json({ message: 'Session not found' });
     res.json(updated);
   };
 

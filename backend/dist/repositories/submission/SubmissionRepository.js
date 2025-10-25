@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 // import mongoose from 'mongoose';
 // import { ISubmission, SubmissionModel } from '../../models/submission/SubmissionSchema';
 // export class SubmissionRepository {

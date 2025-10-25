@@ -1,43 +1,17 @@
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { IHasher } from '../../../interfaces/common/IHasher';
 import { ITutor } from '../../../models/tutor/TutorSchema';
-import { ITutorService, LoginTutorResponse, RegisterTutorResponse, TutorVerificationInput } from '../ITutorService';
+import {
+  ITutorService,
+  LoginTutorResponse,
+  RegisterTutorResponse,
+  TutorVerificationInput,
+} from '../ITutorService';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
-// import { TokenService } from '../../common/TokenService';
 import bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 import { ITokenService } from '../../../interfaces/common/ITokenService';
-import { UpdateTutorProfileDto } from '../../../dto/tutor/UpdateTutorProfileDto';
 import { TutorMapper } from '../../../mappers/tutor/profile';
-
-// export interface RegisterTutorResponse {
-//   id: string;
-//   name: string;
-//   email: string;
-//   phone: string;
-//   role: string;
-//   status: string;
-// }
-
-// export interface TutorVerificationInput {
-//   summary: string;
-//   education: string;
-//   experience: string;
-//   idProof: string;
-//   resume: string;
-// }
-
-// export interface LoginTutorResponse {
-//   accessToken: string;
-//   refreshToken: string;
-//   tutor: {
-//     id: string;
-//     email: string;
-//     name: string;
-//     role: string;
-//     status: string;
-//   };
-// }
 
 export class TutorService implements ITutorService {
   constructor(
@@ -169,37 +143,19 @@ export class TutorService implements ITutorService {
     };
   }
 
-  
-
   async getProfile(userId: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
     if (!tutor) throw new Error('Tutor not found');
     // return tutor;
     const dto = TutorMapper.toProfileDTO(tutor);
-  return dto;
+    return dto;
   }
 
-  async updateProfile(userId: string, updates: Partial<any>): Promise<Omit<ITutor, "password">> {
+  async updateProfile(userId: string, updates: Partial<any>): Promise<Omit<ITutor, 'password'>> {
     const updated = await this.tutorRepo.updateById(userId, updates);
     if (!updated) throw new Error('Failed to update tutor profile');
     return updated;
   }
-  // async updateProfile(tutorId: string, dto: UpdateTutorProfileDto) {
-  //   // Store only the S3 key
-  //   const updates = { ...dto };
-
-  //   const updated = await this.tutorRepo.updateById(tutorId, updates);
-  //   if (!updated) throw new Error('Failed to update tutor profile');
-
-  //   return await TutorMapper.toResponse(updated);
-  // }
-
-  // async getProfile(tutorId: string) {
-  //   const tutor = await this.tutorRepo.getTutorById(tutorId);
-  //   if (!tutor) throw new Error('Tutor not found');
-
-  //   return await TutorMapper.toResponse(tutor);
-  // }
   async changePassword(userId: string, current: string, next: string) {
     const tutor = await this.tutorRepo.getTutorById(userId);
     if (!tutor) throw new Error('Tutor not found');

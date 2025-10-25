@@ -26,7 +26,7 @@ export class EnrollmentRepository
   async findByOrderId(id: string): Promise<IEnrollment | null> {
     return EnrollmentModel.findOne({ razorpayOrderId: id });
   }
-    async findOne(filter: FilterQuery<IEnrollment>): Promise<IEnrollment | null> {
+  async findOne(filter: FilterQuery<IEnrollment>): Promise<IEnrollment | null> {
     return EnrollmentModel.findOne(filter).exec();
   }
 

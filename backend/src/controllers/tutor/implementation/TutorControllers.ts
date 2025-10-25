@@ -4,8 +4,12 @@ import { AuthenticatedRequest } from '../../../types/Index';
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
-import { ITutorService, LoginTutorResponse, RegisterTutorResponse, TutorVerificationInput } from '../../../services/tutor/ITutorService';
-import { validateUpdateTutorProfileDto } from '../../../validators/tutor/UpdateTutorProfileValidator';
+import {
+  ITutorService,
+  LoginTutorResponse,
+  RegisterTutorResponse,
+  TutorVerificationInput,
+} from '../../../services/tutor/ITutorService';
 
 export class TutorController implements ITutorController {
   constructor(private tutorService: ITutorService) {}
@@ -28,12 +32,13 @@ export class TutorController implements ITutorController {
       res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
     }
   }
- async getVerificationUploadUrls(req: Request, res: Response) {
+  async getVerificationUploadUrls(req: Request, res: Response) {
     const { idFilename, idContentType, resumeFilename, resumeContentType } = req.body as {
-      idFilename: string; idContentType: string;
-      resumeFilename: string; resumeContentType: string;
+      idFilename: string;
+      idContentType: string;
+      resumeFilename: string;
+      resumeContentType: string;
     };
-
 
     const idProof = await presignPutObject({
       keyPrefix: `tutors/verification/id`,
@@ -47,20 +52,22 @@ export class TutorController implements ITutorController {
       contentType: resumeContentType,
     });
 
-    res.json({ idProof, resume }); 
+    res.json({ idProof, resume });
   }
   async submitTutorVerification(req: Request, res: Response): Promise<void> {
     try {
-      const { summary, education, experience, tutorId,idProofKey, resumeKey  } = req.body;
-      
+      const { summary, education, experience, tutorId, idProofKey, resumeKey } = req.body;
+
       if (!tutorId || !summary || !education || !experience || !idProofKey || !resumeKey) {
-         res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing required fields' });
       }
 
       const input: TutorVerificationInput = {
-        summary, education, experience,
+        summary,
+        education,
+        experience,
         idProof: idProofKey,
-        resume:  resumeKey,
+        resume: resumeKey,
       };
       const updatedTutor = await this.tutorService.submitTutorVerification(tutorId, input);
 
@@ -81,13 +88,13 @@ export class TutorController implements ITutorController {
       const { email, password } = req.body;
       const result: LoginTutorResponse = await this.tutorService.loginTutor(email, password);
       console.log(email, password);
-      
-      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
+
+      const REFRESH_COOKIE = parseInt(process.env.MAX_AGE!);
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: REFRESH_COOKIE,
       });
 
       res.status(HttpStatus.OK).json({
@@ -119,12 +126,12 @@ export class TutorController implements ITutorController {
       const { accessToken, refreshToken, tutor } =
         await this.tutorService.googleLoginTutorService(idToken);
 
-      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
+      const REFRESH_COOKIE = parseInt(process.env.MAX_AGE!);
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: REFRESH_COOKIE,
       });
 
       res.status(HttpStatus.OK).json({
@@ -188,35 +195,10 @@ export class TutorController implements ITutorController {
     res.json({ data });
   }
 
-  //  async updateProfile(req: AuthenticatedRequest, res: Response) {
-  //   try {
-  //      const tutorId = req.user!.id;
-  //     const v = validateUpdateTutorProfileDto(req.body);
-  //     if (!v.ok) return res.status(400).json({ message: v.error });
-
-  //     const data = await this.tutorService.updateProfile(tutorId, v.data);
-  //      res.json({ data });
-  //   } catch (err: any) {
-  //     console.error(err);
-  //     res.status(500).json({ message: 'Failed to update profile' });
-  //   }
-  // }
-
-  // Get tutor profile (returns URL)
-  // async getProfile(req: Request, res: Response) {
-  //   try {
-  //     const tutorId = (req as any).user.id;
-  //     const data = await this.tutorService.getProfile(tutorId);
-  //     res.json(data);
-  //   } catch (err: any) {
-  //     res.status(404).json({ message: 'Tutor not found' });
-  //   }
-  // }
-
   async changePassword(req: AuthenticatedRequest, res: Response) {
     const tutorId = req.user!.id;
     const { currentPassword, newPassword } = req.body;
-    
+
     await this.tutorService.changePassword(tutorId, currentPassword, newPassword);
     res.json({ message: 'Password updated' });
   }

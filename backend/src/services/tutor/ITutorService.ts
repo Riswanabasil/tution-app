@@ -1,4 +1,3 @@
-
 import type { ITutor } from '../../models/tutor/TutorSchema';
 import type { ITutorRepository } from '../../repositories/tutor/ITutorRepository';
 import type { IHasher } from '../../interfaces/common/IHasher';
@@ -76,10 +75,7 @@ export interface ITutorService {
     password: string,
   ): Promise<RegisterTutorResponse>;
 
-  submitTutorVerification(
-    tutorId: string,
-    details: TutorVerificationInput,
-  ): Promise<ITutor>;
+  submitTutorVerification(tutorId: string, details: TutorVerificationInput): Promise<ITutor>;
 
   loginTutor(email: string, password: string): Promise<LoginTutorResponse>;
 
@@ -90,10 +86,7 @@ export interface ITutorService {
   // profile
   getProfile(userId: string): Promise<TutorProfileDTO>;
 
-  updateProfile(
-    userId: string,
-    updates: Partial<ITutor>, 
-  ): Promise<Omit<ITutor, "password">>;
+  updateProfile(userId: string, updates: Partial<ITutor>): Promise<Omit<ITutor, 'password'>>;
 
   changePassword(userId: string, current: string, next: string): Promise<void>;
 

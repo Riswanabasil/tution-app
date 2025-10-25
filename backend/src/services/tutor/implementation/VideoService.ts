@@ -18,9 +18,6 @@ export class VideoService implements IVideoService {
     } as any);
   }
 
-  // listByTopic(topicId: string): Promise<IVideo[]> {
-  //   return this.repo.listByTopic(topicId);
-  // }
 
   async listByTopic(topicId: string): Promise<any[]> {
     const rows = await this.repo.listByTopic(topicId);

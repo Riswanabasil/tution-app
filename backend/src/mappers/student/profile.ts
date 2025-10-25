@@ -1,4 +1,4 @@
-import { ProfileDTO } from "../../dto/student/profile";
+import { ProfileDTO } from '../../dto/student/profile';
 
 export class StudentMapper {
   static toProfileDTO(student: any): ProfileDTO {

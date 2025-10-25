@@ -7,7 +7,10 @@ export class LiveSessionRepository implements ILiveSessionRepository {
     return LiveSessionModel.create(data);
   }
 
-  async findByTopic(topicId: string, opts?: { status?: ILiveSession['status'] }): Promise<ILiveSession[]> {
+  async findByTopic(
+    topicId: string,
+    opts?: { status?: ILiveSession['status'] },
+  ): Promise<ILiveSession[]> {
     const query: any = { topicId, isDeleted: false };
     if (opts?.status) query.status = opts.status;
     return LiveSessionModel.find(query).sort({ createdAt: -1 }).exec();

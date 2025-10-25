@@ -1,6 +1,20 @@
 import { Types } from 'mongoose';
 import { ISubmission } from '../../models/submission/SubmissionSchema';
 
+// export type AssignmentWithStatus = {
+//   _id: Types.ObjectId | string;
+//   title: string;
+//   description?: string;
+//   dueDate: Date;
+//   status: 'expired' | 'not submitted' | 'pending' | 'verified';
+//   submission: {
+//     _id: Types.ObjectId | string;
+//     submittedFiles?: string;
+//     feedback?: string;
+//     submittedAt?: Date;
+//   } | null;
+// };
+
 export type AssignmentWithStatus = {
   _id: Types.ObjectId | string;
   title: string;
@@ -9,7 +23,7 @@ export type AssignmentWithStatus = {
   status: 'expired' | 'not submitted' | 'pending' | 'verified';
   submission: {
     _id: Types.ObjectId | string;
-    submittedFiles?: string;
+    submittedFiles?: string; 
     feedback?: string;
     submittedAt?: Date;
   } | null;

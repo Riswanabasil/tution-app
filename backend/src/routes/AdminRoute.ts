@@ -10,7 +10,7 @@ import { TutorAdminService } from '../services/admin/implementation/TutorAdminSe
 import { TutorAdminController } from '../controllers/admin/TutorAdminController';
 import { TokenService } from '../services/common/TokenService';
 import { CourseRepository } from '../repositories/course/implementation/CourseRepository';
-import { AdminCourseService } from '../services/admin/implementation/CourseService'
+import { AdminCourseService } from '../services/admin/implementation/CourseService';
 import { AdminCourseController } from '../controllers/admin/CourseAdminController';
 import { EnrollmentRepository } from '../repositories/payment/implementation/EnrollmentRepository';
 import { AdminDashboardService } from '../services/admin/implementation/AdminDashboardService';

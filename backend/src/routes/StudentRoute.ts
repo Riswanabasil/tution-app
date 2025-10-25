@@ -195,15 +195,10 @@ router.get('/courses/:courseId/reviews/mine', authMiddleware, reviewCtrl.getMine
 //live
 router.get(
   '/topic/:topicId/livesession',
-  authMiddleware,              
-  liveController.listByTopic.bind(liveController)
-);
-
-
-router.get(
-  '/livesession/:id',
   authMiddleware,
-  liveController.getById.bind(liveController)
+  liveController.listByTopic.bind(liveController),
 );
+
+router.get('/livesession/:id', authMiddleware, liveController.getById.bind(liveController));
 
 export default router;

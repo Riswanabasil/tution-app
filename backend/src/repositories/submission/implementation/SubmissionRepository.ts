@@ -48,11 +48,14 @@ export class SubmissionRepository implements ISubmissionRepository {
     );
   }
 
-   async updateFeedbackAndVerify(submissionId: string, feedback: string): Promise<ISubmission | null> {
+  async updateFeedbackAndVerify(
+    submissionId: string,
+    feedback: string,
+  ): Promise<ISubmission | null> {
     return SubmissionModel.findByIdAndUpdate(
       new Types.ObjectId(submissionId),
       { feedback, status: 'verified', updatedAt: new Date() },
-      { new: true }
+      { new: true },
     );
   }
 }

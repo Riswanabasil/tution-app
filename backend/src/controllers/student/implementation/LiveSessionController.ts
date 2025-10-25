@@ -17,11 +17,11 @@ export class StudentLiveSessionController {
     }
   };
 
-  getById = async (req: Request, res: Response):Promise<void> => {
+  getById = async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
       const session = await this.service.getById(id);
-      if (!session)  res.status(HttpStatus.NOT_FOUND).json({ message: 'Session not found' });
+      if (!session) res.status(HttpStatus.NOT_FOUND).json({ message: 'Session not found' });
       res.json(session);
     } catch (err) {
       console.error(err);

@@ -10,14 +10,13 @@ export class AdminController {
     try {
       const { email, password } = req.body;
       const result = await this.adminService.loginAdmin(email, password);
-      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
-      console.log(typeof REFRESH_COOKIE);
+      const REFRESH_COOKIE = parseInt(process.env.MAX_AGE!);
 
       res.cookie('adminRefreshToken', result.refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: REFRESH_COOKIE,
       });
 
       res.status(HttpStatus.OK).json({

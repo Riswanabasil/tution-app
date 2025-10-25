@@ -1,4 +1,3 @@
-import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
 import { ITopic } from '../../../models/topic/TopicSchema';
 import { ITopicService } from '../ITopicService';
 import { ITopicRepository } from '../../../repositories/topic/ITopicRepository';

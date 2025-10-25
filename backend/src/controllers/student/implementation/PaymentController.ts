@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { HttpStatus } from '../../../constants/statusCode';
@@ -43,15 +42,15 @@ export class PaymentController {
 
   async verifyPayment(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-        const userId = req.user!.id;
-      const { razorpay_payment_id, razorpay_order_id, razorpay_signature,courseId } = req.body;
+      const userId = req.user!.id;
+      const { razorpay_payment_id, razorpay_order_id, razorpay_signature, courseId } = req.body;
 
       await this.paymentService.verifyAndUpdate(
         razorpay_payment_id,
         razorpay_order_id,
         razorpay_signature,
         courseId,
-        userId
+        userId,
       );
 
       res.status(HttpStatus.OK).json({
@@ -126,32 +125,35 @@ export class PaymentController {
   // }
 
   async retryOrder(req: AuthenticatedRequest, res: Response): Promise<void> {
-  try {
-    const { enrollmentId } = req.body;
-    if (!enrollmentId) {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing enrollmentId' });
+    try {
+      const { enrollmentId } = req.body;
+      if (!enrollmentId) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: 'Missing enrollmentId' });
+        return;
+      }
+
+      const payload = await this.paymentService.retryOrder(enrollmentId);
+      res.json({ data: payload });
+      return;
+    } catch (err: any) {
+      console.error(' retryOrder error:', err);
+
+      if (err instanceof AlreadyPaidError || err.name === 'AlreadyPaidError') {
+        res.status(HttpStatus.CONFLICT).json({ message: err.message }); // 409
+        return;
+      }
+
+      // if you want to surface validation-like errors:
+      if (
+        err.message === 'Enrollment not found' ||
+        err.message === 'Can only retry failed payments'
+      ) {
+        res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
+        return;
+      }
+
+      res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
       return;
     }
-
-    const payload = await this.paymentService.retryOrder(enrollmentId);
-    res.json({ data: payload });
-    return;
-  } catch (err: any) {
-    console.error(' retryOrder error:', err);
-
-    if (err instanceof AlreadyPaidError || err.name === 'AlreadyPaidError') {
-      res.status(HttpStatus.CONFLICT).json({ message: err.message }); // 409
-      return;
-    }
-
-    // if you want to surface validation-like errors:
-    if (err.message === 'Enrollment not found' || err.message === 'Can only retry failed payments') {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
-      return;
-    }
-
-    res.status(HttpStatus.BAD_REQUEST).json({ message: ERROR_MESSAGES.BAD_REQUEST });
-    return;
   }
-}
 }

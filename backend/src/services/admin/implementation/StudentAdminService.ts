@@ -28,8 +28,8 @@ export class StudentAdminService implements IStudentAdminService {
       limit,
       sort: { [sort]: order },
     });
- const mappedStudents = StudentMapper.toDTOList(students);
-    return { students:mappedStudents, totalPages: Math.ceil(total / limit) };
+    const mappedStudents = StudentMapper.toDTOList(students);
+    return { students: mappedStudents, totalPages: Math.ceil(total / limit) };
   }
 
   async blockStudent(studentId: string, block: boolean): Promise<void> {

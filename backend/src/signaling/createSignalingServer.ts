@@ -2,11 +2,16 @@ import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 import type { Server as HttpServer } from 'http';
 
-type UserPayload = { id: string; role: 'tutor'|'student'|'admin'; email?: string; name?:string };
+type UserPayload = {
+  id: string;
+  role: 'tutor' | 'student' | 'admin';
+  email?: string;
+  name?: string;
+};
 
 export function createSignalingServer(httpServer: HttpServer) {
   const io = new Server(httpServer, {
-    cors: { origin: '*', credentials: false } 
+    cors: { origin: '*', credentials: false },
   });
 
   // 1) Auth every socket connection with your JWT
@@ -20,7 +25,7 @@ export function createSignalingServer(httpServer: HttpServer) {
 
       if (!token) return next(new Error('NO_TOKEN'));
       const user = jwt.verify(token, process.env.JWT_SECRET!) as UserPayload;
-   socket.data.user = { id: user.id, role: user.role, name: user.name ?? 'User' };
+      socket.data.user = { id: user.id, role: user.role, name: user.name ?? 'User' };
       next();
     } catch (err) {
       next(new Error('UNAUTHORIZED'));
@@ -37,7 +42,7 @@ export function createSignalingServer(httpServer: HttpServer) {
       // notify others in the room
       socket.to(sessionId).emit('peer:joined', {
         socketId: socket.id,
-         user: socket.data.user,
+        user: socket.data.user,
       });
 
       // send the new client the list of current peers
@@ -49,9 +54,15 @@ export function createSignalingServer(httpServer: HttpServer) {
     });
 
     // Relay WebRTC messages
-    socket.on('webrtc:offer', ({ to, sdp }) => io.to(to).emit('webrtc:offer', { from: socket.id, sdp }));
-    socket.on('webrtc:answer', ({ to, sdp }) => io.to(to).emit('webrtc:answer', { from: socket.id, sdp }));
-    socket.on('webrtc:ice', ({ to, candidate }) => io.to(to).emit('webrtc:ice', { from: socket.id, candidate }));
+    socket.on('webrtc:offer', ({ to, sdp }) =>
+      io.to(to).emit('webrtc:offer', { from: socket.id, sdp }),
+    );
+    socket.on('webrtc:answer', ({ to, sdp }) =>
+      io.to(to).emit('webrtc:answer', { from: socket.id, sdp }),
+    );
+    socket.on('webrtc:ice', ({ to, candidate }) =>
+      io.to(to).emit('webrtc:ice', { from: socket.id, candidate }),
+    );
 
     // On leaving, notify peers in each joined room (except the socket’s own room)
     socket.on('disconnecting', () => {

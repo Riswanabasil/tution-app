@@ -1,6 +1,6 @@
 import { ICourseRepository } from '../../../repositories/course/ICourseRepository';
 import { IModuleRepository } from '../../../repositories/module/IModuleRepository';
-import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
+import { ITopicRepository } from '../../../repositories/topic/ITopicRepository';
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { CourseDetails } from '../../../types/course';
 import { presignGetObject } from '../../../utils/s3Presign';
@@ -11,7 +11,7 @@ export class StudentCourseService implements ICourseService {
     private courseRepo: ICourseRepository,
     private moduleRepo: IModuleRepository,
     private tutorRepo: ITutorRepository,
-    private topicRepo: TopicRepository,
+    private topicRepo: ITopicRepository,
   ) {}
 
   async listApproved(

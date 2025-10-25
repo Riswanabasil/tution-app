@@ -4,10 +4,11 @@ import { AssignmentRepository } from '../../../repositories/assignment/implement
 import { SubmissionRepository } from '../../../repositories/submission/implementation/SubmissionRepository';
 import { IStudentAssignmentService } from '../IStudentAssignmentService';
 import { presignGetObject } from '../../../utils/s3Presign';
+import { IAssignmentRepository } from '../../../repositories/assignment/IAssgnmentRepository';
 
 export class StudentAssignmentService implements IStudentAssignmentService {
   constructor(
-    private assignmentRepo: AssignmentRepository,
+    private assignmentRepo: IAssignmentRepository,
     private submissionRepo: SubmissionRepository,
   ) {}
 
@@ -63,7 +64,6 @@ export class StudentAssignmentService implements IStudentAssignmentService {
     studentId: string,
     assignmentId: string,
   ) {
-    
     const { topicId, response, fileKey } = data;
 
     const assgn = new mongoose.Types.ObjectId(assignmentId);
@@ -84,21 +84,15 @@ export class StudentAssignmentService implements IStudentAssignmentService {
       status: 'pending',
     };
 
-    
-
     const created = await this.submissionRepo.create(toSave);
     const url = await presignGetObject(fileKey);
 
     const obj = (created as any).toObject ? (created as any).toObject() : created;
-     return { ...obj, submittedFile: url };
+    return { ...obj, submittedFile: url };
 
     // return await this.submissionRepo.create(toSave);
-
-    
   }
 
-
-  
   async getSubmission(assignmentId: string, studentId: string) {
     const submission = await this.submissionRepo.findByAssignmentAndStudent(
       assignmentId,
@@ -108,9 +102,9 @@ export class StudentAssignmentService implements IStudentAssignmentService {
     // return submission;
     const url = await presignGetObject(submission.submittedFile);
 
-  // return same shape the FE expects, but with URL
-  const obj = (submission as any).toObject ? (submission as any).toObject() : submission;
-  return { ...obj, submittedFile: url ?? '' };
+    // return same shape the FE expects, but with URL
+    const obj = (submission as any).toObject ? (submission as any).toObject() : submission;
+    return { ...obj, submittedFile: url ?? '' };
   }
 
   async updateSubmissionByAssignment(

@@ -5,7 +5,7 @@ export type Participant = {
   role: 'tutor' | 'student' | 'admin';
 };
 
-const rooms = new Map<string, Participant[]>(); 
+const rooms = new Map<string, Participant[]>();
 
 export function joinRoom(roomKey: string, p: Participant) {
   const list = rooms.get(roomKey) ?? [];

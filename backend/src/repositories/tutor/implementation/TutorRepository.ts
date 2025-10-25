@@ -45,11 +45,13 @@ export class TutorRepository extends BaseRepository<ITutor> implements ITutorRep
   // }
 
   async getTutorById(id: string) {
-  return Tutor.findById(id)
-    .select('name email phone isGoogleSignup status verificationDetails password profilePic walletBalance') 
-    .lean()   
-    .exec();
-}
+    return Tutor.findById(id)
+      .select(
+        'name email phone isGoogleSignup status verificationDetails password profilePic walletBalance',
+      )
+      .lean()
+      .exec();
+  }
   async updateTutorStatus(id: string, status: 'approved' | 'rejected'): Promise<Boolean> {
     const updated = await Tutor.findByIdAndUpdate(id, { status });
     return !!updated;

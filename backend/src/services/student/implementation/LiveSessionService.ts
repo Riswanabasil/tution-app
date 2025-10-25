@@ -6,8 +6,10 @@ import { ILiveSessionRepository } from '../../../repositories/liveSession/ILiveS
 export class StudentLiveSessionService implements IStudentLiveSessionService {
   constructor(private liveRepo: ILiveSessionRepository) {}
 
-  async listByTopic(topicId: string, status?: ILiveSession['status']): Promise<StudentLiveSessionDTO[]> {
-    
+  async listByTopic(
+    topicId: string,
+    status?: ILiveSession['status'],
+  ): Promise<StudentLiveSessionDTO[]> {
     const sessions = await this.liveRepo.findByTopic(topicId, { status });
     return sessions.map(this.toStudentDTO);
   }

@@ -1,4 +1,9 @@
-import { ITutorAdminService, PagedTutors, TutorDetails ,TutorVerificationDetails} from '../ITutorAdminService';
+import {
+  ITutorAdminService,
+  PagedTutors,
+  TutorDetails,
+  TutorVerificationDetails,
+} from '../ITutorAdminService';
 import { ITutorRepository } from '../../../repositories/tutor/ITutorRepository';
 import { ITutor } from '../../../models/tutor/TutorSchema';
 import { presignGetObject } from '../../../utils/s3Presign';
@@ -25,7 +30,7 @@ export class TutorAdminService implements ITutorAdminService {
 
     const total = await this.tutorRepo.countAllWithFilters(query);
     const tutorsRaw: ITutor[] = await this.tutorRepo.getAllWithFilters(query, skip, limit);
-     const tutors = TutorMapper.toDTOList(tutorsRaw);
+    const tutors = TutorMapper.toDTOList(tutorsRaw);
 
     // const tutors = tutorsRaw.map((t) => ({
     //   _id: t._id.toString(),
@@ -48,12 +53,12 @@ export class TutorAdminService implements ITutorAdminService {
     const t = await this.tutorRepo.getTutorById(id);
     if (!t) throw new Error('Tutor not found');
 
-     const vd = (t.verificationDetails ?? {}) as TutorVerificationDetails;
+    const vd = (t.verificationDetails ?? {}) as TutorVerificationDetails;
 
-  const [idProofUrl, resumeUrl] = await Promise.all([
-    presignGetObject(vd.idProof),
-    presignGetObject(vd.resume),
-  ]);
+    const [idProofUrl, resumeUrl] = await Promise.all([
+      presignGetObject(vd.idProof),
+      presignGetObject(vd.resume),
+    ]);
 
     return {
       id: t._id.toString(),
@@ -63,11 +68,11 @@ export class TutorAdminService implements ITutorAdminService {
       isGoogleSignup: t.isGoogleSignup,
       status: t.status,
       // assignedCourses: t.assignedCourses.map(id => id.toString()),
-       verificationDetails: {
-      ...vd,
-      idProof: idProofUrl,  
-      resume: resumeUrl,
-    },
+      verificationDetails: {
+        ...vd,
+        idProof: idProofUrl,
+        resume: resumeUrl,
+      },
     };
   }
 

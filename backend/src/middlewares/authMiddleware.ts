@@ -25,7 +25,6 @@ export const authMiddleware = async (
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtUser;
 
-
     req.user = decoded;
     if (req.user.role === 'student') {
       const s = await studentRepo.getAuthStateById(req.user.id);

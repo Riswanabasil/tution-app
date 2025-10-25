@@ -169,12 +169,12 @@ export class CourseRepository implements ICourseRepository {
   }
 
   async findActiveByIds(ids: string[]): Promise<ICourse[]> {
-  return Course.find({
-    _id: { $in: ids },
-    $or: [{ deletedAt: { $exists: false } }, { deletedAt: null }],
-  })
-    .select('_id title price thumbnailKey')
-    .lean()
-    .exec();
-}
+    return Course.find({
+      _id: { $in: ids },
+      $or: [{ deletedAt: { $exists: false } }, { deletedAt: null }],
+    })
+      .select('_id title price thumbnailKey')
+      .lean()
+      .exec();
+  }
 }

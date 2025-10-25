@@ -2,17 +2,18 @@ import { AssignmentRepository } from '../../../repositories/assignment/implement
 
 import type { IAssignment } from '../../../models/assignment/AssignmentModel';
 
-import { TopicRepository } from '../../../repositories/topic/implementation/TopicRepository';
-import { ModuleRepository } from '../../../repositories/module/implementation/ModuleRepository';
 import mongoose from 'mongoose';
 import { CourseRepository } from '../../../repositories/course/implementation/CourseRepository';
 import { IAssignmentService } from '../IAssignmentService';
+import { IAssignmentRepository } from '../../../repositories/assignment/IAssgnmentRepository';
+import { ITopicRepository } from '../../../repositories/topic/ITopicRepository';
+import { IModuleRepository } from '../../../repositories/module/IModuleRepository';
 
 export class AssignmentService implements IAssignmentService {
   constructor(
-    private assignmentRepo: AssignmentRepository,
-    private topicRepo: TopicRepository,
-    private moduleRepo: ModuleRepository,
+    private assignmentRepo: IAssignmentRepository,
+    private topicRepo: ITopicRepository,
+    private moduleRepo: IModuleRepository,
     private courseRepo: CourseRepository,
   ) {}
 

@@ -1,6 +1,5 @@
 import { Types } from 'mongoose';
 import { razorpay } from '../../../config/razorpay';
-import { IEnrollment } from '../../../models/payment/Enrollment';
 import { EnrollmentRepository } from '../../../repositories/payment/implementation/EnrollmentRepository';
 import { TutorRepository } from '../../../repositories/tutor/implementation/TutorRepository';
 import { CourseRepository } from '../../../repositories/course/implementation/CourseRepository';
@@ -74,14 +73,20 @@ export class PaymentService implements IPaymentService {
     };
   }
 
-  async verifyAndUpdate(paymentId: string, orderId: string, signature: string,courseId?:string,userId?:string) {
+  async verifyAndUpdate(
+    paymentId: string,
+    orderId: string,
+    signature: string,
+    courseId?: string,
+    userId?: string,
+  ) {
     const crypto = await import('crypto');
     const shasum = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!);
     shasum.update(`${orderId}|${paymentId}`);
     if (shasum.digest('hex') !== signature) {
       throw new Error('Invalid signature');
     }
-const uId = new Types.ObjectId(userId);
+    const uId = new Types.ObjectId(userId);
     const cId = new Types.ObjectId(courseId);
     if (await this.repo.isPurchased(uId, cId)) {
       // use your AppError util if you have one
@@ -127,29 +132,28 @@ const uId = new Types.ObjectId(userId);
   //     };
   //   });
   // }
-async getMyCourses(userId: string) {
-  const enrollments = await this.repo.findPaidByUser(userId);
+  async getMyCourses(userId: string) {
+    const enrollments = await this.repo.findPaidByUser(userId);
 
-  return Promise.all(
-    enrollments.map(async (e: any) => {
-      const c = e.courseId;
-      const key = c.thumbnailKey 
-      const signedThumb = await presignGetObject(key); 
+    return Promise.all(
+      enrollments.map(async (e: any) => {
+        const c = e.courseId;
+        const key = c.thumbnailKey;
+        const signedThumb = await presignGetObject(key);
 
-      return {
-        enrollmentId: String(e._id),
-        course: {
-          _id: String(c._id),
-          title: c.title,
-          thumbnail: signedThumb, 
-          price: c.price,
-        },
-        enrolledAt: e.createdAt,
-      };
-    })
-  );
-}
-
+        return {
+          enrollmentId: String(e._id),
+          course: {
+            _id: String(c._id),
+            title: c.title,
+            thumbnail: signedThumb,
+            price: c.price,
+          },
+          enrolledAt: e.createdAt,
+        };
+      }),
+    );
+  }
 
   async getStats(userId: string) {
     const totalEnrolled = await this.repo.countPaidByUser(userId);
@@ -204,53 +208,52 @@ async getMyCourses(userId: string) {
   // }
 
   async retryOrder(enrollmentId: string) {
-  const old = await this.repo.findById(enrollmentId);
-  console.log(old);
+    const old = await this.repo.findById(enrollmentId);
+    console.log(old);
 
-  if (!old) throw new Error('Enrollment not found');
-  if (old.status !== 'failed') {
-    throw new Error('Can only retry failed payments');
-  }
+    if (!old) throw new Error('Enrollment not found');
+    if (old.status !== 'failed') {
+      throw new Error('Can only retry failed payments');
+    }
 
-  // ---- New check: make sure there's NOT an active/successful enrollment for same user+course ----
-  // Adjust statuses to match your app's canonical "paid" values. Example uses 'success'|'paid'|'active'
-  const already = await this.repo.findOne({
-    userId: old.userId,
-    courseId: old.courseId,
-    status: { $nin: ['failed'] } // any status other than 'failed' => treated as paid/active
-  });
-
-  if (already) {
-    // throw a specific error we can map to 409 in the controller
-    const err = new Error('Course already paid');
-    (err as any).name = 'AlreadyPaidError';
-    throw err;
-  }
-  // -----------------------------------------------------------------------------------------------
-
-  const options = {
-    amount: old.amount * 100,
-    currency: 'INR',
-    receipt: `retry_${enrollmentId.substring(0, 10)}_${Date.now()}`,
-  };
-
-  const order = await new Promise<RazorpayOrder>((resolve, reject) => {
-    razorpay.orders.create(options, (err: any, o: any) => {
-      if (err) return reject(err);
-      resolve(o as RazorpayOrder);
+    // ---- New check: make sure there's NOT an active/successful enrollment for same user+course ----
+    // Adjust statuses to match your app's canonical "paid" values. Example uses 'success'|'paid'|'active'
+    const already = await this.repo.findOne({
+      userId: old.userId,
+      courseId: old.courseId,
+      status: { $nin: ['failed'] }, // any status other than 'failed' => treated as paid/active
     });
-  });
 
-  await this.repo.update(enrollmentId, {
-    razorpayOrderId: order.id,
-    status: 'pending',
-  });
+    if (already) {
+      // throw a specific error we can map to 409 in the controller
+      const err = new Error('Course already paid');
+      (err as any).name = 'AlreadyPaidError';
+      throw err;
+    }
+    // -----------------------------------------------------------------------------------------------
 
-  return {
-    razorpayOrderId: order.id,
-    currency: order.currency,
-    enrollmentId,
-  };
-}
+    const options = {
+      amount: old.amount * 100,
+      currency: 'INR',
+      receipt: `retry_${enrollmentId.substring(0, 10)}_${Date.now()}`,
+    };
 
+    const order = await new Promise<RazorpayOrder>((resolve, reject) => {
+      razorpay.orders.create(options, (err: any, o: any) => {
+        if (err) return reject(err);
+        resolve(o as RazorpayOrder);
+      });
+    });
+
+    await this.repo.update(enrollmentId, {
+      razorpayOrderId: order.id,
+      status: 'pending',
+    });
+
+    return {
+      razorpayOrderId: order.id,
+      currency: order.currency,
+      enrollmentId,
+    };
+  }
 }

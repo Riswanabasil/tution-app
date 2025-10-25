@@ -31,6 +31,6 @@ export class ModuleRepository extends BaseRepository<IModule> implements IModule
   }
 
   async findById(id: Types.ObjectId | string): Promise<IModule | null> {
-  return Module.findById(id).exec();
-}
+    return Module.findById(id).exec();
+  }
 }

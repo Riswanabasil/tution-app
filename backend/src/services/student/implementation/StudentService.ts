@@ -2,8 +2,6 @@ import { OAuth2Client } from 'google-auth-library';
 import { IStudentRepository } from '../../../repositories/student/IStudentRepository';
 import { IStudent } from '../../../models/student/studentSchema';
 import { IHasher } from '../../../interfaces/common/IHasher';
-import { OtpService } from '../../common/OtpService';
-import { TokenService } from '../../common/TokenService';
 import { IStudentService } from '../IStudentService';
 import { generateAccessToken, generateRefreshToken } from '../../../utils/GenerateToken';
 import { IEnrollmentRepository } from '../../../repositories/payment/IEnrollmentRepository';
@@ -70,7 +68,12 @@ export class StudentService implements IStudentService {
       throw new Error('Invalid password');
     }
 
-    const accessToken = generateAccessToken(student._id.toString(), student.email, student.role,student.name);
+    const accessToken = generateAccessToken(
+      student._id.toString(),
+      student.email,
+      student.role,
+      student.name,
+    );
 
     const refreshToken = generateRefreshToken(student._id.toString(), student.email, student.role);
 
@@ -142,20 +145,9 @@ export class StudentService implements IStudentService {
     // return student;
 
     const dto = StudentMapper.toProfileDTO(student);
-  return dto;
+    return dto;
   }
 
-  /** Update phone or profilePic */
-  // async updateProfile(
-  //   userId: string,
-  //   updates: Partial<{ phone: string; profilePic: string }>
-  // ) {
-  //   const updated = await this.studentRepo.updateById(userId, updates);
-  //   if (!updated) throw new Error("Failed to update profile");
-  //   return updated;
-  // }
-
-  /** Verify currentPassword, then change to newPassword */
   async changePassword(userId: string, currentPassword: string, newPassword: string) {
     const student = await this.studentRepo.findById(userId);
     if (!student) throw new Error('Student not found');
@@ -167,7 +159,10 @@ export class StudentService implements IStudentService {
     await this.studentRepo.changePassword(userId, hash);
   }
 
-  async updateProfile(userId: string, updates: { name?: string; phone?: string; profilePicKey?: string }) {
+  async updateProfile(
+    userId: string,
+    updates: { name?: string; phone?: string; profilePicKey?: string },
+  ) {
     let finalPic: string | undefined;
     if (updates.profilePicKey) {
       finalPic =
@@ -176,7 +171,7 @@ export class StudentService implements IStudentService {
     }
     const toSave: any = { ...(updates.phone && { phone: updates.phone }) };
     if (finalPic) toSave.profilePic = finalPic;
-toSave.name = updates.name
+    toSave.name = updates.name;
     const updated = await this.studentRepo.updateById(userId, toSave);
     if (!updated) throw new Error('Failed to update profile');
     return updated;

@@ -1,18 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
-import { StudentService } from '../../../services/student/implementation/StudentService';
 import { IStudentController } from '../IStudentController';
 import { AuthenticatedRequest } from '../../../types/Index';
 import { IOtpService } from '../../../services/student/IOtpService';
-import { OtpService } from '../../../services/common/OtpService';
 import { presignPutObject } from '../../../utils/s3Presign';
 import { HttpStatus } from '../../../constants/statusCode';
 import { ERROR_MESSAGES } from '../../../constants/errorMessages';
+import { IStudentService } from '../../../services/student/IStudentService';
 
 export class StudentController implements IStudentController {
   constructor(
-    private studentService: StudentService,
+    private studentService: IStudentService,
     private otpService: IOtpService,
-    private commonOtp: OtpService,
   ) {}
 
   async registerStudent(req: Request, res: Response): Promise<void> {
@@ -75,12 +73,12 @@ export class StudentController implements IStudentController {
         email,
         password,
       );
-
+const REFRESH_COOKIE = parseInt(process.env.MAX_AGE!);
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: REFRESH_COOKIE,
       });
 
       res.status(HttpStatus.OK).json({
@@ -126,7 +124,7 @@ export class StudentController implements IStudentController {
         res.status(HttpStatus.BAD_REQUEST).json({ message: 'Google ID token missing' });
         return;
       }
-      const REFRESH_COOKIE = Number(process.env.MAX_AGE);
+      const REFRESH_COOKIE = parseInt(process.env.MAX_AGE!);
       const { accessToken, refreshToken, student } =
         await this.studentService.googleLoginStudentService(idToken);
 
@@ -134,7 +132,7 @@ export class StudentController implements IStudentController {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
+        maxAge: REFRESH_COOKIE,
       });
 
       res.status(200).json({

@@ -1,4 +1,5 @@
 import { ITutor } from '../../models/tutor/TutorSchema';
+import { IBaseRepository } from '../base/IBaseRepository';
 export type TutorStatus = 'pending' | 'verification-submitted' | 'approved' | 'rejected';
 export type TutorQueueItem = {
   _id: string;
@@ -8,7 +9,7 @@ export type TutorQueueItem = {
   createdAt: Date;
 };
 
-export interface ITutorRepository {
+export interface ITutorRepository extends IBaseRepository<ITutor>{
   create(student: Partial<ITutor>): Promise<ITutor>;
   findByEmail(email: string): Promise<ITutor | null>;
   updateVerificationById(

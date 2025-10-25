@@ -1,5 +1,3 @@
-
-
 import type {
   TutorKpis,
   DateRange,
@@ -17,7 +15,7 @@ import type { ITutorRepository } from '../../../repositories/tutor/ITutorReposit
 import { resolveRange, startOfMonth, startOfToday } from '../../../utils/dashboard';
 import { ITutorDashboardService } from '../IDashboardService';
 
-export class TutorDashboardService implements ITutorDashboardService{
+export class TutorDashboardService implements ITutorDashboardService {
   constructor(
     private readonly courses: ICourseRepository,
     private readonly enrollments: IEnrollmentRepository,

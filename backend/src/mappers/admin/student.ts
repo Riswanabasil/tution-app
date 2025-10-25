@@ -1,5 +1,5 @@
-import { StudentDTO } from "../../dto/admin/student";
-import { IStudent } from "../../models/student/studentSchema";
+import { StudentDTO } from '../../dto/admin/student';
+import { IStudent } from '../../models/student/studentSchema';
 
 export class StudentMapper {
   static toDTO(student: IStudent): StudentDTO {
@@ -7,7 +7,7 @@ export class StudentMapper {
       _id: student._id.toString(),
       name: student.name,
       email: student.email,
-      isBlocked: student.isBlocked
+      isBlocked: student.isBlocked,
     };
   }
 

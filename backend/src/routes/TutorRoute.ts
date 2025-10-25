@@ -72,19 +72,16 @@ const enrollmentService = new TutorDashboardService(courseRepo, enrollmentRepo, 
 const enrollmentController = new TutorDashboardController(enrollmentService);
 
 //live session
-const liveRepo= new LiveSessionRepository()
-const liveService= new LiveSessionService(liveRepo,topicRepo,moduleRepo,courseRepo)
-const liveController= new LiveSessionController(liveService)
+const liveRepo = new LiveSessionRepository();
+const liveService = new LiveSessionService(liveRepo, topicRepo, moduleRepo, courseRepo);
+const liveController = new LiveSessionController(liveService);
 
 router.post('/register', tutorController.registerTutor.bind(tutorController));
 router.post(
   '/verification/upload-urls',
   tutorController.getVerificationUploadUrls.bind(tutorController),
 );
-router.post(
-  '/submit-verification',
-  tutorController.submitTutorVerification.bind(tutorController),
-);
+router.post('/submit-verification', tutorController.submitTutorVerification.bind(tutorController));
 router.post('/login', tutorController.loginTutor.bind(tutorController));
 router.post('/logout', tutorController.logoutTutor.bind(tutorController));
 router.post('/google-login', tutorController.googleLoginTutor.bind(tutorController));
@@ -197,13 +194,20 @@ router.get(
   enrollmentController.getPendingApprovalsPreview,
 );
 
-
 // live session
 router.post('/:topicId/livesession', authMiddleware, liveController.create.bind(liveController));
-router.get('/:topicId/livesession', authMiddleware, liveController.listByTopic.bind(liveController));
+router.get(
+  '/:topicId/livesession',
+  authMiddleware,
+  liveController.listByTopic.bind(liveController),
+);
 
-router.get('/livesession/:id',authMiddleware, liveController.getById.bind(liveController));
-router.patch('/livesession/:id/status', authMiddleware, liveController.updateStatus.bind(liveController));
+router.get('/livesession/:id', authMiddleware, liveController.getById.bind(liveController));
+router.patch(
+  '/livesession/:id/status',
+  authMiddleware,
+  liveController.updateStatus.bind(liveController),
+);
 router.delete('/livesession/:id', authMiddleware, liveController.delete.bind(liveController));
 
 export default router;
