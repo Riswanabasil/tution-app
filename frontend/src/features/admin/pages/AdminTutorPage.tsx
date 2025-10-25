@@ -22,11 +22,11 @@ const AdminTutorPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
-  const debouncedSearch=useDebouncedValue(search,400)
+  const debouncedSearch = useDebouncedValue(search, 400)
   const [status, setStatus] = useState('');
   const [selectedTutor, setSelectedTutor] = useState<ITutor | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
- 
+
   const loadTutors = useCallback(async () => {
     setLoading(true);
     try {
@@ -71,6 +71,26 @@ const AdminTutorPage = () => {
     setSelectedTutor(null);
   };
 
+
+  async function downloadFile(url: string, filename: string) {
+    try {
+      const res = await fetch(url, { mode: 'cors' }); // requires CORS for cross-origin
+      if (!res.ok) throw new Error('Fetch failed');
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.warn('fetch-download failed, falling back to open', err);
+      // fallback - open in new tab (or use window.location.href to navigate same tab)
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  }
 
 
   return (
@@ -124,7 +144,7 @@ const AdminTutorPage = () => {
                 <td className="p-2">{tutor.name}</td>
                 <td className="p-2">{tutor.email}</td>
                 <td className="p-2 capitalize">{tutor.status}</td>
-                
+
 
                 <td className="space-x-2 p-2">
                   <button
@@ -153,7 +173,7 @@ const AdminTutorPage = () => {
                     </button>
                   )}
 
-                 
+
                 </td>
               </tr>
             ))
@@ -210,26 +230,63 @@ const AdminTutorPage = () => {
 
                 <p>
                   <strong>ID Proof:</strong>{' '}
-                  <a
+                  {!selectedTutor?.verificationDetails ||
+                    (!selectedTutor.verificationDetails.idProof) ? (
+                    <p className="text-gray-600">Tutor has not added Id proof.</p>
+                  ) : (
+                    <>
+                      <a
+                        // href={`${selectedTutor.verificationDetails.idProof}`}
+                        // download="Resume-JaneDoe.pdf"
+                        // rel="noopener noreferrer"
+                        // className="text-blue-600 underline"
+
+                        href="#"
+                        onClick={(e) => { e.preventDefault(); downloadFile(selectedTutor.verificationDetails!.idProof, `ID-${selectedTutor.name}.pdf`); }}
+                        className="text-blue-600 underline"
+                      >
+                        View ID
+                      </a>
+                    </>
+                  )}
+                  {/* <a
                     href={`${selectedTutor.verificationDetails.idProof}`}
-                    target="_blank"
+                    download="Resume-JaneDoe.pdf"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"
                   >
                     View ID
-                  </a>
+                  </a> */}
                 </p>
 
                 <p>
                   <strong>Resume:</strong>{' '}
-                  <a
+                  {!selectedTutor?.verificationDetails ||
+                    (!selectedTutor.verificationDetails.resume) ? (
+                    <p className="text-gray-600">Tutor has not added resume.</p>
+                  ) : (
+                    <>
+                      <a
+                        // href={`${selectedTutor.verificationDetails.resume}`}
+                        // target="_blank"
+                        // rel="noopener noreferrer"
+                        // className="text-blue-600 underline"
+                        href="#"
+                        onClick={(e) => { e.preventDefault(); downloadFile(selectedTutor.verificationDetails!.resume, `RESUME-${selectedTutor.name}.pdf`); }}
+                        className="text-blue-600 underline"
+                      >
+                        View Resume
+                      </a>
+                    </>
+                  )}
+                  {/* <a
                     href={`${selectedTutor.verificationDetails.resume}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 underline"
                   >
                     View Resume
-                  </a>
+                  </a> */}
                 </p>
               </>
             )}
@@ -237,7 +294,7 @@ const AdminTutorPage = () => {
         )}
       </Modal>
 
-     
+
     </div>
   );
 };

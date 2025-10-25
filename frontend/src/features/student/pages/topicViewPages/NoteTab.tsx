@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchNotesByTopicId } from '../../services/CourseApi';
 
@@ -17,7 +17,29 @@ const NoteTab = () => {
       fetchNotesByTopicId(topicId).then(setNotes).catch(console.error);
     }
   }, [topicId]);
-
+  const downloadFile = useCallback(async (url: string | undefined, filename: string) => {
+    if (!url) {
+      // optional: show user-friendly message — you can set state or alert
+      alert('File not available for download.');
+      return;
+    }
+    try {
+      const res = await fetch(url, { mode: 'cors' }); // requires CORS for cross-origin
+      if (!res.ok) throw new Error('Fetch failed');
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.warn('fetch-download failed, falling back to open', err);
+      window.open(url!, '_blank', 'noopener,noreferrer'); // fallback: open in new tab
+    }
+  }, []);
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6">
       <div className="mx-auto max-w-4xl">
@@ -108,10 +130,17 @@ const NoteTab = () => {
                 <div className="space-y-3">
                   {note.pdfUrls.map((url, i) => (
                     <a
+                      // key={i}
+                      // href={url}
+                      // target="_blank"
+                      // rel="noopener noreferrer"
+
                       key={i}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        downloadFile(url, `StudyNotes-${note._id}-${i + 1}.pdf`);
+                      }}
                       className="group/link flex items-center justify-between rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-indigo-50 p-4 transition-all duration-200 hover:border-blue-200 hover:from-blue-100 hover:to-indigo-100"
                     >
                       <div className="flex items-center space-x-3">
