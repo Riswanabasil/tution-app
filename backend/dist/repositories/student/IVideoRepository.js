@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 // import type { IVideo } from '../../models/video/VideoSchema';
 // import type { IVideoProgress } from '../../models/video/VideoProgress';
 // import { IBaseRepository } from '../base/IBaseRepository';

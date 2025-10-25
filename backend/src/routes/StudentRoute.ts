@@ -53,7 +53,7 @@ const studentService = new StudentService(
   tokenService,
   enrollRepository,
 );
-const studentController = new StudentController(studentService, studentOtpService, otpService);
+const studentController = new StudentController(studentService, studentOtpService);
 const moduleRepo = new ModuleRepository();
 const tutorRepo = new TutorRepository();
 const courseRepo = new CourseRepository();
