@@ -1,0 +1,83 @@
+name: CI / CD - MERN (Vercel frontend, AWS backend - TS)
+
+on:
+  push:
+    branches: [ main ]      
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  ci:
+    name: CI - install & build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      # Backend: install & build TS -> dist
+      - name: Backend - install
+        working-directory: backend
+        run: npm ci
+
+      - name: Backend - build
+        working-directory: backend
+        run: npm run build
+
+      - name: Upload backend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-dist
+          path: |
+            backend/dist
+            backend/package.json
+            backend/package-lock.json
+
+      # Frontend: build only (Vercel does actual deploy)
+      - name: Frontend - install & build
+        working-directory: frontend
+        run: |
+          npm ci
+          if npm run | grep -q " test"; then npm test || true; fi
+          npm run build
+
+  deploy-backend:
+    name: Deploy backend to AWS
+    runs-on: ubuntu-latest
+    needs: ci
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Download backend build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-dist
+          path: ./backend_deploy
+
+      - name: Copy files to server (SCP)
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "backend_deploy/**"
+          target: ${{ secrets.REMOTE_APP_DIR }}
+
+      - name: SSH - install prod deps & restart pm2
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+            cd ${{ secrets.REMOTE_APP_DIR }} || exit 1
+            npm ci --production
+            pm2 describe my-app > /dev/null 2>&1 && pm2 restart my-app || pm2 start dist/server.js --name my-app
+            pm2 save
