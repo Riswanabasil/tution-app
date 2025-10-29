@@ -146,7 +146,7 @@ router.get(
 //topic
 
 router.post('/modules/:moduleId/topics', topicController.create.bind(topicController));
-router.get('/modules/:moduleId/topics', topicController.getByModule.bind(topicController));
+router.get('/modules/:moduleId/topics',authMiddleware, topicController.getByModule.bind(topicController));
 router.get('/topics/:id', topicController.getById.bind(topicController));
 router.patch('/topics/:id', topicController.update.bind(topicController));
 router.delete('/topics/:id', topicController.delete.bind(topicController));
