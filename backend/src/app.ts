@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
   res.send('Tuition backend is running');
 });
 
-app.get('/health', (_req, res) => {
+app.get('/api/v1/health', (_req, res) => {
   res.json({ status: ' CI CD retry', time: new Date().toISOString() });
 });
 
