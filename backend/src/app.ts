@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (_req, res) => {
-  res.json({ status: ' CI CD ok', time: new Date().toISOString() });
+  res.json({ status: ' CI CD test', time: new Date().toISOString() });
 });
 
 app.use('/api/v1/student', studentRoutes);
