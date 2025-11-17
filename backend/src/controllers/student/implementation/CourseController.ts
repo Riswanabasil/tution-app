@@ -33,4 +33,24 @@ export class StudentCourseController {
       res.status(HttpStatus.NOT_FOUND).json({ message: ERROR_MESSAGES.NOT_FOUND });
     }
   }
+
+  
+ async getTutorByCourseId(req: Request, res: Response): Promise<void> {
+  try {
+    const courseId = req.params.id;
+    if (!courseId) {
+       res.status(400).json({ message: "Missing courseId param" });
+    }
+
+    const dto = await this.courseService.getTutorProfileByCourseId(courseId);
+    if (!dto) {
+       res.status(404).json({ message: "Course or tutor not found" });
+    }
+
+     res.json({ success: true, data: dto });
+  } catch (err) {
+    console.error("getTutorByCourseId error:", err);
+     res.status(500).json({ message: "Internal server error" });
+  }
+}
 }

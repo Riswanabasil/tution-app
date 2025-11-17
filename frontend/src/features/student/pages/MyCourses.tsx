@@ -6,7 +6,8 @@ import type { MyCourseDTO } from '../services/CourseApi';
 
 // NEW
 import ReviewModal from '../components/ReviewModal';
-import type { ReviewDTO } from '../services/ReviewApi';
+import { type ReviewDTO,getTutorByCourseId, type TutorProfileDTO } from '../services/ReviewApi';
+import TutorModal from '../components/TutorModal';
 
 export default function MyCoursesPage() {
   const [courses, setCourses] = useState<MyCourseDTO[]>([]);
@@ -17,6 +18,13 @@ export default function MyCoursesPage() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [myReviews, setMyReviews] = useState<Record<string, ReviewDTO | null>>({});
+
+  // NEW: tutor modal
+const [tutorModalOpen, setTutorModalOpen] = useState(false);
+const [tutorLoading, setTutorLoading] = useState(false);
+const [tutorError, setTutorError] = useState<string | null>(null);
+const [tutorProfile, setTutorProfile] = useState<TutorProfileDTO | null>(null);
+
 
   useEffect(() => {
     getMyCourses()
@@ -30,6 +38,21 @@ export default function MyCoursesPage() {
     setSelectedCourseId(courseId);
     setReviewModalOpen(true);
   }
+async function openTutorDetails(courseId: string) {
+  setTutorError(null);
+  setTutorLoading(true);
+  setTutorProfile(null);
+  setTutorModalOpen(true);
+
+  try {
+    const tutor = await getTutorByCourseId(courseId);
+    setTutorProfile(tutor);
+  } catch (err: any) {
+    setTutorError(err.message || "Failed to load tutor");
+  } finally {
+    setTutorLoading(false);
+  }
+}
 
   // NEW: when a review is saved/updated, remember it so the button text flips to "Edit Review"
   function handleSaved(review: ReviewDTO) {
@@ -163,6 +186,13 @@ export default function MyCoursesPage() {
                 >
                   {myReviews[course._id] ? 'Edit Review' : 'Rate & Review'}
                 </button>
+
+                  <button
+    onClick={() => openTutorDetails(course._id)}
+    className="rounded-xl border border-gray-200 bg-white px-4 py-2 font-semibold text-gray-700 hover:bg-gray-50"
+  >
+    View Tutor
+  </button>
               </div>
             </div>
           ))}
@@ -177,6 +207,14 @@ export default function MyCoursesPage() {
             onSaved={handleSaved}
           />
         )}
+
+        <TutorModal
+  open={tutorModalOpen}
+  onClose={() => setTutorModalOpen(false)}
+  tutor={tutorProfile}
+  loading={tutorLoading}
+  error={tutorError}
+/>
       </div>
     </div>
   );

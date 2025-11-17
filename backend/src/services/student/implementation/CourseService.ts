@@ -1,3 +1,5 @@
+import { TutorProfileDTO } from '../../../dto/student/TutorProfileDTO';
+import { mapTutorToProfileDTO } from '../../../mappers/student/tutorMapper';
 import { ICourseRepository } from '../../../repositories/course/ICourseRepository';
 import { IModuleRepository } from '../../../repositories/module/IModuleRepository';
 import { ITopicRepository } from '../../../repositories/topic/ITopicRepository';
@@ -107,5 +109,21 @@ export class StudentCourseService implements ICourseService {
       tutorSummary: tutor.verificationDetails?.summary || '',
       modules: enrichedModules,
     };
+  }
+
+  async getTutorProfileByCourseId(courseId: string): Promise<TutorProfileDTO | null> {
+    // 1. find course
+    const course = await this.courseRepo.findById(courseId);
+    if (!course) return null;
+
+    const tutorId = course.tutor;
+    if (!tutorId) return null;
+
+    // 2. find tutor by id
+    const tutor = await this.tutorRepo.getTutorById(tutorId.toString());
+    if (!tutor) return null;
+
+    // 3. map
+    return mapTutorToProfileDTO(tutor);
   }
 }

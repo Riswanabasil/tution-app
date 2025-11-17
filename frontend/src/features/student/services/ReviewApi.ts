@@ -61,3 +61,24 @@ export async function getCourseReviews(
   });
   return data;
 }
+
+export type TutorProfileDTO = {
+  id: string;
+  name: string;
+  summary?: string;
+  education?: string;
+  experience?: string;
+  // add more fields if backend returns them (profilePic, email, etc.)
+};
+
+/**
+ * GET /api/courses/:courseId/tutor
+ * returns: { success: true, data: TutorProfileDTO }
+ */
+export async function getTutorByCourseId(courseId: string): Promise<TutorProfileDTO> {
+  const { data } = await api.get<{ success: boolean; data: TutorProfileDTO }>(
+    `/student/courses/${courseId}/tutor`,
+  );
+  // if your backend returns payload differently adjust accordingly
+  return data.data;
+}

@@ -1,3 +1,4 @@
+import { TutorProfileDTO } from '../../dto/student/TutorProfileDTO';
 import { ICourse } from '../../models/course/CourseSchema';
 import { CourseDetails } from '../../types/course';
 
@@ -16,4 +17,5 @@ export interface ICourseService {
     sortBy?: string,
   ): Promise<PaginatedCourses>;
   fetchCourseWithModules(courseId: string): Promise<CourseDetails>;
+  getTutorProfileByCourseId(courseId: string): Promise<TutorProfileDTO | null>;
 }

@@ -113,6 +113,7 @@ router.get('/profile/upload-url', studentController.getUploadUrl);
 
 router.get('/courses', authMiddleware, courseController.list.bind(courseController));
 router.get('/courses/:courseId', courseController.getCourseDetails.bind(courseController));
+router.get("/courses/:id/tutor", courseController.getTutorByCourseId.bind(courseController));
 
 //payment
 
