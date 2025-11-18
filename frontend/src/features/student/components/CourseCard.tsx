@@ -166,8 +166,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
         <div className="mt-4">
           {offer ? (
             <div className="flex items-baseline space-x-2">
-              <span className="text-sm text-gray-500 line-through">₹{price}</span>
-              <span className="text-lg font-bold text-indigo-600">₹{actualPrice}</span>
+              <span className="text-sm text-gray-500 line-through">₹{actualPrice}</span>
+              <span className="text-lg font-bold text-indigo-600">₹{price}</span>
             </div>
           ) : (
             <span className="text-lg font-bold text-indigo-600">₹{price}</span>
